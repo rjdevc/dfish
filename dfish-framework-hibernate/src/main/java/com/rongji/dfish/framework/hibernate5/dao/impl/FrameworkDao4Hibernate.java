@@ -9,8 +9,10 @@ import com.rongji.dfish.framework.dao.FrameworkDao;
 import com.rongji.dfish.framework.dao.impl.AbstractFrameworkDao;
 import com.rongji.dfish.framework.dto.QueryParam;
 import com.rongji.dfish.framework.hibernate.support.EntitySupport;
+import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 
@@ -222,19 +224,31 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         idSet.remove("");
         final List<ID> noRepeat = new ArrayList<>(idSet);
         List<P> dbList = getHibernateTemplate().execute((session) -> {
-            List<ID> tofetch = noRepeat;
+            List<ID> leftList = noRepeat;
             List<P> result = new ArrayList<>();
             String idFieldName = entitySupport.getIdName();
             Class<P> entityClass = entitySupport.getEntityClass();
-            while (tofetch.size() > 0) {
-                if (tofetch.size() > FrameworkDao.BATCH_SIZE) {
-                    List<ID> cur = tofetch.subList(0, FrameworkDao.BATCH_SIZE);
-                    tofetch = tofetch.subList(FrameworkDao.BATCH_SIZE, tofetch.size());
-                    result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idFieldName, cur)).list());
-                } else {
-                    result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idFieldName, tofetch)).list());
-                    tofetch = tofetch.subList(tofetch.size(), tofetch.size());
+            try {
+                while (leftList.size() > 0) {
+                    List<ID> currentList;
+                    int leftSize = leftList.size();
+                    boolean hasNext = leftSize > FrameworkDao.BATCH_SIZE;
+                    if (hasNext) {
+                        currentList = leftList.subList(0, FrameworkDao.BATCH_SIZE);
+                        leftList = leftList.subList(FrameworkDao.BATCH_SIZE, leftSize);
+                    } else {
+                        currentList = leftList;
+                    }
+                    List list = session.createCriteria(entityClass).add(Restrictions.in(idFieldName, currentList)).list();
+                    if (list != null) {
+                        result.addAll(list);
+                    }
+                    if (!hasNext) {
+                        break;
+                    }
                 }
+            } catch (Exception e) {
+                LogUtil.error("批量获取数据异常@" + entityClass + ".idFieldName:" + idFieldName, e);
             }
             return result;
         });
