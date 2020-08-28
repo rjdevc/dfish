@@ -133,10 +133,10 @@ dfish.config({
         var hasError = response.error;
         if (hasError) {
             app.response.error(response);
-        } else {
-            if (!response.data) {
-                response.data = {};
-            }
+        // } else if (response.data === undefined) {
+        //     // 有点业务,这里注释了,在项目中补充
+        //     // 不允许data是空的,这么做解决大部分页面的容错问题
+        //     response.data = {};
         }
         return !hasError;
     },
