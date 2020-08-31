@@ -94,6 +94,9 @@
 
 .f-boxbtn{width:30px;height:38px;text-align:center;text-indent:0;font-style:normal}
 
+.w-video.z-pause .w-video-progress{display:block}
+.w-video-play{display:none}
+
 /*
 .f-i-back,.f-i-upload,.f-i-trash,.f-i-plus{background:none}
 .f-i-back:before{content:'\e471';}

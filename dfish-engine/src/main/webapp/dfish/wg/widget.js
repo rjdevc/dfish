@@ -2021,7 +2021,7 @@ Scroll = define.widget('Scroll', {
 			ready: function() {
 				// widget的dom可能会被业务重新生成，需要重置相关变量
 				delete this._scr_ready; delete this._scr_wd; delete this._scr_ht;
-				this.x.pullDown && this.setPullDownRefresh();
+				this.x.pullDown && mbi && this.setPullDownRefresh();
 				this.x.pullUp && this.setPullUpRefresh();
 			},
 			mouseOver: function() {
@@ -12325,6 +12325,67 @@ StructureItem = define.widget('StructureItem', {
 		}
 	}
 }),
+_videoMime = {'video/mp4': T, 'video/ogg': T, 'video/webm': T},
+/* `Video` */
+Video = define.widget( 'Video', {
+	Listener: {
+		body: {
+			click: function(e) {
+				var o = this.$('v');
+				o.paused ? o.play() : o.pause();
+				$.stop(e);
+			},
+			resize: function() {
+				var e = this.$( 'v' );
+				e && $.css(e, {width: this.innerWidth(), height: this.videoHeight()});
+			}
+		}
+	},
+	Prototype: {
+		className: 'w-video f-rel',
+		isSwf: function() {
+			if (br.ie && br.ieVer < 9)
+				return T;
+			var m = this.getMimeType();
+			if (!m || !_videoMime[m])
+				return T;
+		},
+		getMimeType: function() {
+			var filePath = $.strTo(this.x.src, '?') || this.x.src,
+				fileName = $.strFrom(filePath, '/', T) || filePath,
+				suffix   = $.strFrom(fileName, '.', T);
+			return suffix ? $.mimeType(fileName) : 'video/mp4';
+		},
+		onpause: function() {
+			this.addClass('z-pause');
+			this.removeClass('z-play');
+		},
+		onplay: function() {
+			this.addClass('z-play');
+			this.removeClass('z-pause');
+		},
+		ontimeupdate: function(e) {
+			this.$('p').style.width = (this.$('v').currentTime / this.$('v').duration * 100) + '%';
+		},
+		videoHeight: function() {
+			return this.innerHeight() - (mbi ? 5 : 0);
+		},
+		html_nodes: function() {
+			var w = this.innerWidth(), h = this.innerHeight(), u = $.ajaxUrl(this.x.src);
+			if (this.isSwf()) {
+				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
+					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/><param name="wmode" value="transparent"/>' +
+					'<param name="movie" value="' + $.SWF_PATH + 'videoplayer.swf"/>' +
+					'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
+					'<embed src="' + $.SWF_PATH + 'videoplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
+			} else {
+				return '<video id=' + this.id + 'v width="' + w + '"  height="' + h + '" src="' + u + '" controls onpause="' + evw + '.onpause()" onplay="' + evw + '.onplay()" ontimeupdate="' + evw + '.ontimeupdate(event)"></video>' +
+					'<div class="w-video-play f-center">' + $.image('.f-i-play') + '</div><div class=w-video-progress><div id=' + this.id + 'p class=w-video-progress-filled></div></div>';
+			}
+		}
+	}
+} )
+
 Transfer = define.widget('Transfer', {
 	Const: function(x, p) {
 		this.x = x;

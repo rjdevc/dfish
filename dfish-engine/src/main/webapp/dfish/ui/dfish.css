@@ -42,6 +42,7 @@
 .f-abs{position:absolute}
 .f-rel{position:relative}
 .f-thumbnail{cursor:pointer}
+.f-center{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%)}
 .f-inbl,.f-nv,.f-nv-top,.f-nv-middle,.f-nv-bottom,.f-sub-horz,.w-html-text{display:inline-block;*display:inline;*zoom:1}
 .f-sub-horz.z-htmn{float:left;*display:normal}
 .f-sub-horz,.f-sub-vert{vertical-align:top}
@@ -885,6 +886,13 @@
 .w-transfer-bbr .w-button ._c{padding-left:8px}
 .w-transfer-bbr .w-button ._i{padding-right:8px}
 
+.w-video{background:#000}
+.w-video.z-play .w-video-play{display:none}
+.w-video-play{padding:15px;background:rgba(0,0,0,.5);border-radius:50%;z-index:1;}
+.w-video-play .f-i{color:#fff;font-size:36px;transform:translate(4px,0px);cursor:default}
+.w-video-progress{display:none;position:absolute;bottom:0;left:0;right:0;height:3px;background:#777;}
+.w-video-progress-filled{position:absolute;bottom:0;top:0;left:0;background:rgba(255,255,255);}
+
 .f-pullup{width:100%;text-align:center;overflow:hidden;line-height:1;background:#f5f5f5}
 .f-pullup ._gut{height:40px;text-align:center;}
 .f-pullup ._desc{font-size:16px;color:#777}
@@ -1003,6 +1011,8 @@
 .w-videoupload-value ._ico{transform:translate(2px,-1px)}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-pagebar .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
+
+
 
 .f-form-small,.f-form-small .w-button,.f-form-small .w-f,.f-form-small .w-input ._t{font-size:12px}
 .f-form-small .w-input,.f-form-small .w-switch,.f-form-small .f-boxbtn{height:22px}
