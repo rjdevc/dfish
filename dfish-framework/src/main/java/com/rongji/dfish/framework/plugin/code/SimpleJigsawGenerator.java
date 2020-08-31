@@ -33,6 +33,7 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
      * @return
      * @throws Exception
      */
+    @Override
     public JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception {
 //        // 大图宽高都必须是小图的4倍
 //        int bigMinSize = smallSize << 2;

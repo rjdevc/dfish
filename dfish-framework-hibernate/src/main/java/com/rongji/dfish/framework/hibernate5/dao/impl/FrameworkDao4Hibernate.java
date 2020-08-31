@@ -222,10 +222,10 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
         Set<ID> idSet = new HashSet<>(ids);
         idSet.remove(null);
         idSet.remove("");
-        final List<ID> noRepeat = new ArrayList<>(idSet);
+        List<ID> noRepeat = new ArrayList<>(idSet);
         List<P> dbList = getHibernateTemplate().execute((session) -> {
             List<ID> leftList = noRepeat;
-            List<P> result = new ArrayList<>();
+            List<P> result = new ArrayList<>(leftList.size());
             String idFieldName = entitySupport.getIdName();
             Class<P> entityClass = entitySupport.getEntityClass();
             try {
