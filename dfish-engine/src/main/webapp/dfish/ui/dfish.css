@@ -890,8 +890,6 @@
 .w-video.z-play .w-video-play{display:none}
 .w-video-play{padding:15px;background:rgba(0,0,0,.5);border-radius:50%;z-index:1;}
 .w-video-play .f-i{color:#fff;font-size:36px;transform:translate(4px,0px);cursor:default}
-.w-video-progress{display:none;position:absolute;bottom:0;left:0;right:0;height:3px;background:#777;}
-.w-video-progress-filled{position:absolute;bottom:0;top:0;left:0;background:rgba(255,255,255);}
 
 .f-pullup{width:100%;text-align:center;overflow:hidden;line-height:1;background:#f5f5f5}
 .f-pullup ._gut{height:40px;text-align:center;}
@@ -1007,7 +1005,7 @@
 .w-videoupload-value.z-err ._name,.w-videoupload-value:hover ._more,.w-videoupload-value:hover ._close{display:block}
 
 .w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.2)}
-.w-videoupload-value ._play{padding:6px 7px;background:rgba(255,255,255,.5);border-radius:50%}
+.w-videoupload-value ._play{padding:6px 7px;background:rgba(255,255,255,.4);border-radius:50%}
 .w-videoupload-value ._ico{transform:translate(2px,-1px)}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-pagebar .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
