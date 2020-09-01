@@ -208,7 +208,8 @@
 		        { "id": "Toggle", "text": "Toggle", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Tree", "text": "Tree", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
 		          { "id": "Leaf", "text": "Leaf", "collapsedIcon": ".icon .icon-class" }
-		        ] }
+		        ] },
+		        { "id": "Video", "text": "Video", "collapsedIcon": ".icon .icon-class" }
 		      ] },
 		  	  { "text": "表单类", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
 		        { "id": "CheckBox", "text": "CheckBox", "collapsedIcon": ".icon .icon-class" },
