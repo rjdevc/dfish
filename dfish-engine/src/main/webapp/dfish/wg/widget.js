@@ -6170,7 +6170,7 @@ AbsForm = define.widget('AbsForm', {
 		},
 		input_prop: function() {
 			var t = this.attr('tip'), v = this.input_prop_value();
-			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.prop_style(this.x.text || this.x.value) +
+			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call(this);
 		},
 		prop_cls: function() {
@@ -7941,9 +7941,6 @@ Jigsaw = define.widget('Jigsaw', {
 		x.auth && (this.auth = new JigsawAuth(x.auth, this, -1));
 	},
 	Extend: Slider,
-	Default: {
-		widthMinus: 2
-	},
 	Listener: {
 		tag: 'f',
 		body: {
@@ -7986,7 +7983,7 @@ Jigsaw = define.widget('Jigsaw', {
 			},
 			resize: function(e) {
 				_superTrigger(this, AbsForm, e);
-				this.css('t', 'width', this.formWidth());
+				//this.css('t', 'width', this.formWidth());
 			}
 		}
 	},
@@ -12327,28 +12324,37 @@ StructureItem = define.widget('StructureItem', {
 }),
 _videoMime = {'video/mp4': T, 'video/ogg': T, 'video/webm': T},
 /* `Video` */
-Video = define.widget( 'Video', {
+Video = define.widget('Video', {
 	Listener: {
 		body: {
+			ready: function() {
+				var self = this;
+				Q(this.$('v')).on('play', function(e) {
+					self.addClass('z-play');
+				}).on('pause', function() {
+					self.removeClass('z-play');
+				});
+			},
 			click: function(e) {
 				var o = this.$('v');
 				o.paused ? o.play() : o.pause();
 				$.stop(e);
 			},
 			resize: function() {
-				var e = this.$( 'v' );
-				e && $.css(e, {width: this.innerWidth(), height: this.videoHeight()});
+				var e = this.$('v');
+				if (e) {
+					e.width = this.innerWidth();
+					e.height = this.innerHeight() - (mbi ? 5 : 0);
+				}
 			}
 		}
 	},
 	Prototype: {
 		className: 'w-video f-rel',
 		isSwf: function() {
-			if (br.ie && br.ieVer < 9)
-				return T;
+			if (br.ie && br.ieVer < 9) return T;
 			var m = this.getMimeType();
-			if (!m || !_videoMime[m])
-				return T;
+			if (!m || !_videoMime[m]) return T;
 		},
 		getMimeType: function() {
 			var filePath = $.strTo(this.x.src, '?') || this.x.src,
@@ -12356,22 +12362,8 @@ Video = define.widget( 'Video', {
 				suffix   = $.strFrom(fileName, '.', T);
 			return suffix ? $.mimeType(fileName) : 'video/mp4';
 		},
-		onpause: function() {
-			this.addClass('z-pause');
-			this.removeClass('z-play');
-		},
-		onplay: function() {
-			this.addClass('z-play');
-			this.removeClass('z-pause');
-		},
-		ontimeupdate: function(e) {
-			this.$('p').style.width = (this.$('v').currentTime / this.$('v').duration * 100) + '%';
-		},
-		videoHeight: function() {
-			return this.innerHeight() - (mbi ? 5 : 0);
-		},
 		html_nodes: function() {
-			var w = this.innerWidth(), h = this.innerHeight(), u = $.ajaxUrl(this.x.src);
+			var w = this.innerWidth(), h = this.innerHeight(), u = $.urlComplete(this.x.src);
 			if (this.isSwf()) {
 				return '<object id=' + this.id + 'v classid="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" codebase="http://download.macromedia.com/pub/shockwave/cabs/flash/swflash.cab#version=6,0,29,0" bgcolor="#000000" width="' + w + '" height="' + h + '">' +
 					'<param name="quality" value="high"/><param name="allowFullScreen" value="true"/><param name="wmode" value="transparent"/>' +
@@ -12379,12 +12371,12 @@ Video = define.widget( 'Video', {
 					'<param name="FlashVars" value="vcastr_file=' + u + '"/>' +
 					'<embed src="' + $.SWF_PATH + 'videoplayer.swf" allowfullscreen="true" flashvars="vcastr_file=' + u + '" quality="high" pluginspage="http://www.macromedia.com/go/getflashplayer" type="application/x-shockwave-flash" width="' + w + '" height="' + h + '"></embed></object>';
 			} else {
-				return '<video id=' + this.id + 'v width="' + w + '"  height="' + h + '" src="' + u + '" controls onpause="' + evw + '.onpause()" onplay="' + evw + '.onplay()" ontimeupdate="' + evw + '.ontimeupdate(event)"></video>' +
-					'<div class="w-video-play f-center">' + $.image('.f-i-play') + '</div><div class=w-video-progress><div id=' + this.id + 'p class=w-video-progress-filled></div></div>';
+				return '<video id=' + this.id + 'v width="' + w + '" height="' + h + '" src="' + u + '" controls poster="' + (this.x.poster ? $.urlComplete(this.x.poster) : '') + '" webkit-playsinline playsinline x5-playsinline x-webkit-airplay="true" x5-video-player-type="h5" x5-video-orientation="h5" x5-video-player-fullscreen=""></video>' +
+					'<div class="w-video-play f-center">' + $.image('.f-i-play') + '</div>';
 			}
 		}
 	}
-} )
+}),
 
 Transfer = define.widget('Transfer', {
 	Const: function(x, p) {

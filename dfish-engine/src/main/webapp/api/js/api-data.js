@@ -1600,7 +1600,6 @@ define( {
   	remark: '基础类。所有Widget都继承此类。蓝色部分的方法和属性，主要用于开发插件时做设置或重构。其他widget也有这些方法属性，但没列出，因为使用过程中一般用不上。',
   	extend: 'AbsWidget',
     Config: [
-      { name: 'className', type: 'String', remark: '样式名。' },
       { name: 'tip', type: 'String', remark: '浮动显示的提示文本。' }
     ],
     Methods: [
@@ -6124,6 +6123,30 @@ define( {
           	//让 id="f_btn" 的按钮显示一个Tip
             return~
             vm.find( 'f_btn' ).cmd( { type: 'Tip', text: "提示内容" } );
+          }
+      ] }
+    ]
+  },
+  "Video": {
+  	remark: '视频。',
+  	extend: 'AbsWidget',
+    Config: [
+      { name: 'poster', type: 'String', remark: '封面图片地址。' },
+      { name: 'src', type: 'String', remark: '视频地址。' }
+    ],
+    Classes: [
+      { name: '.w-video', remark: '基础样式。' }
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//视频范例
+          	return~
+            {
+                type: 'Video',
+                src: 'webapp/test.mp4',
+                poster: 'webapp/test.jpg'
+            }
           }
       ] }
     ]
