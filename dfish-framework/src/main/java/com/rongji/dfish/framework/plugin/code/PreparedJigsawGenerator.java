@@ -6,8 +6,8 @@ import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawImgItem;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResultError;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImg;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImgError;
 import com.rongji.dfish.framework.service.IdGenerator;
 
 import javax.imageio.ImageIO;
@@ -38,12 +38,12 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
 
 
     @Override
-    public JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception {
+    public JigsawImg generatorJigsaw(HttpServletRequest request) throws Exception {
         ensureEnv();
         //防止过于频繁刷新
         if (initError != null) {
-            JigsawImgResult jigsaw = new JigsawImgResult();
-            JigsawImgResultError error = new JigsawImgResultError(initError, 0);
+            JigsawImg jigsaw = new JigsawImg();
+            JigsawImgError error = new JigsawImgError(initError, 0);
             jigsaw.setError(error);
             return jigsaw;
         }
@@ -70,8 +70,8 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                 }
             }
             if (leftTimeout > 0) {
-                JigsawImgResult jigsaw = new JigsawImgResult();
-                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout);
+                JigsawImg jigsaw = new JigsawImg();
+                JigsawImgError error = new JigsawImgError(errorMsg, leftTimeout);
                 jigsaw.setError(error);
                 return jigsaw;
             }
@@ -87,8 +87,8 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
         } else {
             //从histories 中获取信息
             if (histories.isEmpty()) {
-                JigsawImgResult jigsaw = new JigsawImgResult();
-                JigsawImgResultError error = new JigsawImgResultError("验证码服务过于繁忙，请稍后再试", 0);
+                JigsawImg jigsaw = new JigsawImg();
+                JigsawImgError error = new JigsawImgError("验证码服务过于繁忙，请稍后再试", 0);
                 jigsaw.setError(error);
                 return jigsaw;
             }
@@ -278,7 +278,7 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                     ImgResult r = IMAGE_QUEUE.take();
                     JsonResult ret = new JsonResult();
 
-                    ret.ret = new JigsawImgResult();
+                    ret.ret = new JigsawImg();
                     String fileExtName = FileUtil.getFileExtName(r.rawFileName);
                     String jigsawFileName = IdGenerator.getSortedId32();
 
@@ -294,10 +294,9 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
                     ImageIO.write(r.bImg, getRealExtName(fileExtName), outputB);
 
                     ret.ret.setBig(new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + bFileName, bigWidth, bigHeight));
-                    ret.ret.setSmall(new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + sFileName, smallSize, smallSize));
+                    ret.ret.setSmall(new JigsawImgItem(imageFolder + FOLDER_TEMP + "/" + sFileName, smallSize, bigHeight));
                     ret.x = r.x;
                     ret.ret.setMaxValue(bigWidth);
-
 
                     SAVE_FILE_QUEUE.put(ret);
                     histories.add(ret);
@@ -406,7 +405,7 @@ public class PreparedJigsawGenerator extends AbstractJigsawGenerator<PreparedJig
     }
 
     private static class JsonResult {
-        JigsawImgResult ret;
+        JigsawImg ret;
         int x;
     }
 

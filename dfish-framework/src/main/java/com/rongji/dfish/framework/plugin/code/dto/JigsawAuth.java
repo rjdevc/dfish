@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author lamontYu
  * @since DFish5.0
  */
-public class JigsawAuthResult implements Serializable {
+public class JigsawAuth implements Serializable {
     private static final long serialVersionUID = -2543015857399605124L;
 
     /**
@@ -18,14 +18,14 @@ public class JigsawAuthResult implements Serializable {
     /**
      * 校验信息
      */
-    private String msg;
+    private String text;
 
     /**
      * 构造函数
      *
      * @param success 是佛验证通过
      */
-    public JigsawAuthResult(boolean success) {
+    public JigsawAuth(boolean success) {
         this.success = success;
     }
 
@@ -33,11 +33,11 @@ public class JigsawAuthResult implements Serializable {
      * 构造函数
      *
      * @param success 是否验证通过
-     * @param msg     验证信息
+     * @param text     验证信息
      */
-    public JigsawAuthResult(boolean success, String msg) {
+    public JigsawAuth(boolean success, String text) {
         this.success = success;
-        this.msg = msg;
+        this.text = text;
     }
 
     /**
@@ -55,7 +55,7 @@ public class JigsawAuthResult implements Serializable {
      * @param success boolean
      * @return 本身，这样可以继续设置其他属性
      */
-    public JigsawAuthResult setSuccess(boolean success) {
+    public JigsawAuth setSuccess(boolean success) {
         this.success = success;
         return this;
     }
@@ -65,18 +65,18 @@ public class JigsawAuthResult implements Serializable {
      *
      * @return String
      */
-    public String getMsg() {
-        return msg;
+    public String getText() {
+        return text;
     }
 
     /**
      * 验证信息
      *
-     * @param msg String
+     * @param text String
      * @return 本身，这样可以继续设置其他属性
      */
-    public JigsawAuthResult setMsg(String msg) {
-        this.msg = msg;
+    public JigsawAuth setText(String text) {
+        this.text = text;
         return this;
     }
 }

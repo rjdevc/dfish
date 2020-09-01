@@ -4,8 +4,8 @@ import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawImgItem;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResultError;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImg;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImgError;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -34,7 +34,7 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
      * @throws Exception
      */
     @Override
-    public JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception {
+    public JigsawImg generatorJigsaw(HttpServletRequest request) throws Exception {
 //        // 大图宽高都必须是小图的4倍
 //        int bigMinSize = smallSize << 2;
 //        if (smallSize <= 0 || bigWidth < bigMinSize || bigHeight < bigMinSize) {
@@ -43,7 +43,7 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
         HttpSession session = request.getSession();
         // 目前反暴力刷图策略暂时以session来判断,以后完善可以增加ip判断
         Integer generatorCount = (Integer) session.getAttribute(KEY_CAPTCHA_COUNT);
-        JigsawImgResult jigsaw = new JigsawImgResult();
+        JigsawImg jigsaw = new JigsawImg();
 
         if (generatorCount == null) {
             generatorCount = 0;
@@ -65,7 +65,7 @@ public class SimpleJigsawGenerator extends AbstractJigsawGenerator<SimpleJigsawG
                 }
             }
             if (leftTimeout > 0) {
-                JigsawImgResultError error = new JigsawImgResultError(errorMsg, leftTimeout);
+                JigsawImgError error = new JigsawImgError(errorMsg, leftTimeout);
                 jigsaw.setError(error);
                 return jigsaw;
             }

@@ -8,7 +8,7 @@ import java.io.Serializable;
  * @author lamontYu
  * @since DFish5.0
  */
-public class JigsawImgResultError implements Serializable {
+public class JigsawImgError implements Serializable {
     private static final long serialVersionUID = -9063472952742234038L;
 
     private String text;
@@ -20,7 +20,7 @@ public class JigsawImgResultError implements Serializable {
      * @param text     String 验证信息
      * @param timeout long 下次恢复可操作时间(毫秒)
      */
-    public JigsawImgResultError(String text, long timeout) {
+    public JigsawImgError(String text, long timeout) {
         this.text = text;
         this.timeout = timeout;
     }
@@ -40,7 +40,7 @@ public class JigsawImgResultError implements Serializable {
      * @param text String
      * @return 本身，这样可以继续设置其他属性
      */
-    public JigsawImgResultError setText(String text) {
+    public JigsawImgError setText(String text) {
         this.text = text;
         return this;
     }
@@ -60,7 +60,7 @@ public class JigsawImgResultError implements Serializable {
      * @param timeout long
      * @return 本身，这样可以继续设置其他属性
      */
-    public JigsawImgResultError setTimeout(long timeout) {
+    public JigsawImgError setTimeout(long timeout) {
         this.timeout = timeout;
         return this;
     }

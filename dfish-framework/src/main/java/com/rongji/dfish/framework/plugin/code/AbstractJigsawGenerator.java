@@ -1,24 +1,14 @@
 package com.rongji.dfish.framework.plugin.code;
 
 import com.rongji.dfish.base.context.SystemContext;
-import com.rongji.dfish.base.exception.MarkedException;
-import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawImgItem;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResultError;
 
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.awt.*;
-import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator<T>> implements JigsawGenerator{

@@ -1,13 +1,13 @@
 package com.rongji.dfish.framework.plugin.code;
 
-import com.rongji.dfish.framework.plugin.code.dto.JigsawImgResult;
+import com.rongji.dfish.framework.plugin.code.dto.JigsawImg;
 
 import javax.servlet.http.HttpServletRequest;
 
 public interface JigsawGenerator {
     String KEY_CAPTCHA = "com.rongji.dfish.CAPTCHA.JIGSAW";
     @Deprecated
-    public static final String KEY_CHECKCODE = KEY_CAPTCHA;
+    String KEY_CHECKCODE = KEY_CAPTCHA;
 
     /**
      * 生成拼图
@@ -16,7 +16,7 @@ public interface JigsawGenerator {
      * @return
      * @throws Exception
      */
-    JigsawImgResult generatorJigsaw(HttpServletRequest request) throws Exception;
+    JigsawImg generatorJigsaw(HttpServletRequest request) throws Exception;
 
     /**
      * 校验拼图是否正确
