@@ -657,11 +657,8 @@ public class FileController extends BaseActionController {
         return null;
     }
 
-
     private static final String FILE_SCHEME_AUTO = "AUTO";
     private static final String FILE_ALIAS_AUTO = "AUTO";
-
-
 
     private DownloadParam getDownloadParam(PubFileRecord fileRecord, String alias) {
         DownloadParam downloadParam = new DownloadParam();
@@ -731,6 +728,7 @@ public class FileController extends BaseActionController {
      * @throws Exception
      */
     @RequestMapping("/thumbnail")
+    @Deprecated
     public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String scheme = request.getParameter("scheme");
         String alias = request.getParameter("alias");
