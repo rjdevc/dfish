@@ -248,18 +248,7 @@ public abstract class AbstractJigsawGenerator <T extends AbstractJigsawGenerator
         }
     }
 
-    /**
-     * 校验拼图是否正确
-     *
-     * @param request 请求
-     * @param offset 偏移量
-     * @return boolean 是否验证通过
-     */
-    public boolean checkJigsawOffset(HttpServletRequest request, Number offset) {
-        return checkJigsawOffset(request, offset, false);
-    }
-
-
+    @Override
     public boolean checkJigsawOffset(HttpServletRequest request, Number offset, boolean retainCaptcha) {
         if (offset == null) {
             return false;

@@ -35,15 +35,6 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     }
 
     /**
-     * 路径分隔符
-     *
-     * @return String 路径分隔符
-     */
-    public String getDirSeparator() {
-        return "/";
-    }
-
-    /**
      * 文件存放目录
      *
      * @return String 文件存放目录

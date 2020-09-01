@@ -151,6 +151,9 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      *
      */
     default int updateFileLinks(String itemJson, String fileLink, String fileKey,String fileCreator) {
+        if (Utils.isEmpty(itemJson)) {
+            return 0;
+        }
         List<UploadItem> itemList = parseUploadItems(itemJson);
         List<PubFileRecord> oldList = getRecords(fileLink, fileKey);
         List<String> newIds = new ArrayList<>(itemList.size());
@@ -179,7 +182,8 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      */
     default int updateFileLink(String fileId, String fileLink, String fileKey, String fileCreator) {
         if (Utils.isEmpty(fileId) || Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
-            throw new IllegalArgumentException("必要参数(fileId,fileLink,fileKey)不可为空");
+//            throw new IllegalArgumentException("必要参数(fileId,fileLink,fileKey)不可为空");
+            return 0;
         }
         return updateFileLinks(Arrays.asList(fileId), fileLink, fileKey, fileCreator);
     }
