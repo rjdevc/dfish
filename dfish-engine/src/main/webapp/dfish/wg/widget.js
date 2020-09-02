@@ -7441,6 +7441,7 @@ Combobox = define.widget('combobox', {
 			this._initOptions(this._val());
 			this.queryText('');
 			this.save();
+			this.saveModified();
 			$.classRemove(this.$(), 'z-loading');
 			this.usa() && (this.$t().contentEditable = T);
 			this.$().title = this.text();
@@ -7963,6 +7964,7 @@ Linkbox = define.widget('linkbox', {
 				return;
 			this._initOptions(this._val());
 			this.save();
+			this.saveModified();
 			this.usa() && (this.$t().contentEditable = T);
 			this.$().title = this.text();
 			$.classRemove(this.$(), 'z-loading');
