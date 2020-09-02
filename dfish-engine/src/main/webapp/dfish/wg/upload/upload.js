@@ -1744,7 +1744,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.file && readImage(this.x.file, this.$('g'));
+				this.x.file && this.createThumbnail();
 			},
 			click:  function() {
 				if (this.x.data) {
@@ -1761,6 +1761,12 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 	Prototype: {
 		className: 'w-imageupload-value',
 		pubParent: function() {return this.u},
+		// 预览本地图片
+		createThumbnail: function() {
+			var r = new FileReader(), self = this;
+			r.onload = function(e) {self.$('g').src = e.target.result};
+			r.readAsDataURL(this.x.file);
+		},
 		upload: function() {
 			var d = new FormData(), f = this.x.file, u = this.u, r = $.ajaxXHR();
 			d.append('Filedata', f);
@@ -1897,6 +1903,22 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 	Extend: ImageUploadValue,
 	Prototype: {
 		className: 'w-videoupload-value',
+		// 本地视频生成预览图
+		createThumbnail: function() {
+			var video = document.createElement('video'), self = this;
+			video.addEventListener('loadeddata', function() {
+			    setTimeout(function() {
+			      var canvas = document.createElement('canvas');
+			      canvas.width = video.videoWidth;
+			      canvas.height = video.videoHeight;
+			      var ctx = canvas.getContext('2d');
+			      ctx.drawImage(video, 0, 0);
+			      self.$('g').src = canvas.toDataURL('image/png');
+			    }, 100);
+			});
+			video.src = URL.createObjectURL(this.x.file);
+			video.play();
+		},
 		html_cvr: function() {
 			return '<div class=_cvr>' + $.image('.f-i-play', {cls: '_play'}) + '</div>';
 		}
@@ -2016,14 +2038,6 @@ function swfOptions(x) {
 function getIco(url) {
 	return 'f-i-file-' + getSuffix(url);
 };
-// html5支持预览本地图片
-function readImage(file, img) {
-	if (window.FileReader) {
-		var r = new FileReader();
-		r.onload = function(e) {img.src = e.target.result};
-		r.readAsDataURL(file);
-	}
-}
 // 把 "1MB" 转为字节
 function fileByte(a) {
 	var b;

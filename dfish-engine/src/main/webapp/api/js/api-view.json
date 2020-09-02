@@ -249,7 +249,11 @@
 		        { "id": "Switch", "text": "Switch", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Text", "text": "Text", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Textarea", "text": "Textarea", "collapsedIcon": ".icon .icon-class" },
-		        { "id": "TripleBox", "text": "TripleBox", "collapsedIcon": ".icon .icon-class" }
+		        { "id": "TripleBox", "text": "TripleBox", "collapsedIcon": ".icon .icon-class" },
+		        { "id": "VideoUpload", "text": "VideoUpload", "collapsedIcon": ".icon .icon-class", "nodes": [
+		          { "id": "UploadButton", "text": "UploadButton", "collapsedIcon": ".icon .icon-class" },
+		          { "id": "UploadPost", "text": "UploadPost", "collapsedIcon": ".icon .icon-class" }
+		        ] }
 		      ] }
 		  	]
 		  },

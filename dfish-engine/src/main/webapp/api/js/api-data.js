@@ -5496,6 +5496,40 @@ define( {
       }
     ]
   },
+  "VideoUpload": {
+  	remark: '上传视频。',
+  	extend: 'ImageUpload',
+    Examples: [
+      { example: [
+          function() {
+            // 视频上传控件
+            return~
+            {
+                type: 'VideoUpload',
+                post: {type: 'UploadPost', src: 'upload.sp'},
+                pub: { width: 70, height: 70 },
+                uploadButtons: [
+                    {type: 'UploadButton', text: '上传照片'}
+                ],
+                value: [
+                    {id: '001', name: '001.mp4', thumbnail: 'images/001.jpg'}
+                ]
+            }
+          },
+          function() {
+          	// 上例中的 upload.sp 处理附件数据后返回的内容示例
+            return~
+            {
+                type: 'UploadPost',
+                result: {
+                    id: '002', name: 'test.mp4', thumbnail: 'images/002.jpg'
+                }
+            }
+          }
+        ]
+      }
+    ]
+  },  
   "UploadButton": {
   	remark: '上传按钮。FileUpload 和 ImageUpload 的专用按钮。',
   	extend: 'Button',
