@@ -405,18 +405,46 @@ define.template({
                 }
             },
             {
+                text: '上传组件',
+                focus: true,
+                target: {
+                    type: 'Form',
+                    nodes: [
+                        {
+                            type: 'FileUpload',
+                            label: {text: '文件上传'}
+                        },
+                        {
+                            type: 'FileUpload',
+                            label: {text: '上传按钮定制'},
+                            uploadButtons: [{type: 'UploadButton', text: '上传按钮支持定制哦'}],
+                            valueButtons: [
+                                {text: '预览', on: {click: '$.alert("这是预览");'}},
+                                {text: '下载', on: {click: '$.alert("这是下载");'}}
+                            ]
+                        },
+                        {
+                            type: 'ImageUpload',
+                            label: {text: '图片上传'}
+                        },
+                        {
+                            type: 'VideoUpload',
+                            label: {text: '视频上传'}
+                        }
+                    ]
+                }
+            },
+            {
                 text: 'FileUpload',
                 target: {
                     type: 'Form',
                     nodes: [
                         {
                             type: 'FileUpload',
-                            name: 'fileUpload1',
                             label: {text: '常用'}
                         },
                         {
                             type: 'FileUpload',
-                            name: 'fileUpload1',
                             label: {text: '定制效果'},
                             uploadButtons: [{type: 'UploadButton', text: '这里可以修改文字'}],
                             valueButtons: [
@@ -434,18 +462,19 @@ define.template({
                     nodes: [
                         {
                             type: 'ImageUpload',
-                            name: 'imageUpload1',
                             label: {text: '常用'}
-                        },
+                        }
+                    ]
+                }
+            },
+            {
+                text: 'VideoUpload',
+                target: {
+                    type: 'Form',
+                    nodes: [
                         {
-                            type: 'ImageUpload',
-                            name: 'imageUpload1',
-                            label: {text: '定制效果'},
-                            uploadButtons: [{type: 'UploadButton', text: '选择图片', width: 100, height: 100}],
-                            valueButtons: [
-                                {text: '下载', on: {click: '$.alert("这是下载");'}},
-                                {text: '预览', on: {click: '$.alert("这是预览");'}}
-                            ]
+                            type: 'VideoUpload',
+                            label: {text: '常用'}
                         }
                     ]
                 }

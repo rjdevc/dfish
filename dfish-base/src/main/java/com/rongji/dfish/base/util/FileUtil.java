@@ -567,6 +567,43 @@ public final class FileUtil {
         return isExist;
     }
 
+    /**
+     * 判断扩展名是否支持
+     *
+     * @param extName     拓展名(不管有没.都支持;即doc和.doc)
+     * @param acceptTypes 可接受的类型;格式如:*.doc;*.png;*.jpg;
+     * @return boolean 拓展名是否匹配
+     */
+    public static boolean accept(String extName, String acceptTypes) {
+        if (acceptTypes == null || "".equals(acceptTypes)) {
+            return true;
+        }
+        if (Utils.isEmpty(extName)) {
+            return false;
+        }
+        // 这里的extName是包含.
+        String[] accepts = acceptTypes.split("[,;]");
+//		extName=extName.toLowerCase();
+        // 类型是否含.
+        int extDot = extName.lastIndexOf(".");
+        // 统一去掉.
+        String realExtName = (extDot >= 0) ? extName.substring(extDot + 1) : extName;
+        for (String s : accepts) {
+            if (Utils.isEmpty(s)) {
+                continue;
+            }
+            int dotIndex = s.lastIndexOf(".");
+            if (dotIndex < 0) {
+                continue;
+            }
+            String acc = s.substring(dotIndex + 1);
+            if (acc.equalsIgnoreCase(realExtName)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
 //    private static void LogUtil.error(String log, Throwable t) {
 //        if (log == null) {
 //            log = "";
