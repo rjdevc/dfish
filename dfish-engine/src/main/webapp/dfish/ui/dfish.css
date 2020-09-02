@@ -997,7 +997,7 @@
 .w-imageupload-value ._more:hover .f-arw,.w-videoupload-value ._more:hover .f-arw{border-top-color:#fff}
 .w-imageupload-value ._cvr,.w-videoupload-value ._cvr{position:absolute;display:none;top:0;left:0;right:0;bottom:0;background:#777;color:#fff;opacity:.6;filter:Alpha(opacity=60)}
 .w-imageupload-value ._name,.w-videoupload-value ._name{display:none;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;padding:0 3px;height:20px;line-height:20px;color:#f00}
-.w-imageupload-value ._g,.w-videoupload-value ._g{vertical-align:middle;object-fit:cover;width:100%;height:100%;width:auto\0;height:auto\0;}
+.w-imageupload-value ._g,.w-videoupload-value ._g{vertical-align:middle;object-fit:cover;width:100%;height:100%;width:auto\0;height:auto\0}
 .w-imageupload-value ._loading,.w-videoupload-value ._loading{position:absolute;top:50%;left:50%;margin-top:-8px;margin-left:-8px;font-size:0}
 .w-imageupload-value.z-loading ._g,.w-videoupload-value.z-loading ._g{opacity:.35}
 .w-imageupload-value.z-err,.w-videoupload-value.z-err{border-color:#f00}

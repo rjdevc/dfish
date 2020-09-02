@@ -1331,7 +1331,7 @@ AbsUpload = define.widget('AbsUpload', {
 		},
 		upload_complete_handler: function(file) {
 			if (this.getQueueFile(0))
-				this.doUpload();
+				this.startUpload();
 			else
 				this.trigger('change');
 		},
