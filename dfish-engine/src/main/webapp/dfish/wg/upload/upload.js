@@ -1370,7 +1370,7 @@ Upload = define.widget('AjaxUpload', {
 		uploadError: function() {
 			return this.upload_error_handler.apply(this, arguments);
 		},
-		startUpload: function() {return
+		startUpload: function() {
 			for (var i = 0, ldr; i < this.valuebar.length; i ++) {
 				ldr = this.valuebar[i];
 				if (ldr.loading)
