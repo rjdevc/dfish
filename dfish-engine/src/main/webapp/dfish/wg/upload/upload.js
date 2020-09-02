@@ -1743,7 +1743,7 @@ define.widget( 'upload/image/value', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.file && readImage( this.x.file, this.$( 'g' ) );
+				this.x.file && this.createThumbnail();
 			},
 			click: {
 				occupy: true,
@@ -1763,6 +1763,12 @@ define.widget( 'upload/image/value', {
 	Prototype: {
 		ROOT_TYPE: 'upload/image',
 		className: 'w-upload-value-image',
+		// 预览本地图片
+		createThumbnail: function() {
+			var r = new FileReader(), self = this;
+			r.onload = function(e) {self.$('g').src = e.target.result};
+			r.readAsDataURL(this.x.file);
+		},
 		download: function() {
 			var s = this.u.x.downloadsrc;
 			s && $.download( this.formatStr( s, null, ! /^\$\w+$/.test( s ) ) );
@@ -1864,7 +1870,23 @@ define.widget( 'upload/video/value', {
 	Extend: 'upload/image/value',
 	Prototype: {
 		ROOT_TYPE: 'upload/video',
-		className: 'w-upload-value-video'
+		className: 'w-upload-value-video',
+		// 本地视频生成预览图
+		createThumbnail: function() {
+			var video = document.createElement('video'), self = this;
+			video.addEventListener('loadeddata', function() {
+			    setTimeout(function() {
+			      var canvas = document.createElement('canvas');
+			      canvas.width = video.videoWidth;
+			      canvas.height = video.videoHeight;
+			      var ctx = canvas.getContext('2d');
+			      ctx.drawImage(video, 0, 0);
+			      self.$('g').src = canvas.toDataURL('image/png');
+			    }, 150);
+			});
+			video.src = URL.createObjectURL(this.x.file);
+			video.play();
+		}
 	}
 } );
 
@@ -1979,14 +2001,6 @@ function swfOptions( x ) {
 function getIco( url ) {
 	return 'f-i-file-' + getSuffix( url );
 };
-// html5支持预览本地图片
-function readImage( file, img ) {
-	if ( window.FileReader ) {
-		var r = new FileReader();
-		r.onload = function( e ) { img.src = e.target.result };
-		r.readAsDataURL( file );
-	}
-}
 // 把 "1MB" 转为字节
 function fileByte( a ) {
 	var b;

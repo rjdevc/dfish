@@ -830,12 +830,12 @@
 .w-upload-value-image ._more:hover .f-arw,.w-upload-value-video ._more:hover .f-arw{border-top-color:#fff}
 .w-upload-value-image ._cvr{position:absolute;display:none;top:0;left:0;right:0;bottom:0;background:#777;opacity:.6;filter:Alpha(opacity=60)}
 .w-upload-value-image ._name,.w-upload-value-video ._name{display:none;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;padding:0 3px;height:20px;line-height:20px;color:#f00}
-.w-upload-value-image ._g,.w-upload-value-video ._g{vertical-align:middle}
-.w-upload-value-image ._loading,.w-upload-value-video ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;}
+.w-upload-value-image ._g,.w-upload-value-video ._g{vertical-align:middle;object-fit:cover;width:100%;height:100%;width:auto\0;height:auto\0}
+.w-upload-value-image ._loading,.w-upload-value-video ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px}
+.w-upload-value-image.z-loading ._g,.w-upload-value-video.z-loading ._g{opacity:.4}
 .w-upload-value-image.z-err,.w-upload-value-video.z-err{border-color:#f00}
 .w-upload-value-image.z-err ._name,.w-upload-value-image:hover ._more,.w-upload-value-image:hover ._close,.w-upload-value-image:hover ._cvr,
 .w-upload-value-video.z-err ._name,.w-upload-value-video:hover ._more,.w-upload-value-video:hover ._close{display:block}
-
 
 .w-upload-value-video ._cvr{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.35) url(g/playvideo.png) no-repeat center center;background-size:50%;}
 

@@ -5423,7 +5423,7 @@ Password = define.widget('password', {
 	Extend: Text,
 	Default: {tip: F},
 	Prototype: {
-		input_prop: function() {return AbsForm.prototype.input_prop.call(this) + (this.x.autocomplete === T ? '' : ' autocomplete="new-password"');}
+		input_prop: function() {return AbsForm.prototype.input_prop.call(this) + (this.x.autocomplete === T ? ' ' : ' autocomplete="new-password"');}
 	}
 }),
 /* `checkboxgroup` */
