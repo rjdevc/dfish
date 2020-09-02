@@ -1874,17 +1874,20 @@ define.widget( 'upload/video/value', {
 		// 本地视频生成预览图
 		createThumbnail: function() {
 			var video = document.createElement('video'), self = this;
-			video.addEventListener('loadeddata', function() {
+			video.addEventListener('loadedmetadata', function() {
+				video.pause();
 			    setTimeout(function() {
-			      var canvas = document.createElement('canvas');
-			      canvas.width = video.videoWidth;
-			      canvas.height = video.videoHeight;
-			      var ctx = canvas.getContext('2d');
-			      ctx.drawImage(video, 0, 0);
-			      self.$('g').src = canvas.toDataURL('image/png');
-			    }, 150);
+			    	if (!self.x.file) return;
+			    	var canvas = document.createElement('canvas');
+			    	canvas.width = video.videoWidth;
+			    	canvas.height = video.videoHeight;
+			    	var ctx = canvas.getContext('2d');
+			    	ctx.drawImage(video, 0, 0);
+			    	self.$('g').src = canvas.toDataURL('image/png');
+			    }, 100);
 			});
 			video.src = URL.createObjectURL(this.x.file);
+			video.muted = true;
 			video.play();
 		}
 	}
