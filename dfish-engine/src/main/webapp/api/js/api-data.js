@@ -5420,6 +5420,7 @@ define( {
       { name: 'dir', type: 'String', remark: '附件排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'download', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'fileTypes', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
+      { name: 'pub', type: 'Object', remark: '设置预览项和上传按钮的参数。' },
       { name: 'preview', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'maxFileSize', type: 'String', remark: '单个附件最大的文件大小。如 "50M"。' },
       { name: 'minFileSize', type: 'String', remark: '单个附件最小的文件大小。如 "1B"。' },
@@ -5465,6 +5466,9 @@ define( {
   "FileUpload": {
   	remark: '上传附件。',
   	extend: 'ImageUpload',
+    Config: [
+      { name: 'pub', type: 'Object', remark: '设置预览项的参数。' }
+    ],
   	deprecate: 'thumbnail',
     Examples: [
       { example: [

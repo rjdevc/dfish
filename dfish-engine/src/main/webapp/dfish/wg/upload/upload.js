@@ -1370,7 +1370,7 @@ Upload = define.widget('AjaxUpload', {
 		uploadError: function() {
 			return this.upload_error_handler.apply(this, arguments);
 		},
-		startUpload: function() {
+		startUpload: function() {return
 			for (var i = 0, ldr; i < this.valuebar.length; i ++) {
 				ldr = this.valuebar[i];
 				if (ldr.loading)
@@ -1632,7 +1632,7 @@ FileUploadButton = define.widget('FileUploadButton', {
 ImageUploadButton = define.widget('ImageUploadButton', {
 	Const: function(x, p) {
 		FileUploadButton.apply(this, arguments);
-		var b = this.u.x.pub || false, w = b.width || 80, h = b.height || 80, t = this.x.style || '';
+		var b = this.u.x.pub || false, w = x.width || b.width || 80, h = x.height || b.height || 80, t = this.x.style || '';
 		if (w || h) {
 			t += 'width:' + (w - (this.attr('widthMinus') || 0)) + 'px;height:' + (h - (this.attr('heightMinus') || 0)) + 'px;';
 			this.x.style = t;
@@ -1869,7 +1869,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 				! m && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
 			}
 			m = $.urlComplete(m);
-			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div>' + ($.br.ms ? $.image('%img%/loading.gif', {cls: '_loading f-va'}) : $.svgLoading(22, {cls: '_loading f-va'})) + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
+			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div>' + ($.br.ms ? $.image('%img%/loading.gif', {cls: '_loading f-va'}) : $.svgLoading(22, {cls: '_loading f-va', fill: '#ddd'})) + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
 				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : this.html_cvr()) + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
 		html: function() {
@@ -1906,6 +1906,7 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 		createThumbnail: function() {
 			var video = document.createElement('video'), self = this;
 			video.addEventListener('loadedmetadata', function() {
+				video.pause();
 			    setTimeout(function() {
 			    	if (!self.x.file) return;
 			    	var canvas = document.createElement('canvas');
@@ -1914,9 +1915,10 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 			    	var ctx = canvas.getContext('2d');
 			    	ctx.drawImage(video, 0, 0);
 			    	self.$('g').src = canvas.toDataURL('image/png');
-			    }, 150);
+			    }, 100);
 			});
 			video.src = URL.createObjectURL(this.x.file);
+			video.muted = true;
 			video.play();
 		},
 		html_cvr: function() {
