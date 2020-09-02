@@ -1,5 +1,7 @@
 package com.rongji.dfish.framework.plugin.file.dto;
 
+import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
+
 import java.io.Serializable;
 
 /**
@@ -24,6 +26,8 @@ public class UploadItem implements Serializable {
     private String width;
     private String height;
     private Number duration;
+
+    private PubFileRecord fileRecord;
     /**
      * 附件编号
      *
@@ -258,6 +262,9 @@ public class UploadItem implements Serializable {
         return this;
     }
 
+    /**
+     * 附件上传异常
+     */
     public static class Error {
         private String text;
 
@@ -274,4 +281,21 @@ public class UploadItem implements Serializable {
         }
     }
 
+    /**
+     * 附件记录
+     * @return PubFileRecord
+     */
+    public PubFileRecord getFileRecord() {
+        return fileRecord;
+    }
+
+    /**
+     * 附件记录
+     * @param fileRecord PubFileRecord
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public UploadItem setFileRecord(PubFileRecord fileRecord) {
+        this.fileRecord = fileRecord;
+        return this;
+    }
 }

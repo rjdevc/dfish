@@ -1,7 +1,5 @@
 package com.rongji.dfish.framework.plugin.lob.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -37,8 +35,6 @@ public class PubLob implements java.io.Serializable {
      * 编号
      * @return String
      */
-    @Id
-    @Column(name = "LOB_ID")
     public String getLobId() {
         return this.lobId;
     }
@@ -55,7 +51,6 @@ public class PubLob implements java.io.Serializable {
      * lob内容（二进制）
      * @return byte[]
      */
-    @Column(name = "LOB_DATA")
     public byte[] getLobData() {
         return lobData;
     }
@@ -89,7 +84,6 @@ public class PubLob implements java.io.Serializable {
      * 操作时间
      * @return Date
      */
-    @Column(name = "OPER_TIME")
     public Date getOperTime() {
         return this.operTime;
     }
@@ -106,7 +100,6 @@ public class PubLob implements java.io.Serializable {
      * 归档标识
      * @return 归档标识
      */
-    @Column(name = "ARCHIVE_FLAG")
     public String getArchiveFlag() {
         return this.archiveFlag;
     }
@@ -123,7 +116,6 @@ public class PubLob implements java.io.Serializable {
      * 归档时间
      * @return Date
      */
-    @Column(name = "ARCHIVE_TIME")
     public Date getArchiveTime() {
         return this.archiveTime;
     }

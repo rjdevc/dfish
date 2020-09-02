@@ -34,12 +34,14 @@
     </select>
 
     <insert id="save" parameterType="com.rongji.dfish.framework.plugin.file.entity.PubFileRecord">
-        INSERT INTO PUB_FILE_RECORD(FILE_ID,FILE_NAME,FILE_TYPE,FILE_URL,FILE_SIZE,FILE_CREATOR,CREATE_TIME,UPDATE_TIME,FILE_LINK,FILE_KEY,FILE_STATUS)
-        VALUES (#{fileId},#{fileName},#{fileType},#{fileUrl},#{fileSize},#{fileCreator},#{createTime},#{updateTime},#{fileLink},#{fileKey},#{fileStatus})
+        INSERT INTO PUB_FILE_RECORD(FILE_ID,FILE_NAME,FILE_URL,FILE_EXTENSION,FILE_TYPE,FILE_SIZE,FILE_CREATOR,CREATE_TIME,UPDATE_TIME,FILE_LINK,FILE_KEY,FILE_STATUS,FILE_DURATION,FILE_SCHEME)
+        VALUES (#{fileId},#{fileName},#{fileUrl},#{fileExtension},#{fileType},#{fileSize},#{fileCreator},#{createTime},#{updateTime},#{fileLink},#{fileKey},#{fileStatus},#{fileDuration},#{fileScheme})
     </insert>
 
     <update id="update" parameterType="com.rongji.dfish.framework.plugin.file.entity.PubFileRecord">
-        UPDATE PUB_FILE_RECORD t SET t.FILE_NAME=#{fileName},t.FILE_TYPE=#{fileType},t.FILE_URL=#{fileUrl},t.FILE_SIZE=#{fileSize},t.FILE_CREATOR=#{fileCreator},t.CREATE_TIME=#{createTime},t.UPDATE_TIME=#{updateTime},t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey},t.FILE_STATUS=#{fileStatus}
+        UPDATE PUB_FILE_RECORD t SET t.FILE_NAME=#{fileName},t.FILE_URL=#{fileUrl},t.FILE_EXTENSION=#{fileExtension},t.FILE_TYPE=#{fileType},t.FILE_SIZE=#{fileSize}
+        ,t.FILE_CREATOR=#{fileCreator},t.CREATE_TIME=#{createTime},t.UPDATE_TIME=#{updateTime},t.FILE_LINK=#{fileLink},t.FILE_KEY=#{fileKey}
+        ,t.FILE_STATUS=#{fileStatus},t.FILE_DURATION=#{fileDuration},t.FILE_SCHEME=#{fileScheme}
         WHERE t.FILE_ID=#{fileId}
     </update>
 

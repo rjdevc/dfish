@@ -4,11 +4,11 @@ import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.JsonUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
 
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -47,16 +47,19 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
     /**
      * 附件配置-文件类型
      */
-    String CONFIG_TYPES_FILE = "file.types.file";
+    String CONFIG_TYPES_PRE = "file.types.";
+    /**
+     * 附件配置-文件类型
+     */
+    String CONFIG_TYPE_FILE = "file";
     /**
      * 附件配置-图片类型
      */
-    String CONFIG_TYPES_IMAGE = "file.types.image";
+    String CONFIG_TYPE_IMAGE = "image";
     /**
      * 附件配置-視頻类型
      */
-    public static final String CONFIG_TYPES_VIDEO = "file.types.video";
-
+    String CONFIG_TYPE_VIDEO = "video";
 
     /**
      * 附件关联
@@ -81,13 +84,11 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * 保存文件以及文件记录
      *
      * @param input            文件输入流
-     * @param originalFileName 原始文件名
-     * @param fileSize         文件大小
-     * @param loginUserId      登录人员
+     * @param fileRecord  PubFileRecord保存的文件记录
      * @return UploadItem 上传数据项
      * @throws Exception 文件记录保存过程可能出现的业务异常
      */
-    UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception;
+    UploadItem saveFile(InputStream input, PubFileRecord fileRecord) throws Exception;
 
     /**
      * 文件存放目录
@@ -103,29 +104,32 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      */
     String getSizeLimit();
 
+    default String getFileTypes(String type, String defaultTypes) {
+        type = Utils.isEmpty(type) ? CONFIG_TYPE_FILE : type;
+        defaultTypes = Utils.isEmpty(defaultTypes) ? "*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;" : defaultTypes;
+        // 默认文件格式*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.zip;*.rar;*.jpg;*.gif;*.png;*.vsd;*.pot;*.pps;*.txt;*.rtf;*.pdf;*.epub;*.wps;*.et;*.dps
+        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_PRE + type, defaultTypes);
+    }
+
     /**
      * 文件上传支持的类型
      *
      * @return String
      */
-    String getFileTypes();
+    @Deprecated
+    default String getFileTypes() {
+        return getFileTypes(CONFIG_TYPE_FILE, null);
+    }
 
     /**
      * 图片上传支持的类型
      *
      * @return String
      */
-    String getImageTypes();
-
-    /**
-     * 视频上传支持的类型
-     *
-     * @return
-     */
-    public String getVideoTypes();
-//        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_VIDEO, "*.mp4;");
-
-
+    @Deprecated
+    default String getImageTypes() {
+        return getFileTypes(CONFIG_TYPE_IMAGE, "*.jpg;*.gif;*.png;");
+    }
 
 //    /**
 //     * 更新文件链接
@@ -308,7 +312,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @return File 附件
      */
     default File getFile(PubFileRecord fileRecord, String alias) {
-        return getFile(fileRecord, alias, null,true);
+        return getFile(fileRecord, alias, null);
     }
     /**
      * 根据文件记录获取文件
@@ -318,7 +322,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param extension  扩展名
      * @return File 附件
      */
-    default File getFile(PubFileRecord fileRecord, String extension, String alias) {
+    default File getFile(PubFileRecord fileRecord, String alias, String extension) {
         return getFile(fileRecord, alias, extension,true);
     }
 
@@ -330,7 +334,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fix2Original 文件找不到时使用原始文件
      * @return File 附件
      */
-    File getFile(PubFileRecord fileRecord, String alias, String extension,boolean fix2Original);
+    File getFile(PubFileRecord fileRecord, String alias, String extension, boolean fix2Original);
 
     /**
      * 获取附件大小
@@ -594,6 +598,10 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @return UploadItem 附件项
      */
     default UploadItem parseUploadItem(PubFileRecord fileRecord) {
+        return parseUploadItem(fileRecord, false);
+    }
+
+    default UploadItem parseUploadItem(PubFileRecord fileRecord, boolean remainRecord) {
         if (fileRecord == null) {
             return null;
         }
@@ -603,44 +611,10 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         item.setName(fileRecord.getFileName());
         item.setExtension(FileUtil.getExtension(fileRecord.getFileName()));
         item.setSize(fileRecord.getFileSize());
+        if (remainRecord) {
+            item.setFileRecord(fileRecord);
+        }
         return item;
-    }
-
-    /**
-     * 判断扩展名是否支持
-     *
-     * @param extName     拓展名(不管有没.都支持;即doc和.doc)
-     * @param acceptTypes 可接受的类型;格式如:*.doc;*.png;*.jpg;
-     * @return boolean 拓展名是否匹配
-     */
-    default boolean accept(String extName, String acceptTypes) {
-        if (acceptTypes == null || "".equals(acceptTypes)) {
-            return true;
-        }
-        if (Utils.isEmpty(extName)) {
-            return false;
-        }
-        // 这里的extName是包含.
-        String[] accepts = acceptTypes.split("[,;]");
-//		extName=extName.toLowerCase();
-        // 类型是否含.
-        int extDot = extName.lastIndexOf(".");
-        // 统一去掉.
-        String realExtName = (extDot >= 0) ? extName.substring(extDot + 1) : extName;
-        for (String s : accepts) {
-            if (Utils.isEmpty(s)) {
-                continue;
-            }
-            int dotIndex = s.lastIndexOf(".");
-            if (dotIndex < 0) {
-                continue;
-            }
-            String acc = s.substring(dotIndex + 1);
-            if (acc.equalsIgnoreCase(realExtName)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     /**

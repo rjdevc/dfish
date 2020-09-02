@@ -41,9 +41,9 @@ public class DemoController extends BaseActionController {
     @ResponseBody
     public Object submit(HttpServletRequest request) throws Exception {
         String fileJson = ServletUtil.getParameter(request, "fileJson");
-        fileService.updateFileLinks(fileJson, "FILE_TEST", "FILE01");
+        fileService.updateFileLinks(fileJson, "FILE_TEST", "FILE01", "DEMO_TEST");
         String imageJson = ServletUtil.getParameter(request, "imageJson");
-        fileService.updateFileLinks(imageJson, "IMAGE_TEST", "IMAGE01");
+        fileService.updateFileLinks(imageJson, "IMAGE_TEST", "IMAGE01", "DEMO_TEST");
         String lobContent = ServletUtil.getParameter(request, "lobContent");
         if (Utils.notEmpty(lobContent)) {
             lobService.saveContent(lobContent);

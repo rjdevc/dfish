@@ -50,19 +50,21 @@ public class FileUploadPlugin4Ueditor extends AbstractFileUploadPlugin {
             resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getError().getText() + "\"}";
         } else {
             String scheme = request.getParameter("scheme");
-            FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
+            String fileType = request.getParameter("fileType");
+            FileHandleScheme handlingScheme = fileHandleManager.getScheme(fileType, scheme);
             String fileUrl = null;
             if (handlingScheme != null) {
                 fileUrl = handlingScheme.getFileUrl();
             }
             if (Utils.isEmpty(fileUrl)) {
-                fileUrl = "file/thumbnail?fileId=$fileId";
+                fileUrl = "file/inline/$fileId.$extension";
             }
+            fileUrl = fileUrl.replaceAll("$fileId", uploadItem.getId()).replaceAll("$extension", uploadItem.getExtension());
             resultJson = "{\"state\":\"SUCCESS\"," +
-                    "\"url\":\""+fileUrl.replace("$fileId", uploadItem.getId())+"\"," +
+                    "\"url\":\""+fileUrl+"\"," +
                     "\"title\":\""+uploadItem.getName()+"\"," +
                     "\"original\":\""+uploadItem.getName()+"\"," +
-                    "\"type\":\""+FileUtil.getFileExtName(uploadItem.getName())+"\"," +
+                    "\"type\":\""+uploadItem.getExtension()+"\"," +
                     "\"size\":"+uploadItem.getSize()+"" +
                     "}";
         }

@@ -1,7 +1,19 @@
 package com.rongji.dfish.framework.plugin.file.config.img;
 
+import com.rongji.dfish.base.context.SystemContext;
+import com.rongji.dfish.base.img.ImageProcessConfig;
+import com.rongji.dfish.base.img.ImageProcessorGroup;
+import com.rongji.dfish.base.img.ImageWatermarkConfig;
+import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
+import com.rongji.dfish.framework.info.ServletInfo;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleScheme;
+import com.rongji.dfish.framework.plugin.file.dto.PreviewResponse;
+import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
+import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
+import com.rongji.dfish.framework.plugin.file.service.FileService;
 
+import java.io.File;
 import java.util.List;
 
 /**
@@ -10,6 +22,16 @@ import java.util.List;
  * @since DFish5.0
  */
 public class ImageHandleScheme extends FileHandleScheme {
+    @Override
+    public String fileType() {
+        return FileService.CONFIG_TYPE_IMAGE;
+    }
+
+    @Override
+    protected String defaultTypes() {
+        return getFileService().getFileTypes(FileService.CONFIG_TYPE_IMAGE, null);
+    }
+
     /**
      * 处理配置
      */
@@ -18,10 +40,6 @@ public class ImageHandleScheme extends FileHandleScheme {
      * 是否需要以原图大小压缩
      */
     private boolean handleZoomDefault;
-    /**
-     * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
-     */
-    private String defaultIcon;
 
     /**
      * 处理配置
@@ -56,20 +74,66 @@ public class ImageHandleScheme extends FileHandleScheme {
         this.handleZoomDefault = handleZoomDefault;
     }
 
-    /**
-     * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
-     * @return 默认图片
-     */
-    public String getDefaultIcon() {
-        return defaultIcon;
+    @Override
+    public UploadItem uploaded(UploadItem uploadItem) throws Exception {
+        if (uploadItem == null) {
+            return null;
+        }
+        PubFileRecord fileRecord = uploadItem.getFileRecord();
+        if (fileRecord == null) {
+            String errorMsg = "生成缩略图出现异常@" + System.currentTimeMillis();
+            LogUtil.warn(errorMsg + ":原记录文件存储记录丢失[" + uploadItem.getId() + "]");
+            return uploadItem.setError(new UploadItem.Error(errorMsg));
+        }
+
+        File imageFile = getFileService().getFile(fileRecord);
+        if (imageFile == null || !imageFile.exists()) {
+            String errorMsg = "生成缩略图出现异常@" + System.currentTimeMillis();
+            LogUtil.warn(errorMsg + ":原图丢失[" + uploadItem.getId() + "]");
+            return uploadItem.setError(new UploadItem.Error(errorMsg));
+        }
+        ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(imageFile).setDest(imageFile.getParentFile().getAbsolutePath())
+                .setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}");
+
+        // FIXME 默认图片和需要标记点图片放在位置不合理时,导致部分图片未能按标记点图片处理
+        if (isHandleZoomDefault()) {
+            String alias = ALIAS_DEFAULT;
+            imageProcessorGroup.process(-1, -1, ImageProcessConfig.WAY_ZOOM, alias, false);
+            uploadItem.setThumbnail("file/inline/" + alias + "/" + uploadItem.getId() + "." + uploadItem.getExtension());
+        }
+        List<ImageHandleConfig> handleConfigs = getHandleConfigs();
+        if (handleConfigs != null) {
+            for (ImageHandleConfig handleConfig : handleConfigs) {
+                if (handleConfig.getWatermark() != null) {
+                    fixWatermark(handleConfig.getWatermark());
+                }
+                imageProcessorGroup.process(handleConfig);
+            }
+        }
+        imageProcessorGroup.execute();
+        return super.uploaded(uploadItem);
     }
 
-    /**
-     * 默认图片(图片不存在时显示默认图片,暂没想到文件有什么类似需求,暂时以这个命名)
-     * @param defaultIcon 默认图片
-     */
-    public void setDefaultIcon(String defaultIcon) {
-        this.defaultIcon = defaultIcon;
+    private void fixWatermark(ImageWatermarkConfig watermark) {
+        if (Utils.notEmpty(watermark.getImagePath())) {
+            // FIXME 根据水印名称可能做缓存处理
+            String servletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
+            watermark.setImageFile(new File(servletPath + watermark.getImagePath()));
+        }
     }
 
+    @Override
+    public PreviewResponse getPreviewResponse(String encryptedId, String alias, String fileExtension) {
+        PreviewResponse response = new PreviewResponse();
+        response.setWay(PreviewResponse.WAY_PREVIEW_IMAGE);
+        response.setUrl("file/inline/" + (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + encryptedId + "." + fileExtension);
+        return response;
+    }
+
+    @Override
+    public void fixUploadItem(UploadItem uploadItem) {
+        if (isHandleZoomDefault()) {
+            uploadItem.setThumbnail("file/inline/" + uploadItem.getId() + "." + uploadItem.getExtension());
+        }
+    }
 }

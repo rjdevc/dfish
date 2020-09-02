@@ -10,11 +10,14 @@
         <property name="fileName" type="java.lang.String">
             <column name="FILE_NAME"></column>
         </property>
-        <property name="fileType" type="java.lang.String">
-            <column name="FILE_TYPE"></column>
-        </property>
         <property name="fileUrl" type="java.lang.String">
             <column name="FILE_URL"></column>
+        </property>
+        <property name="fileExtension" type="java.lang.String">
+            <column name="FILE_EXTENSION"></column>
+        </property>
+        <property name="fileType" type="java.lang.String">
+            <column name="FILE_TYPE"></column>
         </property>
         <property name="fileSize" type="java.lang.Long">
             <column name="FILE_SIZE"></column>
@@ -36,6 +39,12 @@
         </property>
         <property name="fileStatus" type="java.lang.String">
             <column name="FILE_STATUS"></column>
+        </property>
+        <property name="fileDuration" type="java.lang.Integer">
+            <column name="FILE_DURATION"></column>
+        </property>
+        <property name="fileScheme" type="java.lang.String">
+            <column name="FILE_SCHEME"></column>
         </property>
     </class>
 </hibernate-mapping>

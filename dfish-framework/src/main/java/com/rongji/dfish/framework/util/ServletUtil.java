@@ -414,7 +414,7 @@ public class ServletUtil {
      * @return
      */
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
-                                          DownloadResource downloadResource, boolean inline)throws IOException{
+                                          DownloadResource downloadResource, boolean inline) throws IOException {
         //处理缓存。如果已经缓存了。则无需下载，直接返回HttpServletResponse.SC_NOT_MODIFIED
         DownloadStatus status=new DownloadStatus();
         status.setContentLength(downloadResource.getLength());

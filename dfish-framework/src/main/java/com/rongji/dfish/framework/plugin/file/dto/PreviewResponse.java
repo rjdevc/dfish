@@ -9,28 +9,32 @@ public class PreviewResponse {
     /**
      * 预览方式-文件下载
      */
-    public static final int WAY_DOWNLOAD = 0;
+    public static final String WAY_PREVIEW_DOWNLOAD = "download";
     /**
      * 预览方式-内联方式
      */
-    public static final int WAY_INLINE = 1;
+    public static final String WAY_PREVIEW_INLINE = "inline";
     /**
      * 预览方式-图片预览
      */
-    public static final int WAY_PREVIEW_IMAGE = 2;
+    public static final String WAY_PREVIEW_IMAGE = "image";
+    /**
+     * 预览方式-视频预览
+     */
+    public static final String WAY_PREVIEW_VIDEO = "video";
     /**
      * 预览方式-文档预览
      */
-    public static final int WAY_PREVIEW_DOCUMENT = 3;
+    public static final String WAY_PREVIEW_DOCUMENT = "document";
 
-    private int way = WAY_DOWNLOAD;
+    private String way = WAY_PREVIEW_DOWNLOAD;
     private String url;
 
     /**
      * 预览方式,目前
      * @return int 预览方式
      */
-    public int getWay() {
+    public String getWay() {
         return way;
     }
 
@@ -39,7 +43,7 @@ public class PreviewResponse {
      * @param way 预览方式
      * @return 本身，这样可以继续设置其他属性
      */
-    public PreviewResponse setWay(int way) {
+    public PreviewResponse setWay(String way) {
         this.way = way;
         return this;
     }

@@ -42,6 +42,8 @@
     <!-- 附件模块 -->
     <bean id="fileService" class="com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl"></bean>
     <bean id="fileHandleManager" class="com.rongji.dfish.framework.plugin.file.config.FileHandleManager"></bean>
+    <!-- 滑动验证码图片生成 -->
+    <bean id="jigsawGenerator" class="com.rongji.dfish.framework.plugin.code.PreparedJigsawGenerator"></bean>
 
     <!-- 图片水印 -->
     <bean id="watermark" class="com.rongji.dfish.base.img.ImageWatermarkConfig">
@@ -81,15 +83,18 @@
         <property name="height" value="20"></property>
     </bean>
 
-    <bean id="abstractScheme" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleScheme">
+    <bean id="abstractImageScheme" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleScheme">
         <property name="handleTypes" value="${icon.types}"></property>
         <property name="handleZoomDefault" value="true"></property>
     </bean>
 
+    <bean parent="abstractImageScheme">
+        <property name="name" value="DEFAULT"></property>
+    </bean>
+
     <!-- 人员头像缩放方案 -->
-    <bean parent="abstractScheme">
+    <bean parent="abstractImageScheme">
         <property name="name" value="USER_ICON"></property>
-        <property name="defaultIcon" value="icon_user.png"></property>
         <property name="handleConfigs">
             <list>
                 <ref bean="image100x100"></ref>
@@ -99,6 +104,14 @@
                 <ref bean="image20x20"></ref>
             </list>
         </property>
+    </bean>
+
+    <bean id="abstractVideoScheme" class="com.rongji.dfish.framework.plugin.file.config.video.VideoHandleScheme">
+        <property name="handleTypes" value="${video.types}"/>
+    </bean>
+
+    <bean parent="abstractVideoScheme">
+        <property name="name" value="DEFAULT"></property>
     </bean>
 
     <!-- 进度条模块 -->
