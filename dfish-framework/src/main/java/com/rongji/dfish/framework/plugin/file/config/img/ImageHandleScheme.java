@@ -97,7 +97,9 @@ public class ImageHandleScheme extends FileHandleScheme {
 
         // FIXME 默认图片和需要标记点图片放在位置不合理时,导致部分图片未能按标记点图片处理
         if (isHandleZoomDefault()) {
-            imageProcessorGroup.process(-1, -1, ImageProcessConfig.WAY_ZOOM, ALIAS_DEFAULT, false);
+            String alias = ALIAS_DEFAULT;
+            imageProcessorGroup.process(-1, -1, ImageProcessConfig.WAY_ZOOM, alias, false);
+            uploadItem.setThumbnail("file/inline/" + alias + "/" + uploadItem.getId() + "." + uploadItem.getExtension());
         }
         List<ImageHandleConfig> handleConfigs = getHandleConfigs();
         if (handleConfigs != null) {

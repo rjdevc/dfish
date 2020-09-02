@@ -65,7 +65,6 @@ define.template({
             },
             {
                 text: '表单类',
-                focus: true,
                 target: {
                     type: 'View',
                     template: 'demo/form'

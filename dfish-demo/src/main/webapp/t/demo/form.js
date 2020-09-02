@@ -121,7 +121,7 @@ define.template({
                         },
                         {
                             type: 'RadioGroup', label: {text: '指定目标'},
-                            pub: {name:'radio3'},
+                            pub: {name: 'radio3'},
                             nodes: [
                                 {text: 'String', value: 'S', checked: true, target: {type: 'Text', label: '字符'}},
                                 {text: 'Boolean', value: 'B', target: {type: 'Textarea', label: '布尔'}}
@@ -173,7 +173,7 @@ define.template({
                         },
                         {
                             type: 'RadioGroup', label: {text: '指定目标'},
-                            pub: {name:'checkBox3'},
+                            pub: {name: 'checkBox3'},
                             nodes: [
                                 {text: 'String', value: 'S', checked: true, target: {type: 'Text', label: '字符'}},
                                 {text: 'Boolean', value: 'B', target: {type: 'Textarea', label: '布尔'}}
@@ -406,7 +406,6 @@ define.template({
             },
             {
                 text: '上传组件',
-                focus: true,
                 target: {
                     type: 'Form',
                     nodes: [
@@ -445,8 +444,8 @@ define.template({
                         },
                         {
                             type: 'FileUpload',
-                            label: {text: '定制效果'},
-                            uploadButtons: [{type: 'UploadButton', text: '这里可以修改文字'}],
+                            label: {text: '上传按钮定制'},
+                            uploadButtons: [{type: 'UploadButton', text: '上传按钮支持定制哦'}],
                             valueButtons: [
                                 {text: '预览', on: {click: '$.alert("这是预览");'}},
                                 {text: '下载', on: {click: '$.alert("这是下载");'}}
@@ -463,6 +462,12 @@ define.template({
                         {
                             type: 'ImageUpload',
                             label: {text: '常用'}
+                        },
+                        {
+                            type: 'ImageUpload',
+                            label: {text: '上传按钮定制'},
+                            pub: {width: 100, height: 100},
+                            uploadButtons: [{type: 'UploadButton', text: '选择图片'}]
                         }
                     ]
                 }
@@ -475,6 +480,12 @@ define.template({
                         {
                             type: 'VideoUpload',
                             label: {text: '常用'}
+                        },
+                        {
+                            type: 'VideoUpload',
+                            label: {text: '上传按钮定制'},
+                            pub: {width: 100, height: 100},
+                            uploadButtons: [{type: 'UploadButton', text: '选择视频'}]
                         }
                     ]
                 }

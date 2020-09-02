@@ -99,7 +99,7 @@ dfish.config({
             data: {'scheme': 'DEFAULT'},
             post: {type: 'UploadPost', src: 'file/upload/image?scheme=$scheme', template: 'g/upload/post'},
             download: 'file/download/${id}.${extension}',
-            thumbnail: 'file/inline/$scheme/${id}.${extension}',
+            thumbnail: 'file/inline/${id}.${extension}',
             preview: {type: 'JS', text: '$.previewImage("file/inline/"+$id+"."+$extension);'},
             fileTypes: '*.png;*.jpg;*.jpeg;',
             uploadButtons: [{type: 'UploadButton', icon: '.f-i-upload-image'}]
