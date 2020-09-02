@@ -1788,7 +1788,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 		},
 		download: function() {
 			var s = this.u.x.download;
-			s && $.download(this.formatStr(s, null, ! /^\$\w+$/.test(s)));
+			s && $.download(this.formatStr(s, null, true));
 		},
 		preview: function(a) {
 			if (! this.x.data)
@@ -1820,8 +1820,8 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			this.x.data = serverData;
 			this.u.addValue(serverData);
 			this.removeClass('z-loading');
-			Q('._loading,._progress', this.$()).remove();
-			isSWF && this.render();
+			//Q('._loading,._progress', this.$()).remove();
+			this.render();
 		},
 		setError: function(errorCode, message) {
 			this.loading = false;
@@ -1867,7 +1867,6 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			if (! f) {
 				m = v.thumbnail;
 				! m && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
-				! m && (m = v.url);
 			}
 			m = $.urlComplete(m);
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div>' + ($.br.ms ? $.image('%img%/loading.gif', {cls: '_loading f-va'}) : $.svgLoading(22, {cls: '_loading f-va'})) + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
@@ -1906,15 +1905,16 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 		// 本地视频生成预览图
 		createThumbnail: function() {
 			var video = document.createElement('video'), self = this;
-			video.addEventListener('loadeddata', function() {
+			video.addEventListener('loadedmetadata', function() {
 			    setTimeout(function() {
-			      var canvas = document.createElement('canvas');
-			      canvas.width = video.videoWidth;
-			      canvas.height = video.videoHeight;
-			      var ctx = canvas.getContext('2d');
-			      ctx.drawImage(video, 0, 0);
-			      self.$('g').src = canvas.toDataURL('image/png');
-			    }, 100);
+			    	if (!self.x.file) return;
+			    	var canvas = document.createElement('canvas');
+			    	canvas.width = video.videoWidth;
+			    	canvas.height = video.videoHeight;
+			    	var ctx = canvas.getContext('2d');
+			    	ctx.drawImage(video, 0, 0);
+			    	self.$('g').src = canvas.toDataURL('image/png');
+			    }, 150);
 			});
 			video.src = URL.createObjectURL(this.x.file);
 			video.play();
