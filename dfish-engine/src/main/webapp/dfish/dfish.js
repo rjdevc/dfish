@@ -2257,18 +2257,24 @@ _merge($, {
 	})(),
 	// @a -> preview src
 	previewVideo: function(a) {
-		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);
-		$.vm().cmd({ type: 'dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
-			node: { type: 'flowplayer', width: '*', height: '*', style: 'margin:0 20px', wmin: 40, src: a, aftercontent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } });
+		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100), rc;
+		var d = $.vm().cmd({type: 'dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
+			node: {type: 'flowplayer', width: '*', height: '*', style: 'margin:0 20px', wmin: 40, src: a, aftercontent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'},
+			on: {close: '$.vm().removeEvent("resize.previewVideo")'}
+		});
+		$.vm().addEvent('resize.previewVideo', rc = function() {d.resize(Math.max(600, $.width() - 100), Math.max(400, $.height() - 100));d.axis()});
 	},
 	// @a -> preview src, b -> download src
 	previewImage: function(a, b) {
-		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);
-		$.vm().cmd({ type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
+		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100), rc;
+		var d = $.vm().cmd({ type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
 			node: { type: 'html', align: 'center', valign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
-				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' } });
+				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' },
+			on: {close: '$.vm().removeEvent("resize.previewImage")'}
+		});
+		$.vm().addEvent('resize.previewVideo', rc = function() {d.resize(Math.max(600, $.width() - 100), Math.max(400, $.height() - 100));d.axis()});
 	},
 	// @a -> preview src
 	previewImageRotate: function(a) {

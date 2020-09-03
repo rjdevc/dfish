@@ -1353,7 +1353,7 @@ Upload = UploadAjax = define.widget( 'upload/base/ajax', {
 		uploadError: function() {
 			return this.upload_error_handler.apply( this, arguments );
 		},
-		startUpload: function() {
+		startUpload: function() {return
 			for ( var i = 0, ldr; i < this.valuebar.length; i ++ ) {
 				ldr = this.valuebar[ i ];
 				if ( ldr.loading )
@@ -1778,7 +1778,13 @@ define.widget( 'upload/image/value', {
 			v && this.cmd( { type: 'ajax', src: this.formatStr( v, null, ! /^\$\w+$/.test( v ) ) } );
 		},
 		setProgress: function( a ) {
-			this.$( 'p' ).style.left = a + '%';
+			if (a < 50) {
+				this.$('p-r').style.transform = 'rotate(' + (180 * a / 50) + 'deg)';
+			} else {
+				this.$('p').classList.add('z-2');
+				this.$('p-r').style.transform = '';
+				this.$('p-l').style.transform = 'rotate(' + (180 * (a - 50) / 50) + 'deg)';
+			}
 		},
 		//@serverData -> 成功返回: { id: 'ID', name: '名称', size: '字节数', url: '地址', thumbnail: '缩略图地址' }, 失败返回: { error: true, text: '失败原因' }
 		setSuccess: function( serverData ) {
@@ -1828,16 +1834,19 @@ define.widget( 'upload/image/value', {
 		html_cvr: function() {
 			return (this.x.file ? '<div class="_ex f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' : '') + '<div class=_cvr onclick=' + $.abbr + '.all["' + this.id + '"].click()></div>';
 		},
+		html_loading: function() {
+			return '<div id=' + this.id + 'p class=f-circle-progress><div id=' + this.id + 'p-l class=_l></div><div id=' + this.id + 'p-r class=_r></div></div>'
+		},
 		html_nodes: function() {
 			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnailsrc,
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
 			if ( ! f ) {
 				m = v.thumbnail;
 				! m && (m = c && this.formatStr( c, null, ! /^\$\w+$/.test( c ) ));
-				! m && (m = v.url);
+				! m && (m = this._thumbnail);
 			}
-			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div><img class=_loading src=' + $.IMGPATH + 'loading.gif><div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
-				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valuebutton ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.arrow( 'b2' ) + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
+			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '>' + this.html_loading() + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
+				(m ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>' : '')) + (f ? '' : '<div class=_cvr></div>') + (!f && u.x.valuebutton ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.arrow( 'b2' ) + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
 		html: function() {
 			this.x.file && this.addClass( 'z-loading' );
@@ -1874,8 +1883,7 @@ define.widget( 'upload/video/value', {
 		// 本地视频生成预览图
 		createThumbnail: function() {
 			var video = document.createElement('video'), self = this;
-			video.addEventListener('loadedmetadata', function() {
-				video.pause();
+			video.addEventListener('loadeddata', function() {
 			    setTimeout(function() {
 			    	if (!self.x.file) return;
 			    	var canvas = document.createElement('canvas');
@@ -1883,7 +1891,9 @@ define.widget( 'upload/video/value', {
 			    	canvas.height = video.videoHeight;
 			    	var ctx = canvas.getContext('2d');
 			    	ctx.drawImage(video, 0, 0);
-			    	self.$('g').src = canvas.toDataURL('image/png');
+			    	self.$('g').src = self._thumbnail = canvas.toDataURL('image/png');
+					video.pause();
+					Q(video).remove();
 			    }, 100);
 			});
 			video.src = URL.createObjectURL(this.x.file);

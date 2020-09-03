@@ -110,6 +110,9 @@ define.widget( 'carousel', {
 						a.height = bh; a.removeAttribute('width');
 					}
 				}
+				if (!$.br.css3) {
+					Q(a).css({marginLeft: -a.width / 2, marginTop: -a.height / 2});
+				}
 			}
 		},
 		play: function() {

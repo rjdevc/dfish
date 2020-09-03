@@ -5942,10 +5942,11 @@ CalendarNum = define.widget('calendar/num', {
 				occupy: T,
 				method: function() {
 					if (!this.isDisabled()) {
-						var p = this.parentNode, d = $.dateParse(this.val(), 'yyyy-mm-dd');
-						p.date.setFullYear(d.getFullYear());
-						p.date.setMonth(d.getMonth());
-						p.date.setDate(d.getDate());
+						var p = this.parentNode, d = $.dateParse(this.val(), 'yyyy-mm-dd');;
+						d.setHours(p.date.getHours());
+						d.setMinutes(p.date.getMinutes());
+						d.setSeconds(p.date.getSeconds());
+						p.date = d;
 						! this._disposed && this.x.focusable && this.trigger('focus');
 						if (p.x.callback) {
 							this.x.focusable && this.trigger('focus');
@@ -8649,6 +8650,13 @@ TreeCombo = $.createClass({
 		}
 	}
 }),
+_reloadFocusCallack = function(a, b) {
+	var r = a.rootNode || a, f = r.getFocus();
+	return function() {
+		f && f.x.id && !r.getFocus() && (f = this.ownerView.find(f.x.id)) && f.focus();
+		b && b.call(a);
+	}
+},
 /* `absleaf` */
 AbsLeaf = define.widget('abs/leaf', {
 	Listener: {
@@ -8842,8 +8850,10 @@ AbsLeaf = define.widget('abs/leaf', {
 		},
 		// 深度展开。leaf需要有id进行对比  /@a -> src, b -> sync?, c -> fn
 		openTo: function(a, b, c) {
-			var f = (this.rootNode || this).getFocus();
 			typeof b === _FUN && (c = b, b = N);
+			this.loading = T;
+			this.loaded = F;
+			var f = (this.rootNode || this).getFocus();
 			this.exec({type: 'ajax', src: a, sync: b,
 				success: function(x) {
 					if (this.x.template) {
@@ -8862,37 +8872,42 @@ AbsLeaf = define.widget('abs/leaf', {
 					c && c.call(this);
 				}});
 		},
-		// @a -> sync?
-		reload: function(a) {
-			if (! this.loading && this.x.src) {
+		// @a -> sync, b -> fn?
+		reload: function(a, b) {
+			typeof b === _FUN && (b = a, a = N);
+			if (!this.loading && this.x.src) {
 				this.toggle(F);
 				$.ajaxAbort(this);
-				var d = this.focusNode && this.focusNode.id, i = this.length;
+				var c = _reloadFocusCallack(this, b), i = this.length;
 				while(i --) this[i].remove();
 				this.css('o', 'visibility', '');
 				this.loaded = this.loading = F;
-				this.toggle(T, a, function() {d && (d = this.ownerView.find(d)) && d.focus()});
+				this.toggle(T, c);
 			}
 			return this;
 		},
-		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync?, b -> fn?
+		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync, b -> fn?
 		reloadForAdd: function(a, b) {
+			typeof b === _FUN && (b = a, a = N);
 			if (this._disposed || this.loading)
 				return;
-			if (this.x.src) {
-				this.openTo(this.x.src, a, b);
+			var u = this.x.src, c = _reloadFocusCallack(this, b);
+			if (u) {
+				this.openTo(u, c);
 			} else {
-				this.reloadForModify(a, function() {this.x.src && this.toggle(T, b)});
+				this.reloadForModify(a, function() {u && this.toggle(T, c)});
 			}
 		},
-		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync?, b -> fn?
+		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync, b -> fn?
 		reloadForModify: function(a, b) {
+			typeof b === _FUN && (b = a, a = N);
 			if (this._disposed)
 				return;
 			if (this.loading)
 				$.ajaxAbort(this);
-			if (this.parentNode.x.src && ! this.parentNode.loading)
-				this.parentNode.openTo(this.parentNode.x.src, a, b);
+			var u = this.parentNode.x.src;
+			if (u && !this.parentNode.loading)
+				this.parentNode.openTo(u, _reloadFocusCallack(this, b));
 		},
 		draggable: function(a) {
 			for (var i = 0, b = this.getDescendants(), l = b.length; i < l; i ++) {
