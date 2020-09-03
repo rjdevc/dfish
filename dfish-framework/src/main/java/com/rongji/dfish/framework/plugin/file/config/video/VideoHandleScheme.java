@@ -65,6 +65,7 @@ public class VideoHandleScheme extends FileHandleScheme {
         if (uploadItem == null) {
             return null;
         }
+        // FIXME 截取封面可能需要大量时间,有可能后续要用后台线程进行截取
         grabVideoFramer(uploadItem);
 
         return super.uploaded(uploadItem);
@@ -80,8 +81,7 @@ public class VideoHandleScheme extends FileHandleScheme {
         if (uploadItem == null) {
             return;
         }
-        String fileId = getFileService().decrypt(uploadItem.getId());
-        PubFileRecord fileRecord = getFileService().get(fileId);
+        PubFileRecord fileRecord = uploadItem.getFileRecord();
         if (fileRecord == null) {
             return;
         }
@@ -105,7 +105,7 @@ public class VideoHandleScheme extends FileHandleScheme {
                 if (frameIndex == getPosterPosition()) {
                     Frame frame = fFmpegFrameGrabber.grabImage();
                     if (frame != null) {
-                        String saveFileName = fileId + "_" + getPosterAlias() + "." + getPosterExtension();
+                        String saveFileName = fileRecord.getFileId() + "_" + getPosterAlias() + "." + getPosterExtension();
                         //文件绝对路径+名字
                         String fileName = getFileService().getFileDir(fileRecord) + saveFileName;
 

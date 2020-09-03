@@ -106,7 +106,7 @@
         </property>
     </bean>
 
-    <bean id="abstractVideoScheme" class="com.rongji.dfish.framework.plugin.file.config.video.VideoHandleScheme">
+    <bean id="abstractVideoScheme" abstract="true" class="com.rongji.dfish.framework.plugin.file.config.video.VideoHandleScheme">
         <property name="handleTypes" value="${video.types}"/>
     </bean>
 

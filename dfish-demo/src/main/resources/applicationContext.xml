@@ -9,7 +9,7 @@
 
     <!-- 加密提供 -->
     <bean id="cryptor" class="com.rongji.dfish.framework.config.CryptorFactoryBean">
-        <property name="secretKey" value="DFish@RJ002474"></property>
+        <property name="secretKey" value="${crypt.key}"></property>
     </bean>
 
     <!-- 默认属性加密器 -->

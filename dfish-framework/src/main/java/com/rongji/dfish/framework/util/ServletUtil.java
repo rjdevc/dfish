@@ -558,11 +558,12 @@ public class ServletUtil {
 
         } catch (IOException e) {
             if(e.getClass().getSimpleName().equals("ClientAbortException")){
-                String msg="client abort when download "+request.getRequestURI() +" name="+downloadResource.getName();
-                if(range!=null){
-                    msg+=" range="+range;
-                }
-                LogUtil.info(msg);
+                // 日志暂时不输出,这个日志也没什么意思
+//                String msg="client abort when download "+request.getRequestURI() +" name="+downloadResource.getName();
+//                if(range!=null){
+//                    msg+=" range="+range;
+//                }
+//                LogUtil.info(msg);
             }else {
                 LogUtil.error("download error", e);
             }

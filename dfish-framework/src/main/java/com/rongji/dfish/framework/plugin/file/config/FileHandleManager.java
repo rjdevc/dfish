@@ -35,7 +35,7 @@ public class FileHandleManager {
             return;
         }
         if (Utils.isEmpty(handleScheme.getName())) {
-            LogUtil.warn("The name is empty.[" + handleScheme.getClass().getName() + "]");
+            LogUtil.warn("The scheme name is empty.[" + handleScheme.getClass().getName() + "]");
         }
         Map<String, FileHandleScheme> fileHandleSchemes = fileHandleSchemeMap.get(handleScheme.fileType());
         if (fileHandleSchemes == null) {

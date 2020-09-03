@@ -38,8 +38,7 @@
     <!-- 附件模块 -->
     <bean id="fileDao" class="org.mybatis.spring.mapper.MapperFactoryBean">
         <property name="sqlSessionFactory" ref="sessionFactory"/>
-        <property name="mapperInterface"
-                  value="com.rongji.dfish.framework.mybatis.plugin.file.dao.impl.FileDao4Mybatis"/>
+        <property name="mapperInterface" value="com.rongji.dfish.framework.mybatis.plugin.file.dao.impl.FileDao4Mybatis"/>
     </bean>
 
 </beans>

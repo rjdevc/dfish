@@ -337,9 +337,9 @@ public class FileController extends BaseActionController {
      * @return
      * @throws Exception
      */
-    @RequestMapping("/uploadx/{plugin}")
+    @RequestMapping("/upload/plugin/{plugin}")
     @ResponseBody
-    public Object uploadx(HttpServletRequest request, @PathVariable String plugin) throws Exception {
+    public Object uploadPlugin(HttpServletRequest request, @PathVariable String plugin) throws Exception {
         // 取得附件上传插件,根据插件对应的上传方法进行附件上传处理
         FileUploadPlugin uploadPlugin = uploadPluginMap.get(plugin);
         if (uploadPlugin == null) {

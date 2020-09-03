@@ -111,9 +111,9 @@ public class FileHandleScheme {
     }
 
     public UploadItem uploaded(UploadItem uploadItem) throws Exception {
-        PubFileRecord fileRecord = uploadItem.getFileRecord();
-        fileRecord.setFileType(fileType());
-        fileRecord.setFileScheme(getName());
+//        PubFileRecord fileRecord = uploadItem.getFileRecord();
+//        fileRecord.setFileType(fileType());
+//        fileRecord.setFileScheme(getName());
         return uploadItem;
     }
 
