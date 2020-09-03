@@ -29,6 +29,7 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -590,16 +591,18 @@ public class FileController extends BaseActionController {
                         try {
                             return fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
                         } catch (Exception e) {
-                            e.printStackTrace();
+                            LogUtil.error("文件下载,获取文件流异常", e);
                         }
                         return null;
                     });
 
             return ServletUtil.download(request, response, resource, downloadParam.isInline());
         } catch (Exception e) {
-            String error = "下载附件异常@" + System.currentTimeMillis();
-            LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+            if (!"ClientAbortException".equals(e.getClass().getSimpleName())) {
+                String error = "下载附件异常@" + System.currentTimeMillis();
+                LogUtil.error(error + "[" + fileRecord.getFileId() + "]", e);
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
+            }
         }
         return null;
     }
@@ -696,7 +699,7 @@ public class FileController extends BaseActionController {
         // 目前文件下载统一默认都是原件下载
         downloadParam.setInline(true).setEncryptedFileId(fileId);
 
-        DownloadStatus ds = downloadFileData(request, response, fileRecord, downloadParam);
+       downloadFileData(request, response, fileRecord, downloadParam);
 //        boolean success = false;
 //        if (ds != null) {
 //            long checkPoint = ds.getResourceLength() * 3 / 4;

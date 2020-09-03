@@ -83,7 +83,7 @@
         <property name="height" value="20"></property>
     </bean>
 
-    <bean id="abstractImageScheme" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleScheme">
+    <bean id="abstractImageScheme" abstract="true" class="com.rongji.dfish.framework.plugin.file.config.img.ImageHandleScheme">
         <property name="handleTypes" value="${icon.types}"></property>
         <property name="handleZoomDefault" value="true"></property>
     </bean>

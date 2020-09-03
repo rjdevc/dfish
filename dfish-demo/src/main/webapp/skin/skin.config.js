@@ -5,7 +5,7 @@ dfish.config({
         // 颜色
         color: 'blue'
     },
-    default_option: {
+    defaultOptions: {
         'Section.x-split-side': {widthMinus: 30, heightMinus: 20},
         'Horizontal.x-main-head': {heightMinus: 1},
         'Vertical.x-main-nav': {widthMinus: 1, width: 300},
@@ -38,6 +38,9 @@ dfish.config({
         'Form.x-main-search': {pub: {colSpan: 4, labelWidth: 100}},
         'Form.x-split-side': {widthMinus: 30, heightMinus: 20},
 
-        'Switch': {checkedText: '是', uncheckedText: '否'}
+        'Switch': {checkedText: '是', uncheckedText: '否'},
+        'VideoUpload': {
+            maxFileSize: '500M'
+        }
     }
 });

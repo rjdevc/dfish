@@ -101,23 +101,24 @@ public class VideoHandleScheme extends FileHandleScheme {
             // 帧下标
             int frameIndex = 0;
             while (frameIndex++ <= frameLength) {
-                Frame frame = fFmpegFrameGrabber.grabImage();
                 // 对目标帧进行处理
-                if (frame != null && frameIndex == getPosterPosition()) {
-                    String saveFileName = fileId + "_" + getPosterAlias() + "." + getPosterExtension();
-                    //文件绝对路径+名字
-                    String fileName = getFileService().getFileDir(fileRecord) + saveFileName;
+                if (frameIndex == getPosterPosition()) {
+                    Frame frame = fFmpegFrameGrabber.grabImage();
+                    if (frame != null) {
+                        String saveFileName = fileId + "_" + getPosterAlias() + "." + getPosterExtension();
+                        //文件绝对路径+名字
+                        String fileName = getFileService().getFileDir(fileRecord) + saveFileName;
 
-                    //文件储存对象
-                    File output = new File(fileName);
+                        //文件储存对象
+                        File output = new File(fileName);
 
-                    // 将目标帧转换成图片
-                    Java2DFrameConverter converter = new Java2DFrameConverter();
-                    BufferedImage bufferedImage = converter.getBufferedImage(frame);
-                    ImageIO.write(bufferedImage, getPosterExtension(), output);
+                        // 将目标帧转换成图片
+                        Java2DFrameConverter converter = new Java2DFrameConverter();
+                        BufferedImage bufferedImage = converter.getBufferedImage(frame);
+                        ImageIO.write(bufferedImage, getPosterExtension(), output);
 
-                    uploadItem.setThumbnail("file/inline/" + getPosterAlias() + "/" + uploadItem.getId() + "." + getPosterExtension());
-
+                        uploadItem.setThumbnail("file/inline/" + getPosterAlias() + "/" + uploadItem.getId() + "." + getPosterExtension());
+                    }
                     break;
                 }
             }

@@ -2,6 +2,10 @@ package com.rongji.dfish.framework.util;
 
 public class DownloadStatus {
     private boolean cached;
+    /**
+     * 是否已经开始发送数据
+     */
+    private boolean sent;
     private long resourceLength;
     private long rangeBegin;
     private long rangeEnd;
@@ -14,6 +18,14 @@ public class DownloadStatus {
 
     public void setCached(boolean cached) {
         this.cached = cached;
+    }
+
+    public boolean isSent() {
+        return sent;
+    }
+
+    public void setSent(boolean sent) {
+        this.sent = sent;
     }
 
     public long getResourceLength() {

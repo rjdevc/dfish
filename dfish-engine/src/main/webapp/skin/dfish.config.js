@@ -95,7 +95,7 @@ dfish.config({
         },
         'ImageUpload': {
             minFileSize: '1B',
-            maxFileSize: '10M',
+            maxFileSize: '20M',
             data: {'scheme': 'DEFAULT'},
             post: {type: 'UploadPost', src: 'file/upload/image?scheme=$scheme', template: 'g/upload/post'},
             download: 'file/download/${id}.${extension}',

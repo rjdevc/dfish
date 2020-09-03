@@ -25,6 +25,7 @@ public interface BatchFunction<T, R> extends java.util.function.Function<T, R>{
      * @param input 输入
      * @return R
      */
+    @Override
     default R apply(T input) {
         HashSet<T> temp=new HashSet<>();
         temp.add(input);

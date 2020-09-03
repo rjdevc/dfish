@@ -17,6 +17,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Method;
 import java.net.SocketException;
@@ -464,7 +465,13 @@ public class BaseActionController {
                 LogUtil.error("请求Json转换异常", t);
             }
             String errMsg = null;
-            if (cause instanceof SocketException) {
+            if (cause instanceof IOException) {
+                // 中断请求的日志不输入,以免运行日志都是这样的无用日志
+                if (!"ClientAbortException".equals(cause.getClass().getSimpleName())) {
+                    errMsg = "IO异常@" + System.currentTimeMillis();
+                    LogUtil.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
+                }
+            } else if (cause instanceof SocketException) {
                 errMsg = "网络异常@" + System.currentTimeMillis();
                 LogUtil.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
             } else {

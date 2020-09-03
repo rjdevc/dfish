@@ -538,6 +538,7 @@ public class ServletUtil {
 
         try {
             bis = new BufferedInputStream(is);
+            status.setSent(true);
             bos = new BufferedOutputStream(response.getOutputStream());
 
             int bytesRead;
@@ -563,7 +564,7 @@ public class ServletUtil {
                 }
                 LogUtil.info(msg);
             }else {
-                LogUtil.error("FileUtil.downLoadFile error", e);
+                LogUtil.error("download error", e);
             }
 //            LogUtil.error("FileUtil.downLoadFile error", e);
         } finally {
@@ -572,6 +573,7 @@ public class ServletUtil {
             }
 
             if (bos != null) {
+                // FIXME 这里可能是隐患,当client abort的时候close会抛异常,这里的OutputStream很可能不手动关闭,似乎容器会自动关闭,待验证
                 bos.close();
             }
         }
@@ -591,7 +593,7 @@ public class ServletUtil {
     }
 
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
-                                       final File file,boolean inline)throws IOException{
+                                       final File file, boolean inline)throws IOException{
         DownloadResource resource=new DownloadResource(file.getName(),file.length(),file.lastModified(),
                 ()->new FileInputStream(file));
         return download(request,response,resource,inline);

@@ -1,8 +1,9 @@
 package com.rongji.dfish.framework.plugin.cache;
 
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.cache.Cache;
+import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.util.LogUtil;
+import com.rongji.dfish.base.util.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -65,7 +66,27 @@ public class CacheManager {
      * @return 获取的缓存组
      */
     public <K, V> Cache<K, V> getCache(String cacheName) {
+        return getCache(cacheName, false);
+    }
+
+    /**
+     * 根据婚车名称获取缓存组
+     *
+     * @param cacheName 缓存名称
+     * @param create 是否自动创建
+     * @param <K>       缓存键key
+     * @param <V>       缓存值value
+     * @return 获取的缓存组
+     */
+    public <K, V> Cache<K, V> getCache(String cacheName, boolean create) {
         Cache<K, V> cache = (Cache<K, V>) cacheMap.get(cacheName);
+        if (create) {
+            MemoryCache mCache = new MemoryCache();
+            mCache.setName(cacheName);
+            cache = mCache;
+            LogUtil.info("The cache[" + cacheName + "] is automatically created.");
+            registerCache(cache);
+        }
         return cache;
     }
 
