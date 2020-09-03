@@ -1875,11 +1875,10 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 				s = ' style="max-width:' + w + 'px;max-height:' + h + 'px"' + ($.br.css3 ? '' : ' width=' + w + ' height=' + h);
 			if (! f) {
 				m = v.thumbnail;
-				! m && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
+				! m && c && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
 			}
-			m = $.urlComplete(m);
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '>' + this.html_loading() + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
-				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : this.html_cvr()) + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
+				(m ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + $.urlComplete(m) + '"' + s + '>' : '')) + (f ? '' : this.html_cvr()) + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
 		html: function() {
 			this.x.file && this.addClass('z-loading');
@@ -1914,7 +1913,7 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 		// 本地视频生成预览图
 		createThumbnail: function() {
 			var video = document.createElement('video'), self = this;
-			video.addEventListener('loadedmetadata', function() {
+			video.addEventListener('loadeddata', function() {
 			    setTimeout(function() {
 			    	if (!self.x.file) return;
 			    	var canvas = document.createElement('canvas');
@@ -1929,7 +1928,8 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 			});
 			video.src = URL.createObjectURL(this.x.file);
 			video.muted = true;
-			video.play();
+			var p = video.play();
+
 		},
 		html_cvr: function() {
 			return '<div class=_cvr>' + $.image('.f-i-play', {cls: '_play'}) + '</div>';
