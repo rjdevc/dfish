@@ -573,8 +573,12 @@ public final class FileUtil {
         response.setHeader("Content-type", contentType);
 
         if (from == 0 && to >= downloadResource.getLength()-1) {
-            response.setStatus(HttpServletResponse.SC_OK);
+            response.setStatus(range==null?HttpServletResponse.SC_OK:HttpServletResponse.SC_PARTIAL_CONTENT);
             response.setHeader("Content-Length", String.valueOf(downloadResource.getLength()));
+            if(range!=null){
+                String contentRange = "bytes " + from + "-" + to  + "/" + downloadResource.getLength();
+                response.setHeader("Content-Range", contentRange);
+            }
             if(!inline){
                 response.setHeader("Content-Disposition", "attachment; filename="
                         + URLEncoder.encode(downloadResource.getName(), FileUtil.ENCODING));
