@@ -24,7 +24,7 @@ public class JigsawController extends BaseActionController {
      * 滑动图片生成器
      */
     @Autowired
-    private JigsawGenerator jigsawGenerator ;
+    private JigsawGenerator jigsawGenerator;
 
     public JigsawGenerator getJigsawGenerator() {
         return jigsawGenerator;

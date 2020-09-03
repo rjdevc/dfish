@@ -2473,7 +2473,7 @@ _merge($, {
 	previewVideo: function(a) {
 		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);
 		$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
-			node: {type: 'FlowPlayer', width: '*', height: '*', style: 'margin:0 20px', widthMinus: 40, src: a, afterContent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}});
+			node: {type: 'Video', width: '*', height: '*', style: 'margin:0 20px', widthMinus: 40, src: a, afterContent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}});
 	},
 	// @a -> image array, b -> style
 	previewImage: function(a, b) {
@@ -2610,8 +2610,8 @@ _merge($, {
 		}
 	})(),
 	svgLoading: function(w, x) {
-		return '<svg ' + (x && x.id ? ' id=' + x.id : '') + (x && x.cls ? ' class="' + x.cls + '"' : '') + ' width="' + w + 'px" height="' + w + 'px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;">\
-			<path fill="#999" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" transform="rotate(86.9154 25 25)">\
+		return '<svg ' + (x && x.id ? ' id=' + x.id : '') + (x && x.cls ? ' class="' + x.cls + '"' : '') + ' width="' + w + 'px" height="' + w + 'px" viewBox="0 0 50 50" style="enable-background:new 0 0 50 50;">' +
+			'<path fill="' + ((x && x.fill) || '#999') + '" d="M43.935,25.145c0-10.318-8.364-18.683-18.683-18.683c-10.318,0-18.683,8.365-18.683,18.683h4.068c0-8.071,6.543-14.615,14.615-14.615c8.072,0,14.615,6.543,14.615,14.615H43.935z" transform="rotate(86.9154 25 25)">\
 			<animateTransform attributeType="xml" attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="0.6s" repeatCount="indefinite"></animateTransform>\
 			</path></svg>';
 	},

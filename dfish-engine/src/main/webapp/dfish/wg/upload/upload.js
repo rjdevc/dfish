@@ -1331,7 +1331,7 @@ AbsUpload = define.widget('AbsUpload', {
 		},
 		upload_complete_handler: function(file) {
 			if (this.getQueueFile(0))
-				this.doUpload();
+				this.startUpload();
 			else
 				this.trigger('change');
 		},
@@ -1632,7 +1632,7 @@ FileUploadButton = define.widget('FileUploadButton', {
 ImageUploadButton = define.widget('ImageUploadButton', {
 	Const: function(x, p) {
 		FileUploadButton.apply(this, arguments);
-		var b = this.u.x.pub || false, w = b.width || 80, h = b.height || 80, t = this.x.style || '';
+		var b = this.u.x.pub || false, w = x.width || b.width || 80, h = x.height || b.height || 80, t = this.x.style || '';
 		if (w || h) {
 			t += 'width:' + (w - (this.attr('widthMinus') || 0)) + 'px;height:' + (h - (this.attr('heightMinus') || 0)) + 'px;';
 			this.x.style = t;
@@ -1744,7 +1744,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.x.file && readImage(this.x.file, this.$('g'));
+				this.x.file && this.createThumbnail();
 			},
 			click:  function() {
 				if (this.x.data) {
@@ -1761,6 +1761,12 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 	Prototype: {
 		className: 'w-imageupload-value',
 		pubParent: function() {return this.u},
+		// 预览本地图片
+		createThumbnail: function() {
+			var r = new FileReader(), self = this;
+			r.onload = function(e) {self.$('g').src = e.target.result};
+			r.readAsDataURL(this.x.file);
+		},
 		upload: function() {
 			var d = new FormData(), f = this.x.file, u = this.u, r = $.ajaxXHR();
 			d.append('Filedata', f);
@@ -1782,7 +1788,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 		},
 		download: function() {
 			var s = this.u.x.download;
-			s && $.download(this.formatStr(s, null, ! /^\$\w+$/.test(s)));
+			s && $.download(this.formatStr(s, null, true));
 		},
 		preview: function(a) {
 			if (! this.x.data)
@@ -1814,8 +1820,8 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			this.x.data = serverData;
 			this.u.addValue(serverData);
 			this.removeClass('z-loading');
-			Q('._loading,._progress', this.$()).remove();
-			isSWF && this.render();
+			//Q('._loading,._progress', this.$()).remove();
+			this.render();
 		},
 		setError: function(errorCode, message) {
 			this.loading = false;
@@ -1861,10 +1867,9 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			if (! f) {
 				m = v.thumbnail;
 				! m && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
-				! m && (m = v.url);
 			}
 			m = $.urlComplete(m);
-			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div>' + ($.br.ms ? $.image('%img%/loading.gif', {cls: '_loading f-va'}) : $.svgLoading(22, {cls: '_loading f-va'})) + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
+			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '><div id=' + this.id + 'p class=_progress></div>' + ($.br.ms ? $.image('%img%/loading.gif', {cls: '_loading f-va'}) : $.svgLoading(22, {cls: '_loading f-va', fill: '#ddd'})) + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
 				'<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + m + '"' + s + '>') + (f ? '' : this.html_cvr()) + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
 		},
 		html: function() {
@@ -1897,6 +1902,25 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 	Extend: ImageUploadValue,
 	Prototype: {
 		className: 'w-videoupload-value',
+		// 本地视频生成预览图
+		createThumbnail: function() {
+			var video = document.createElement('video'), self = this;
+			video.addEventListener('loadedmetadata', function() {
+				video.pause();
+			    setTimeout(function() {
+			    	if (!self.x.file) return;
+			    	var canvas = document.createElement('canvas');
+			    	canvas.width = video.videoWidth;
+			    	canvas.height = video.videoHeight;
+			    	var ctx = canvas.getContext('2d');
+			    	ctx.drawImage(video, 0, 0);
+			    	self.$('g').src = canvas.toDataURL('image/png');
+			    }, 100);
+			});
+			video.src = URL.createObjectURL(this.x.file);
+			video.muted = true;
+			video.play();
+		},
 		html_cvr: function() {
 			return '<div class=_cvr>' + $.image('.f-i-play', {cls: '_play'}) + '</div>';
 		}
@@ -2016,14 +2040,6 @@ function swfOptions(x) {
 function getIco(url) {
 	return 'f-i-file-' + getSuffix(url);
 };
-// html5支持预览本地图片
-function readImage(file, img) {
-	if (window.FileReader) {
-		var r = new FileReader();
-		r.onload = function(e) {img.src = e.target.result};
-		r.readAsDataURL(file);
-	}
-}
 // 把 "1MB" 转为字节
 function fileByte(a) {
 	var b;

@@ -1,7 +1,5 @@
 package com.rongji.dfish.framework.plugin.file.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -17,9 +15,9 @@ public class PubFileRecord implements java.io.Serializable {
     private static final long serialVersionUID = 3466920245217817895L;
 	private String fileId;
 	private String fileName;
+	private String fileExtension;
 	private String fileType;
 	private String fileUrl;
-	private String fileExtension;
 	private Long fileSize;
 	private String fileCreator;
 	private Date createTime;
@@ -27,6 +25,13 @@ public class PubFileRecord implements java.io.Serializable {
 	private String fileLink;
 	private String fileKey;
 	private String fileStatus;
+	private Integer fileDuration;
+	private String fileScheme;
+
+	/**
+	 * 记录是否改变
+	 */
+	private boolean change;
 
 	/**
 	 * 构造函数
@@ -46,8 +51,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 附件编号
 	 * @return String
 	 */
-	@Id
-	@Column(name = "FILE_ID")
 	public String getFileId() {
 		return this.fileId;
 	}
@@ -64,7 +67,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 附件名称
 	 * @return String
 	 */
-	@Column(name = "FILE_NAME")
 	public String getFileName() {
 		return this.fileName;
 	}
@@ -78,10 +80,24 @@ public class PubFileRecord implements java.io.Serializable {
 	}
 
 	/**
+	 * 扩展名
+	 * @return String
+	 */
+	public String getFileExtension() {
+		return fileExtension;
+	}
+
+	/**
+	 * 扩展名
+	 * @param fileExtension
+	 */
+	public void setFileExtension(String fileExtension) {
+		this.fileExtension = fileExtension;
+	}
+	/**
 	 * 附件类型
 	 * @return String
 	 */
-	@Column(name = "FILE_TYPE")
 	public String getFileType() {
 		return fileType;
 	}
@@ -98,7 +114,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 附件存储地址
 	 * @return String
 	 */
-	@Column(name = "FILE_URL")
 	public String getFileUrl() {
 		return this.fileUrl;
 	}
@@ -111,26 +126,9 @@ public class PubFileRecord implements java.io.Serializable {
 	}
 
 	/**
-	 * 扩展名
-	 * @return String
-	 */
-	@Column(name = "FILE_EXTENSION")
-	public String getFileExtension() {
-		return fileExtension;
-	}
-
-	/**
-	 * 扩展名
-	 * @param fileExtension
-	 */
-	public void setFileExtension(String fileExtension) {
-		this.fileExtension = fileExtension;
-	}
-	/**
 	 * 文件大小
 	 * @return Long
 	 */
-	@Column(name = "FILE_SIZE")
 	public Long getFileSize() {
 		return this.fileSize;
 	}
@@ -147,7 +145,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 文件创建人
 	 * @return String
 	 */
-	@Column(name = "FILE_CREATOR")
 	public String getFileCreator() {
 		return this.fileCreator;
 	}
@@ -164,7 +161,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 创建时间
 	 * @return Date 创建时间
 	 */
-	@Column(name = "CREATE_TIME")
 	public Date getCreateTime() {
 		return this.createTime;
 	}
@@ -181,7 +177,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 更新时间
 	 * @return Date
 	 */
-	@Column(name = "UPDATE_TIME")
 	public Date getUpdateTime() {
 		return this.updateTime;
 	}
@@ -198,7 +193,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 附件链接模块
 	 * @return String 链接模块
 	 */
-	@Column(name = "FILE_LINK")
 	public String getFileLink() {
 		return this.fileLink;
 	}
@@ -215,7 +209,6 @@ public class PubFileRecord implements java.io.Serializable {
 	 * 附件链接的关键字
 	 * @return String
 	 */
-	@Column(name = "FILE_KEY")
 	public String getFileKey() {
 		return this.fileKey;
 	}
@@ -229,10 +222,9 @@ public class PubFileRecord implements java.io.Serializable {
 	}
 
 	/**
-	 * 附件状态#0:正常,1:删除
+	 * 附件状态#0:初始状态,1:已关联,9:删除
 	 * @return String
 	 */
-	@Column(name = "FILE_STATUS")
 	public String getFileStatus() {
 		return fileStatus;
 	}
@@ -245,4 +237,43 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileStatus = fileStatus;
 	}
 
+	/**
+	 * 附件时长(单位:秒)
+	 * @return Integer
+	 */
+	public Integer getFileDuration() {
+		return fileDuration;
+	}
+
+	/**
+	 * 附件时长(单位:秒)
+	 * @param fileDuration Integer
+	 */
+	public void setFileDuration(Integer fileDuration) {
+		this.fileDuration = fileDuration;
+	}
+
+	/**
+	 * 处理方案
+	 * @return String
+	 */
+	public String getFileScheme() {
+		return fileScheme;
+	}
+
+	/**
+	 * 处理方案
+	 * @param fileScheme String
+	 */
+	public void setFileScheme(String fileScheme) {
+		this.fileScheme = fileScheme;
+	}
+
+	public boolean isChange() {
+		return change;
+	}
+
+	public void setChange(boolean change) {
+		this.change = change;
+	}
 }

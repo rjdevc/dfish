@@ -7983,7 +7983,6 @@ Jigsaw = define.widget('Jigsaw', {
 			},
 			resize: function(e) {
 				_superTrigger(this, AbsForm, e);
-				//this.css('t', 'width', this.formWidth());
 			}
 		}
 	},

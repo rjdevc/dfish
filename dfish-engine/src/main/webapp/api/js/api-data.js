@@ -5420,6 +5420,7 @@ define( {
       { name: 'dir', type: 'String', remark: '附件排列方向。可选值: <b>h</b><s>(横向,默认)</s>, <b>v</b><s>(纵向)</s>' },
       { name: 'download', type: 'String', remark: '下载地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'fileTypes', type: 'String', remark: '允许的文件类型。例如只允许上传图片: "*.jpg;*.gif;*.png"' },
+      { name: 'pub', type: 'Object', remark: '设置预览项和上传按钮的参数。' },
       { name: 'preview', type: 'String', remark: '预览地址。支持 $xxx 变量(对应变量值取自 json 格式的 value)。' },
       { name: 'maxFileSize', type: 'String', remark: '单个附件最大的文件大小。如 "50M"。' },
       { name: 'minFileSize', type: 'String', remark: '单个附件最小的文件大小。如 "1B"。' },
@@ -5465,6 +5466,9 @@ define( {
   "FileUpload": {
   	remark: '上传附件。',
   	extend: 'ImageUpload',
+    Config: [
+      { name: 'pub', type: 'Object', remark: '设置预览项的参数。' }
+    ],
   	deprecate: 'thumbnail',
     Examples: [
       { example: [
@@ -5496,6 +5500,40 @@ define( {
       }
     ]
   },
+  "VideoUpload": {
+  	remark: '上传视频。',
+  	extend: 'ImageUpload',
+    Examples: [
+      { example: [
+          function() {
+            // 视频上传控件
+            return~
+            {
+                type: 'VideoUpload',
+                post: {type: 'UploadPost', src: 'upload.sp'},
+                pub: { width: 70, height: 70 },
+                uploadButtons: [
+                    {type: 'UploadButton', text: '上传照片'}
+                ],
+                value: [
+                    {id: '001', name: '001.mp4', thumbnail: 'images/001.jpg'}
+                ]
+            }
+          },
+          function() {
+          	// 上例中的 upload.sp 处理附件数据后返回的内容示例
+            return~
+            {
+                type: 'UploadPost',
+                result: {
+                    id: '002', name: 'test.mp4', thumbnail: 'images/002.jpg'
+                }
+            }
+          }
+        ]
+      }
+    ]
+  },  
   "UploadButton": {
   	remark: '上传按钮。FileUpload 和 ImageUpload 的专用按钮。',
   	extend: 'Button',

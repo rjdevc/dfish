@@ -108,5 +108,4 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
         return dataList;
     }
 
-
 }

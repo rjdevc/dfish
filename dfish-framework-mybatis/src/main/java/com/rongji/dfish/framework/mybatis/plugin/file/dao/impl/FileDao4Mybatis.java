@@ -44,4 +44,5 @@ public interface FileDao4Mybatis extends FrameworkDao4Mybatis<PubFileRecord, Str
     default void evict(Object entity) {
 
     }
+
 }

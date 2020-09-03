@@ -88,8 +88,8 @@ dfish.config({
             minFileSize: '1B',
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
-            post: {type: 'UploadPost', template: 'g/upload/post'},
-            download: 'file/download?fileId=$id&scheme=$scheme',
+            post: {type: 'UploadPost',  src: 'file/upload/file?scheme=$scheme', template: 'g/upload/post'},
+            download: 'file/download/${id}.${extension}',
             fileTypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
             uploadButtons: [{type: 'UploadButton', text: '选择文件', icon: '.f-i-upload'}]
         },
@@ -98,10 +98,20 @@ dfish.config({
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
             post: {type: 'UploadPost', src: 'file/upload/image?scheme=$scheme', template: 'g/upload/post'},
-            download: 'file/download?fileId=$id&scheme=$scheme',
-            thumbnail: 'file/thumbnail?fileId=$id&scheme=$scheme',
-            preview: {type: 'JS', text: '$.previewImage("file/thumbnail?fileId="+$id+"&scheme="+$scheme);'},
+            download: 'file/download/${id}.${extension}',
+            thumbnail: 'file/inline/${id}.${extension}',
+            preview: {type: 'JS', text: '$.previewImage("file/inline/"+$id+"."+$extension);'},
             fileTypes: '*.png;*.jpg;*.jpeg;',
+            uploadButtons: [{type: 'UploadButton', icon: '.f-i-upload-image'}]
+        },
+        'VideoUpload': {
+            minFileSize: '1B',
+            maxFileSize: '100M',
+            data: {'scheme': 'DEFAULT'},
+            post: {type: 'UploadPost', src: 'file/upload/video?scheme=$scheme', template: 'g/upload/post'},
+            preview: {type: 'JS', text: '$.previewVideo("file/inline/"+$id+"."+$extension);'},
+            download: 'file/download/${id}.${extension}',
+            fileTypes: '*.mp4;',
             uploadButtons: [{type: 'UploadButton', icon: '.f-i-upload-image'}]
         },
         'Toggle': {

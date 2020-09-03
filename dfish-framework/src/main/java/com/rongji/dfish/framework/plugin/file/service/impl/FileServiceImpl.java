@@ -3,6 +3,8 @@ package com.rongji.dfish.framework.plugin.file.service.impl;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
+import com.rongji.dfish.framework.plugin.file.config.FileHandleScheme;
 import com.rongji.dfish.framework.plugin.file.dao.FileDao;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
@@ -24,6 +26,8 @@ import java.util.Map.Entry;
 public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileRecord, String> implements FileService {
     @Resource(name = "fileDao")
     private FileDao dao;
+    @Resource(name = "fileHandleManager")
+    private FileHandleManager fileHandleManager;
 
     @Override
     public FileDao getDao() {
@@ -32,6 +36,14 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
 
     public void setDao(FileDao dao) {
         this.dao = dao;
+    }
+
+    public FileHandleManager getFileHandleManager() {
+        return fileHandleManager;
+    }
+
+    public void setFileHandleManager(FileHandleManager fileHandleManager) {
+        this.fileHandleManager = fileHandleManager;
     }
 
     /**
@@ -60,48 +72,22 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     }
 
     /**
-     * 文件上传支持的类型
-     *
-     * @return String 文件上传类型
-     */
-    @Override
-    public String getFileTypes() {
-        // 默认文件格式*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.zip;*.rar;*.jpg;*.gif;*.png;*.vsd;*.pot;*.pps;*.txt;*.rtf;*.pdf;*.epub;*.wps;*.et;*.dps
-        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_FILE, "*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;");
-
-    }
-
-    /**
-     * 图片上传支持的类型
-     *
-     * @return String 图片类型
-     */
-    @Override
-    public String getImageTypes() {
-        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_IMAGE, "*.jpg;*.gif;*.png;");
-    }
-    @Override
-    public String getVideoTypes() {
-        return FrameworkHelper.getSystemConfig(CONFIG_TYPES_VIDEO, "*.mp4;");
-    }
-    /**
      * 保存文件以及文件记录
      *
      * @param input 输入流
-     * @param originalFileName 原始文件名
-     * @param fileSize 文件大小
-     * @param loginUserId 登录人员
+     * @param fileRecord 文件记录
      * @throws Exception 记录保存可能触发的业务异常
      */
     @Override
-    public UploadItem saveFile(InputStream input, String originalFileName, long fileSize, String loginUserId) throws Exception {
-        String extName = FileUtil.getFileExtName(originalFileName);
+    public UploadItem saveFile(InputStream input, PubFileRecord fileRecord) throws Exception {
+        String fileName = fileRecord.getFileName();
+        String extName = FileUtil.getFileExtName(fileName);
 
         if (".JSP".equalsIgnoreCase(extName)) {
             extName = ".jsp.txt";
         }//安全加固，正规途径下载仍旧是.jsp 落盘是.jsp.txt
 
-        String fixedFileName = originalFileName.replace(" ", "");
+        String fixedFileName = fileName.replace(" ", "");
         String fileId = getNewId();
 
         // 直接用文件编号作为文件名
@@ -113,23 +99,23 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         String dirSeparator = getDirSeparator();
         String fileDir = DF_DIR.format(now);
 
-        PubFileRecord fileRecord = new PubFileRecord();
         fileRecord.setFileId(fileId);
         fileRecord.setFileName(fixedFileName);
-        fileRecord.setFileType(Utils.notEmpty(extName) ? extName.substring(1).toLowerCase() : null);
-        fileRecord.setFileSize(fileSize);
-        fileRecord.setFileCreator(loginUserId);
+        fileRecord.setFileUrl(fileDir + dirSeparator + saveFileName);
+        fileRecord.setFileExtension(Utils.notEmpty(extName) ? extName.substring(1).toLowerCase() : null);
+        if (Utils.isEmpty(fileRecord.getFileType())) {
+            fileRecord.setFileType(CONFIG_TYPE_FILE);
+        }
         fileRecord.setCreateTime(now);
         fileRecord.setUpdateTime(now);
         fileRecord.setFileLink(LINK_FILE);
         fileRecord.setFileKey(fileId);
-        fileRecord.setFileUrl(fileDir + dirSeparator + saveFileName);
         fileRecord.setFileStatus(STATUS_NORMAL);
         save(fileRecord);
 
         doSaveFile(input, fileRecord);
 
-        return parseUploadItem(fileRecord);
+        return parseUploadItem(fileRecord, true);
     }
 
     /**
@@ -161,10 +147,6 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     public PubFileRecord getFileRecord(String fileId) {
         return get(fileId);
     }
-
-
-
-
 
     @Override
     public int updateFileStatus(Collection<String> fileIds, String fileStatus) {
@@ -202,11 +184,11 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @throws Exception 文件流相关异常
      */
     @Override
-    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias,String extension) throws Exception {
+    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias, String extension) throws Exception {
         if (fileRecord == null || FileServiceImpl.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
             return null;
         }
-        File file = getFile(fileRecord, alias,extension);
+        File file = getFile(fileRecord, alias, extension);
         if (file == null || !file.exists() || file.length() <= 0) {
             return null;
         }
@@ -493,4 +475,16 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         return getDao().updateFileLinks(fileIds, fileLink, fileKey,creator, STATUS_LINKED, new Date());
     }
 
+    @Override
+    public UploadItem parseUploadItem(PubFileRecord fileRecord) {
+        UploadItem item = parseUploadItem(fileRecord, false);
+        // FIXME 这么写,如果直接调用remainRecord=true的方法不会处理,这是个问题,但不紧急
+        if (item != null && fileHandleManager != null) {
+            FileHandleScheme handleScheme = fileHandleManager.getScheme(fileRecord.getFileType(), fileRecord.getFileScheme());
+            if (handleScheme != null) {
+                handleScheme.fixUploadItem(item);
+            }
+        }
+        return item;
+    }
 }

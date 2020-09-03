@@ -997,9 +997,9 @@
 .w-imageupload-value ._more:hover .f-arw,.w-videoupload-value ._more:hover .f-arw{border-top-color:#fff}
 .w-imageupload-value ._cvr,.w-videoupload-value ._cvr{position:absolute;display:none;top:0;left:0;right:0;bottom:0;background:#777;color:#fff;opacity:.6;filter:Alpha(opacity=60)}
 .w-imageupload-value ._name,.w-videoupload-value ._name{display:none;position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;padding:0 3px;height:20px;line-height:20px;color:#f00}
-.w-imageupload-value ._g,.w-videoupload-value ._g{vertical-align:middle;object-fit:cover;width:100%;height:100%;width:auto\0;height:auto\0;}
-.w-imageupload-value ._loading,.w-videoupload-value ._loading{position:absolute;top:50%;left:50%;margin-top:-6px;margin-left:-6px;font-size:0}
-.w-imageupload-value.z-loading ._g,.w-videoupload-value.z-loading ._g{opacity:.6}
+.w-imageupload-value ._g,.w-videoupload-value ._g{vertical-align:middle;object-fit:cover;width:100%;height:100%;width:auto\0;height:auto\0}
+.w-imageupload-value ._loading,.w-videoupload-value ._loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:0}
+.w-imageupload-value.z-loading ._g,.w-videoupload-value.z-loading ._g{opacity:.35}
 .w-imageupload-value.z-err,.w-videoupload-value.z-err{border-color:#f00}
 .w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr,
 .w-videoupload-value.z-err ._name,.w-videoupload-value:hover ._more,.w-videoupload-value:hover ._close{display:block}
@@ -1007,6 +1007,8 @@
 .w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.2)}
 .w-videoupload-value ._play{padding:6px 7px;background:rgba(255,255,255,.4);border-radius:50%}
 .w-videoupload-value ._ico{transform:translate(2px,-1px)}
+
+.f-css2 .w-imageupload-value ._loading,.f-css2 .w-videoupload-value ._loading{margin-top:-8px;margin-left:-8px;}
 
 .w-buttonbar .f-sub-horz.z-htmn,.w-upload .f-sub-horz.z-htmn,.w-pagebar .f-sub-horz.z-htmn{float:none;display:inline-block;*display:inline;*zoom:1}
 

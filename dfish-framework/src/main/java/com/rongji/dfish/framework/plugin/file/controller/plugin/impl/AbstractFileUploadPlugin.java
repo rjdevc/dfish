@@ -7,6 +7,7 @@ import com.rongji.dfish.framework.FrameworkHelper;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.dto.UploadItem;
+import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,11 +75,19 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
             MultipartFile fileData = mRequest.getFile("Filedata");
 
             String extName = FileUtil.getFileExtName(fileData.getOriginalFilename());
-            String acceptTypes = fileService.getFileTypes();
-            accept = fileService.accept(extName, acceptTypes);
+            String acceptTypes = fileService.getFileTypes(FileService.CONFIG_TYPE_FILE, null);
+            accept = FileUtil.accept(extName, acceptTypes);
             if (accept) {
                 String loginUserId = FrameworkHelper.getLoginUser(mRequest);
-                uploadItem = fileService.saveFile(fileData.getInputStream(), fileData.getOriginalFilename(), fileData.getSize(), loginUserId);
+                PubFileRecord fileRecord = new PubFileRecord();
+                fileRecord.setFileName(fileData.getOriginalFilename());
+                fileRecord.setFileSize(fileData.getSize());
+                fileRecord.setFileCreator(loginUserId);
+                String fileType = request.getParameter("fileType");
+                String fileScheme = request.getParameter("scheme");
+                fileRecord.setFileType(fileType);
+                fileRecord.setFileScheme(fileScheme);
+                uploadItem = fileService.saveFile(fileData.getInputStream(), fileRecord);
 
                 if (uploadItem != null && (uploadItem.getError() == null || Utils.isEmpty(uploadItem.getError().getText()))) {
                     String fileId = fileService.decrypt(uploadItem.getId());

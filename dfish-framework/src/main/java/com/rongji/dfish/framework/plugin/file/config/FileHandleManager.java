@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,7 @@ public class FileHandleManager {
     @Autowired(required = false)
     private List<FileHandleScheme> fileHandleSchemes;
 
-    private Map<String, FileHandleScheme> fileHandleSchemeMap = new HashMap<>();
+    private Map<String, Map<String, FileHandleScheme>> fileHandleSchemeMap = new HashMap<>();
 
     @PostConstruct
     private void init() {
@@ -29,16 +30,22 @@ public class FileHandleManager {
         }
     }
 
-    private void registerScheme(FileHandleScheme handlingScheme) {
-        if (handlingScheme == null) {
+    private void registerScheme(FileHandleScheme handleScheme) {
+        if (handleScheme == null) {
             return;
         }
-        if (Utils.isEmpty(handlingScheme.getName())) {
-            LogUtil.warn("The name is empty.[" + handlingScheme.getClass().getName() + "]");
+        if (Utils.isEmpty(handleScheme.getName())) {
+            LogUtil.warn("The name is empty.[" + handleScheme.getClass().getName() + "]");
         }
-        FileHandleScheme old = fileHandleSchemeMap.put(handlingScheme.getName(), handlingScheme);
+        Map<String, FileHandleScheme> fileHandleSchemes = fileHandleSchemeMap.get(handleScheme.fileType());
+        if (fileHandleSchemes == null) {
+            fileHandleSchemes = new HashMap<>();
+            fileHandleSchemeMap.put(handleScheme.fileType(), fileHandleSchemes);
+        }
+
+        FileHandleScheme old = fileHandleSchemes.put(handleScheme.getName(), handleScheme);
         if (old != null) {
-            LogUtil.warn("The system exists same name of the FileHandlingScheme.[" + handlingScheme.getName() + "]");
+            LogUtil.warn("The system exists same name of the FileHandlingScheme.[" + handleScheme.getName() + "]@" + handleScheme.fileType());
         }
     }
 
@@ -48,11 +55,13 @@ public class FileHandleManager {
      * @param <T> 方案对象泛型
      * @return FileHandlingDefine
      */
-    public <T> T getScheme(String scheme) {
-        if (Utils.isEmpty(scheme)) {
+    public <T> T getScheme(String fileType, String scheme) {
+        if (Utils.isEmpty(fileType) || Utils.isEmpty(scheme)) {
             return null;
         }
-        return (T) fileHandleSchemeMap.get(scheme);
+        Map<String, FileHandleScheme> fileHandleSchemes = fileHandleSchemeMap.get(fileType);
+
+        return fileHandleSchemes == null ? null : (T) fileHandleSchemes.get(scheme);
     }
 
 }
