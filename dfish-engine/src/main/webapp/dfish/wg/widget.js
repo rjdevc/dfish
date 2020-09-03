@@ -1297,7 +1297,7 @@ W = define('Widget', function() {
 		// @a -> content|js, b -> args?, c -> urlEncode?, d -> callback?
 		formatStr: function(a, b, c, d, x) {
 			var self = this, r = b && $.isArray(b),
-				s = a.replace(/\$\{(\w[\w.]*)\}|\$(\w[\w.]*)/gi, function($0, $1, $2) {
+				s = a.replace(/\$\{(\w[\w.]*)\}|\$(\w+)/gi, function($0, $1, $2) {
 					var e = $1 || $2, k = e, v, t;
 					if (e.indexOf('.') > 0) {
 						k = $.strTo(e, '.');
@@ -8624,6 +8624,7 @@ ComboBox = define.widget('ComboBox', {
 			this._initOptions(this._val());
 			this.queryText('');
 			this.save();
+			this.saveModified();
 			$.classRemove(this.$(), 'z-loading');
 			this.usa() && (this.$t().contentEditable = T);
 			this.$().title = this.text();
@@ -9173,6 +9174,7 @@ LinkBox = define.widget('LinkBox', {
 				return;
 			this._initOptions(this._val());
 			this.save();
+			this.saveModified();
 			this.usa() && (this.$t().contentEditable = T);
 			this.$().title = this.text();
 			$.classRemove(this.$(), 'z-loading');
