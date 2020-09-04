@@ -882,8 +882,10 @@ _urlParam = $.urlParam = function(a, b) {
 	return u + (h ? '#' + h : '');
 },
 _urlComplete = $.urlComplete = function(a) {
-	a = _ajax_url(a);
-	_cfg.ajaxData && (a = _urlParam(a, _cfg.ajaxData));
+	if (a.indexOf('data:') !== 0) {
+		a = _ajax_url(a);
+		_cfg.ajaxData && (a = _urlParam(a, _cfg.ajaxData));
+	}
 	return a;
 },
 // @a -> fn(得到0-1的参数), b -> milliseconds, c -> times

@@ -1369,7 +1369,7 @@ Upload = define.widget('AjaxUpload', {
 		},
 		uploadError: function() {
 			return this.upload_error_handler.apply(this, arguments);
-		},
+		},  
 		startUpload: function() {
 			for (var i = 0, ldr; i < this.valuebar.length; i ++) {
 				ldr = this.valuebar[i];
@@ -1876,6 +1876,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			if (! f) {
 				m = v.thumbnail;
 				! m && c && (m = this.formatStr(c, null, ! /^\$\w+$/.test(c)));
+				! m && (m = this._thumbnail);
 			}
 			return (this.x.file ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g' + s + '>' + this.html_loading() + '<div class="_name f-omit" title="' + this.x.file.name + '">' + this.x.file.name + '</div>' :
 				(m ? '<i class=f-vi></i><img id=' + this.id + 'g class=_g src="' + $.urlComplete(m) + '"' + s + '>' : '')) + (f ? '' : this.html_cvr()) + (!f && u.x.valueButtons ? '<div class=_more onclick=' + evw + '.more(this,event)>' + $.caret('d') + '</div>' : '') + '<div class=_close onclick=' + evw + '.close(this,event)>&times;</div>';
@@ -1921,15 +1922,14 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 			    	canvas.height = video.videoHeight;
 			    	var ctx = canvas.getContext('2d');
 			    	ctx.drawImage(video, 0, 0);
-			    	self.$('g').src = canvas.toDataURL('image/png');
+			    	self.$('g').src = self._thumbnail = canvas.toDataURL('image/png');
 					video.pause();
 					Q(video).remove();
 			    }, 100);
 			});
 			video.src = URL.createObjectURL(this.x.file);
 			video.muted = true;
-			var p = video.play();
-
+			video.play();
 		},
 		html_cvr: function() {
 			return '<div class=_cvr>' + $.image('.f-i-play', {cls: '_play'}) + '</div>';
