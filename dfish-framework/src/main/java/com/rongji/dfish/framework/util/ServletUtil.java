@@ -495,15 +495,16 @@ public class ServletUtil {
         }
         response.setHeader("Content-type", contentType);
 
-        if (from == 0 && to >= downloadResource.getLength()-1) {
-//            response.setStatus(HttpServletResponse.SC_OK);
-            response.setStatus(range==null?HttpServletResponse.SC_OK:HttpServletResponse.SC_PARTIAL_CONTENT);
-
+        if(range!=null){
+            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
+            response.setHeader("Content-Length", String.valueOf(contentLength));
+            String contentRange = "bytes " + from + "-" + to  + "/" + downloadResource.getLength();
+            response.setHeader("Content-Range", contentRange);
+        }else{
+            response.setStatus(HttpServletResponse.SC_OK);
             response.setHeader("Content-Length", String.valueOf(downloadResource.getLength()));
-            if(range!=null){
-                String contentRange = "bytes " + from + "-" + to  + "/" + downloadResource.getLength();
-                response.setHeader("Content-Range", contentRange);
-            }
+        }
+        if(from == 0){
             if(!inline){
                 response.setHeader("Content-Disposition", "attachment; filename="
                         + URLEncoder.encode(downloadResource.getName(), FileUtil.ENCODING));
@@ -515,11 +516,6 @@ public class ServletUtil {
 
                 response.setHeader("ETag", getEtag(downloadResource));
             }
-        } else {
-            response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
-            response.setHeader("Content-Length", String.valueOf(contentLength));
-            String contentRange = "bytes " + from + "-" + to  + "/" + downloadResource.getLength();
-            response.setHeader("Content-Range", contentRange);
         }
 
 
