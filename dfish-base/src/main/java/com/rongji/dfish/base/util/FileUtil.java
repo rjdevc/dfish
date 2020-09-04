@@ -651,15 +651,9 @@ public final class FileUtil {
     }
 
     private static String getEtag(DownloadResource resource) {
-        String etag = getIntHex(resource.getLength()) + getIntHex(resource.getLastModified());
-        return etag;
+        return "W/\""+resource.getLength()+"-"+resource.getLastModified()+"\"";
     }
 
-    private static String getIntHex(long l) {
-        l = (l & 0xFFFFFFFFL) | 0x100000000L;
-        String s = Long.toHexString(l);
-        return s.substring(1);
-    }
 
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
                                           final File file,boolean inline)throws IOException{
