@@ -579,14 +579,7 @@ public class ServletUtil {
     }
 
     private static String getEtag(DownloadResource resource) {
-        String etag = getIntHex(resource.getLength()) + getIntHex(resource.getLastModified());
-        return etag;
-    }
-
-    private static String getIntHex(long l) {
-        l = (l & 0xFFFFFFFFL) | 0x100000000L;
-        String s = Long.toHexString(l);
-        return s.substring(1);
+        return "W/\""+resource.getLength()+"-"+resource.getLastModified()+"\"";
     }
 
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
