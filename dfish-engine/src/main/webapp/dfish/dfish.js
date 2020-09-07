@@ -2257,35 +2257,34 @@ _merge($, {
 	})(),
 	// @a -> preview src
 	previewVideo: function(a) {
-		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100), rc;
-		var d = $.vm().cmd({type: 'dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
-			node: {type: 'flowplayer', width: '*', height: '*', style: 'margin:0 20px', wmin: 40, src: a, aftercontent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'},
-			on: {close: '$.vm().removeEvent("resize.previewVideo")'}
+		$.vm().cmd({type: 'dialog', ownproperty: T, cls: 'f-dialog-preview z-video', cover: T, pophide: T,
+			width: 'javascript:return Math.max(200, $.width() - 100)', height: 'javascript:return Math.max(200, $.height() - 100)',
+			node: {type: 'flowplayer', width: '*', height: '*', style: 'margin:0 20px', wmin: 40, src: a, aftercontent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}
 		});
-		$.vm().addEvent('resize.previewVideo', rc = function() {d.resize(Math.max(600, $.width() - 100), Math.max(400, $.height() - 100));d.axis()});
 	},
 	// @a -> preview src, b -> download src
 	previewImage: function(a, b) {
-		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100), rc;
-		var d = $.vm().cmd({ type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, pophide: T,
-			node: { type: 'html', align: 'center', valign: 'middle', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 30) + 'px;max-height:' + (h - 80) + 'px">' +
+		var w = Math.max(200, $.width() - 100), h = Math.max(200, $.height() - 100);
+		$.vm().cmd({type: 'dialog', ownproperty: T, cls: 'f-dialog-preview', cover: T, pophide: T, data: {rotate: 0},
+			width: 'javascript:return Math.max(200, $.width() - 100)', height: 'javascript:return Math.max(200, $.height() - 100)',
+			node: {type: 'html', align: 'center', valign: 'middle', text: '<img class=_img src=' + a + '>' +
 				(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
 				'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
-				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>' },
-			on: {close: '$.vm().removeEvent("resize.previewImage")'}
+				'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'},
+			on: {ready: '$.previewImageRotate(this)', resize: '$.previewImageRotate(this)'}
 		});
-		$.vm().addEvent('resize.previewVideo', rc = function() {d.resize(Math.max(600, $.width() - 100), Math.max(400, $.height() - 100));d.axis()});
 	},
 	// @a -> preview src
 	previewImageRotate: function(a) {
-		var g = Q('._img', $.dialog(a).$()), r = g.data('rotate'), w = g.data('maxwidth'), h = g.data('maxheight');
+		var d = $.dialog(a), r = d.data('rotate'), w = d.innerWidth() - 30, h = d.innerHeight() - 80;
 		if (a.className == '_r') {
-			r = 90 + r;
-		} else
-			r = (-90) + r;
-		var t = (r/90)%2;
-		g.css({transform: 'rotate(' + r + 'deg)', maxWidth: t ? h : w, maxHeight: t ? w : h});
-		g.data('rotate', r);
+			r += 90;
+		} else if (a.className == '_l') {
+			r -= 90;
+		}
+		var t = (r / 90) % 2;
+		Q('._img', d.$()).css({transform: 'rotate(' + r + 'deg)', maxWidth: t ? h : w, maxHeight: t ? w : h});
+		d.data('rotate', r);
 	},
 	/* ! 把range内的图片变成缩略图
 	 * @range: htmlElement
