@@ -1809,13 +1809,20 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			c.length && $.previewImage(c, {current: e});
 		},
 		setProgress: function(a) {
-			if (a < 50) {
-				this.$('p-r').style.transform = 'rotate(' + (180 * a / 50) + 'deg)';
-			} else {
-				this.$('p').classList.add('z-2');
-				this.$('p-r').style.transform = '';
-				this.$('p-l').style.transform = 'rotate(' + (180 * (a - 50) / 50) + 'deg)';
-			}
+			var cvs = this.$('cvs'),
+				ctx = this.$('cvs').getContext('2d');
+			cvs.width = cvs.width;
+			ctx.beginPath();
+			ctx.translate(17, 17);
+			ctx.moveTo(0, 0);
+			ctx.arc(0, 0, 15, -Math.PI * .5, Math.PI * ((2 * a / 100) - .5));
+			ctx.closePath();
+			ctx.fillStyle = 'rgba(255,255,255,.7)';
+			ctx.fill();
+			ctx.beginPath();
+			ctx.arc(0, 0, 16, 0, Math.PI * 2);
+			ctx.strokeStyle = '#fff';
+			ctx.stroke();
 		},
 		//@serverData -> 成功返回: {id: 'ID', name: '名称', size: '字节数', url: '地址', thumbnail: '缩略图地址'}, 失败返回: {error: true, text: '失败原因'}
 		setSuccess: function(serverData) {
@@ -1868,7 +1875,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			return '<div class=_cvr></div>';
 		},
 		html_loading: function() {
-			return '<div id=' + this.id + 'p class=f-circle-progress><div id=' + this.id + 'p-l class=_l></div><div id=' + this.id + 'p-r class=_r></div></div>'
+			return '<canvas id=' + this.id + 'cvs width=34 height=34 class=f-center></canvas>'
 		},
 		html_nodes: function() {
 			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnail,
@@ -1925,7 +1932,7 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 			    	self.$('g').src = self._thumbnail = canvas.toDataURL('image/png');
 					video.pause();
 					Q(video).remove();
-			    }, 100);
+			    }, 150);
 			});
 			video.src = URL.createObjectURL(this.x.file);
 			video.muted = true;

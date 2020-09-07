@@ -591,9 +591,8 @@ _strSplitword = $.strSplitword = function(a, b, c) {
 },
 // 替换带$变量的字符串，如 "a.sp?id=$0" /@a -> url, b -> array/object, c -> urlEncode?
 _strFormat = $.strFormat = function(a, b, c) {
-	a = a == N ? '' : '' + a;
-	if (!b)
-		return a;
+	a != N && (a += '');
+	if (!a || !b) return a;
 	if (_isArray(b)) {
 		return a.replace(/\$\{?(\d+)\}?/g, function($0, $1) {return b[$1] == N ? '' : c ? _urlEncode(b[$1]) : b[$1]});
 	} else {
@@ -2473,24 +2472,21 @@ _merge($, {
 	})(),
 	// @a -> preview src
 	previewVideo: function(a) {
-		var w = Math.max(600, $.width() - 100), h = Math.max(400, $.height() - 100);
-		$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview z-video', width: w, height: h, cover: T, pophide: T,
-			node: {type: 'Video', width: '*', height: '*', style: 'margin:0 20px', widthMinus: 40, src: a, afterContent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}});
+		$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview z-video', cover: T, pophide: T,
+			width: 'javascript:return Math.max(200, $.width() - 100)', height: 'javascript:return Math.max(200, $.height() - 100)',
+			node: {type: 'Video', width: '*', height: '*', style: 'margin:0 20px', widthMinus: 40, src: a, afterContent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}
+		});
 	},
 	// @a -> image array, b -> style
 	previewImage: function(a, b) {
 		if (br.app) {
 			plus.nativeUI.previewImage(_map(_arrMake(a), function() {return _urlComplete(this)}), b);
 		} else {
-			var w = Math.max(600, $.width() - 90), h = Math.max(400, $.height() - 90);
-			if (br.mobile) {
-				w = $.width() - 36;
-				h = $.height() - 36;
-			}
 			if (_isArray(a))
 				a = a[(b && b.current) || 0];
 			a = _urlComplete(a);
-			$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', width: w, height: h, cover: T, autoHide: T,
+			$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', cover: T, autoHide: T,
+				width: 'javascript:return $.br.mobile ? $.width() - 36 : Math.max(200, $.width() - 100)', height: 'javascript:return $.br.mobile ? $.height() - 36 : Math.max(200, $.height() - 100)',
 				node: {type: 'Html', align: 'center', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 80) + 'px;max-height:' + (h - 80) + 'px">' +
 					'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
 					'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}});

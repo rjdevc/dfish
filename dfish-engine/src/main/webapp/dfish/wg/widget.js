@@ -2958,6 +2958,8 @@ DocView = define.widget('DocView', {
 			if (w != N || h != N) {
 				for (var i = 0, l = this.length; i < l; i ++)
 					_w_rsz_all.call(this[i]);
+				for (i in this.discNodes)
+					_w_rsz_all.call(this.discNodes[i]);
 				this.trigger('resize');
 			}
 		}
