@@ -1763,9 +1763,13 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 		pubParent: function() {return this.u},
 		// 预览本地图片
 		createThumbnail: function() {
-			var r = new FileReader(), self = this;
-			r.onload = function(e) {self.$('g').src = e.target.result};
-			r.readAsDataURL(this.x.file);
+			if (window.FileReader) {
+				var r = new FileReader(), self = this;
+				r.onload = function(e) {self.$('g').src = e.target.result};
+				r.readAsDataURL(this.x.file);
+			} else {
+				Q(this.$('g')).css({width: '100%', background: '#000'})
+			}
 		},
 		upload: function() {
 			var d = new FormData(), f = this.x.file, u = this.u, r = $.ajaxXHR();
@@ -1809,20 +1813,23 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			c.length && $.previewImage(c, {current: e});
 		},
 		setProgress: function(a) {
-			var cvs = this.$('cvs'),
-				ctx = this.$('cvs').getContext('2d');
-			cvs.width = cvs.width;
-			ctx.beginPath();
-			ctx.translate(17, 17);
-			ctx.moveTo(0, 0);
-			ctx.arc(0, 0, 15, -Math.PI * .5, Math.PI * ((2 * a / 100) - .5));
-			ctx.closePath();
-			ctx.fillStyle = 'rgba(255,255,255,.7)';
-			ctx.fill();
-			ctx.beginPath();
-			ctx.arc(0, 0, 16, 0, Math.PI * 2);
-			ctx.strokeStyle = '#fff';
-			ctx.stroke();
+			if (window.HTMLCanvasElement) {
+				var cvs = this.$('ld'), ctx = cvs.getContext('2d');
+				cvs.width = cvs.width;
+				ctx.beginPath();
+				ctx.translate(17, 17);
+				ctx.moveTo(0, 0);
+				ctx.arc(0, 0, 15, -Math.PI * .5, Math.PI * ((2 * a / 100) - .5));
+				ctx.closePath();
+				ctx.fillStyle = 'rgba(255,255,255,.7)';
+				ctx.fill();
+				ctx.beginPath();
+				ctx.arc(0, 0, 16, 0, Math.PI * 2);
+				ctx.strokeStyle = '#fff';
+				ctx.stroke();
+			} else {
+				this.$('ld').innerHTML = a + '%';
+			}
 		},
 		//@serverData -> 成功返回: {id: 'ID', name: '名称', size: '字节数', url: '地址', thumbnail: '缩略图地址'}, 失败返回: {error: true, text: '失败原因'}
 		setSuccess: function(serverData) {
@@ -1875,7 +1882,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			return '<div class=_cvr></div>';
 		},
 		html_loading: function() {
-			return '<canvas id=' + this.id + 'cvs width=34 height=34 class=f-center></canvas>'
+			return window.HTMLCanvasElement ? '<canvas id=' + this.id + 'ld width=34 height=34 class=f-center></canvas>' : '<div id=' + this.id + 'ld class=f-center style="width:100%;left:0;height:30px;line-height:30px;margin-top:-15px;text-align:center;color:#fff"></div>'
 		},
 		html_nodes: function() {
 			var u = this.u, f = this.x.file, v = this.x.data, m = '', w = this.innerWidth(), h = this.innerHeight(), c = u.x.thumbnail,
@@ -1920,23 +1927,26 @@ VideoUploadValue = define.widget('VideoUploadValue', {
 		className: 'w-videoupload-value',
 		// 本地视频生成预览图
 		createThumbnail: function() {
-			var video = document.createElement('video'), self = this;
-			video.addEventListener('loadeddata', function() {
-			    setTimeout(function() {
-			    	if (!self.x.file) return;
-			    	var canvas = document.createElement('canvas');
-			    	canvas.width = video.videoWidth;
-			    	canvas.height = video.videoHeight;
-			    	var ctx = canvas.getContext('2d');
-			    	ctx.drawImage(video, 0, 0);
-			    	self.$('g').src = self._thumbnail = canvas.toDataURL('image/png');
-					video.pause();
-					Q(video).remove();
-			    }, 150);
-			});
-			video.src = URL.createObjectURL(this.x.file);
-			video.muted = true;
-			video.play();
+			if (window.URL) {
+				var video = document.createElement('video'), self = this;
+				video.addEventListener('loadeddata', function() {
+				    setTimeout(function() {
+				    	if (!self.x.file) return;
+				    	var cvs = document.createElement('canvas'), ctx = cvs.getContext('2d');
+				    	cvs.width = video.videoWidth;
+				    	cvs.height = video.videoHeight;
+				    	ctx.drawImage(video, 0, 0);
+				    	self.$('g').src = self._thumbnail = cvs.toDataURL('image/png');
+						video.pause();
+						Q(video).remove();
+				    }, 150);
+				});
+				video.src = URL.createObjectURL(this.x.file);
+				video.muted = true;
+				video.play();
+			} else {
+				Q(this.$('g')).css({width: '100%', background: '#000'})
+			}
 		},
 		html_cvr: function() {
 			return '<div class=_cvr>' + $.image('.f-i-play', {cls: '_play'}) + '</div>';
