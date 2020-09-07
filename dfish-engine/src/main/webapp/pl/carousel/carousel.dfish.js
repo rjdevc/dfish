@@ -109,9 +109,9 @@ define.widget( 'carousel', {
 					} else {
 						a.height = bh; a.removeAttribute('width');
 					}
-				}
-				if (!$.br.css3) {
-					Q(a).css({marginLeft: -a.width / 2, marginTop: -a.height / 2});
+					if (!$.br.css3 && this.x.cover) {
+						Q(a).css({marginLeft: -a.width / 2, marginTop: -a.height / 2});
+					}
 				}
 			}
 		},
@@ -142,6 +142,7 @@ define.widget( 'carousel', {
 			this.pause(f.next() || f.parentNode[0]);
 		},
 		html_nodes: function() {
+			!this.innerHeight() && this.addClass('z-autoht');
 			return this.fra.html() + this.tab.html() + '<div class="_prev f-i-prev" onclick="' + $.abbr + '.widget(this).prev()"></div><div class="_next f-i-next" onclick="' + $.abbr + '.widget(this).next()"></div>';
 		},
 		dispose: function() {

@@ -10,6 +10,7 @@
 .w-carousel ._next{display:none;right:0}
 .w-carousel.z-arrow ._prev,.w-carousel.z-arrow ._next{display:block}
 .w-carousel.z-arrow.z-hideprev ._prev,.w-carousel.z-arrow.z-hidenext ._next,.w-carousel.z-arrow.z-one ._prev,.w-carousel.z-arrow.z-one ._next{display:none}
+.w-carousel.z-autoht ._big{position:static;transform:none;}
 
 .w-carousel-btn{border:2px solid transparent;margin:2px 0;}
 .w-carousel-btn.z-on{border-color:#fa7d3c}
