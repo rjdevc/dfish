@@ -5917,7 +5917,7 @@ Select = define.widget('select', {
 			return this.getFocusOption(1);
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.options, i = o && o.length, k = 0, e = this.x.escape !== F, t = this.attr('tip');
+			var s = '', v = this.x.value, o = this.x.options || [], i = o.length, k = 0, e = this.x.escape !== F, t = this.attr('tip');
 			while (i --) {
 				var f = o[i].text;
 				if (this.x.format)
