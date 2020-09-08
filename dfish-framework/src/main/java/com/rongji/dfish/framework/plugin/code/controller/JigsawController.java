@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.plugin.code.controller;
 
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.framework.mvc.controller.BaseActionController;
+import com.rongji.dfish.framework.mvc.controller.FrameworkController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.framework.plugin.code.JigsawGenerator;
 import com.rongji.dfish.framework.plugin.code.dto.JigsawAuth;
@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
  * @since DFish3.2
  */
 @RequestMapping("/jigsaw")
-public class JigsawController extends BaseActionController {
+public class JigsawController extends FrameworkController {
     /**
      * 滑动图片生成器
      */

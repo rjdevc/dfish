@@ -24,6 +24,7 @@ public class ServletUtil {
     public static final String ENCODING_UTF8 = "UTF-8";
     public static final String DOWNLOAD_ENCODING = "ISO8859-1";
     private static final SimpleDateFormat DF_GMT;
+
     static {
         DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
         DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
@@ -407,20 +408,21 @@ public class ServletUtil {
 
     /**
      * 下载一个资源
-     * @param request HttpServletRequest
-     * @param response HttpServletResponse
+     *
+     * @param request          HttpServletRequest
+     * @param response         HttpServletResponse
      * @param downloadResource 资源
-     * @param inline true的时候当成文件直接打开。 false的时候当成附件另存为。
+     * @param inline           true的时候当成文件直接打开。 false的时候当成附件另存为。
      * @return
      */
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
                                           DownloadResource downloadResource, boolean inline) throws IOException {
         //处理缓存。如果已经缓存了。则无需下载，直接返回HttpServletResponse.SC_NOT_MODIFIED
-        DownloadStatus status=new DownloadStatus();
+        DownloadStatus status = new DownloadStatus();
         status.setContentLength(downloadResource.getLength());
         status.setResourceLength(downloadResource.getLength());
         status.setRangeBegin(0);
-        status.setRangeEnd(downloadResource.getLength()-1);
+        status.setRangeEnd(downloadResource.getLength() - 1);
         try {
             long headerValue = request.getDateHeader("If-Modified-Since");
             if (headerValue != -1) {
@@ -437,7 +439,7 @@ public class ServletUtil {
         // 计算 需要下载数据的范围
         String range = request.getHeader("Range");
         long from = 0L;
-        long to = downloadResource.getLength()-1;
+        long to = downloadResource.getLength() - 1;
         if (range != null && !"".equals(range)) {
             range = range.toLowerCase();
             if (range.startsWith("bytes")) {
@@ -479,38 +481,38 @@ public class ServletUtil {
                 }
             }
         }
-        long contentLength = to - from+1;
+        long contentLength = to - from + 1;
 
         status.setContentLength(contentLength);
         status.setRangeBegin(from);
         status.setRangeEnd(to);
 
-        String contentType= downloadResource.getContentType();
+        String contentType = downloadResource.getContentType();
         if (Utils.isEmpty(contentType)) {
-            String extName=FileUtil.getFileExtName(downloadResource.getName());
-            contentType=getMimeType(extName);
-            if(Utils.isEmpty(contentType)) {
+            String extName = FileUtil.getFileExtName(downloadResource.getName());
+            contentType = getMimeType(extName);
+            if (Utils.isEmpty(contentType)) {
                 contentType = "application/octet-stream";
             }
         }
         response.setHeader("Content-type", contentType);
 
-        if(range!=null){
+        if (range != null) {
             response.setStatus(HttpServletResponse.SC_PARTIAL_CONTENT);
             response.setHeader("Content-Length", String.valueOf(contentLength));
-            String contentRange = "bytes " + from + "-" + to  + "/" + downloadResource.getLength();
+            String contentRange = "bytes " + from + "-" + to + "/" + downloadResource.getLength();
             response.setHeader("Content-Range", contentRange);
-        }else{
+        } else {
             response.setStatus(HttpServletResponse.SC_OK);
             response.setHeader("Content-Length", String.valueOf(downloadResource.getLength()));
         }
-        if(from == 0){
-            if(!inline){
+        if (from == 0) {
+            if (!inline) {
                 response.setHeader("Content-Disposition", "attachment; filename="
                         + URLEncoder.encode(downloadResource.getName(), FileUtil.ENCODING));
             }
             if (downloadResource.getLastModified() > 0L) {
-                synchronized(DF_GMT) {
+                synchronized (DF_GMT) {
                     response.setHeader("Last-Modified", DF_GMT.format(new Date(downloadResource.getLastModified())));
                 }
 
@@ -519,16 +521,15 @@ public class ServletUtil {
         }
 
 
-
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
-        InputStream is=null;
-        if(downloadResource.getInputStreamProvider() != null){
-            is= downloadResource.getInputStreamProvider().open();
+        InputStream is = null;
+        if (downloadResource.getInputStreamProvider() != null) {
+            is = downloadResource.getInputStreamProvider().open();
         }
         if (is == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            LogUtil.error("DownloadResource "+ downloadResource.getName()+" does not exists",new IllegalArgumentException(downloadResource.getName()));
+            LogUtil.error("DownloadResource " + downloadResource.getName() + " does not exists", new IllegalArgumentException(downloadResource.getName()));
             return status;
         }
 
@@ -545,22 +546,22 @@ public class ServletUtil {
             byte[] buff = new byte[8192];
             long currLeftLength = contentLength;
             // org.apache.catalina.servlets.DefaultServlet
-            while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, (int)(currLeftLength>8192 ? 8192 : currLeftLength)))) {
+            while (currLeftLength > 0 && -1 != (bytesRead = bis.read(buff, 0, (int) (currLeftLength > 8192 ? 8192 : currLeftLength)))) {
                 bos.write(buff, 0, bytesRead);
                 long readBytes = Long.parseLong(String.valueOf(bytesRead));
                 currLeftLength -= readBytes;
-                status.setCompleteLength(status.getCompleteLength()+readBytes);
+                status.setCompleteLength(status.getCompleteLength() + readBytes);
             }
 
         } catch (IOException e) {
-            if(e.getClass().getSimpleName().equals("ClientAbortException")){
+            if (e.getClass().getSimpleName().equals("ClientAbortException")) {
                 // 日志暂时不输出,这个日志也没什么意思
 //                String msg="client abort when download "+request.getRequestURI() +" name="+downloadResource.getName();
 //                if(range!=null){
 //                    msg+=" range="+range;
 //                }
 //                LogUtil.info(msg);
-            }else {
+            } else {
                 LogUtil.error("download error", e);
             }
 //            LogUtil.error("FileUtil.downLoadFile error", e);
@@ -579,14 +580,12 @@ public class ServletUtil {
     }
 
     private static String getEtag(DownloadResource resource) {
-        return "W/\""+resource.getLength()+"-"+resource.getLastModified()+"\"";
+        return "W/\"" + resource.getLength() + "-" + resource.getLastModified() + "\"";
     }
 
-    public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
-                                       final File file, boolean inline)throws IOException{
-        DownloadResource resource=new DownloadResource(file.getName(),file.length(),file.lastModified(),
-                ()->new FileInputStream(file));
-        return download(request,response,resource,inline);
+    public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response, File file, boolean inline) throws IOException {
+        DownloadResource resource = new DownloadResource(file.getName(), file.length(), file.lastModified(), () -> new FileInputStream(file));
+        return download(request, response, resource, inline);
     }
 
 

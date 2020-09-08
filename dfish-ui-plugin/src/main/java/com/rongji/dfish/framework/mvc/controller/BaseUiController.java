@@ -30,7 +30,7 @@ import java.net.SocketException;
  *
  * @since DFish3.0
  */
-public class BaseUiController extends BaseActionController {
+public class BaseUiController extends FrameworkController {
 
     /**
      * 获取分页信息对象

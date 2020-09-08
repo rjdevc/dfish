@@ -2,7 +2,7 @@ package com.rongji.dfish.demo.controller;
 
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.mvc.controller.BaseActionController;
+import com.rongji.dfish.framework.mvc.controller.FrameworkController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.plugin.lob.service.LobService;
@@ -13,7 +13,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,7 +22,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/demo")
-public class DemoController extends BaseActionController {
+public class DemoController extends FrameworkController {
     @Autowired
     private FileService fileService;
     @Autowired

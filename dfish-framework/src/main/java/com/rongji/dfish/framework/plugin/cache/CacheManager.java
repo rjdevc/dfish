@@ -80,7 +80,7 @@ public class CacheManager {
      */
     public <K, V> Cache<K, V> getCache(String cacheName, boolean create) {
         Cache<K, V> cache = (Cache<K, V>) cacheMap.get(cacheName);
-        if (create) {
+        if (create && cache == null) {
             MemoryCache mCache = new MemoryCache();
             mCache.setName(cacheName);
             cache = mCache;

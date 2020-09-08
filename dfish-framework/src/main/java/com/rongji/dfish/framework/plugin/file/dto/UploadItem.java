@@ -25,7 +25,7 @@ public class UploadItem implements Serializable {
     private Boolean escape;
     private String width;
     private String height;
-    private Number duration;
+    private Integer duration;
 
     private PubFileRecord fileRecord;
     /**
@@ -248,7 +248,7 @@ public class UploadItem implements Serializable {
      * 持续时间/播放时长(单位:秒)
      * @return Number 播放时长
      */
-    public Number getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
@@ -257,7 +257,7 @@ public class UploadItem implements Serializable {
      * @param duration Number 播放时长
      * @return 本身，这样可以继续设置其他属性
      */
-    public UploadItem setDuration(Number duration) {
+    public UploadItem setDuration(Integer duration) {
         this.duration = duration;
         return this;
     }

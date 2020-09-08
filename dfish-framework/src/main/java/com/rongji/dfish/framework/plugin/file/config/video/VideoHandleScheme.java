@@ -67,7 +67,10 @@ public class VideoHandleScheme extends FileHandleScheme {
         }
         // FIXME 截取封面可能需要大量时间,有可能后续要用后台线程进行截取
         grabVideoFramer(uploadItem);
-
+        if (uploadItem.getDuration() != null && uploadItem.getFileRecord() != null) {
+            uploadItem.getFileRecord().setChange(true);
+            uploadItem.getFileRecord().setFileDuration(uploadItem.getDuration());
+        }
         return super.uploaded(uploadItem);
     }
 

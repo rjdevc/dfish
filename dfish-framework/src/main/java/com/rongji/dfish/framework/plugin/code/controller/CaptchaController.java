@@ -2,7 +2,7 @@ package com.rongji.dfish.framework.plugin.code.controller;
 
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.LogUtil;
-import com.rongji.dfish.framework.mvc.controller.BaseActionController;
+import com.rongji.dfish.framework.mvc.controller.FrameworkController;
 import com.rongji.dfish.framework.plugin.code.CaptchaGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,7 +21,7 @@ import java.util.Map;
  * @since DFish5.0
  */
 @RequestMapping("/captcha")
-public class CaptchaController extends BaseActionController {
+public class CaptchaController extends FrameworkController {
     @Autowired(required = false)
     private List<CaptchaGenerator> generators;
     private Map<String, CaptchaGenerator> generatorMap = new HashMap<>();

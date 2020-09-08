@@ -124,10 +124,7 @@ public class JsonResponse<T> {
      */
     public JsonResponse<T> setPagination(Pagination pagination) {
         if (pagination != null) {
-            Header header = header();
-            header.setLimit(pagination.getLimit());
-            header.setOffset(pagination.getOffset());
-            header.setSize(pagination.getSize());
+            header().setPagination(pagination);
         }
         return this;
     }
@@ -273,6 +270,20 @@ public class JsonResponse<T> {
          */
         public Header setPrincipal(HeaderPrincipal principal) {
             this.principal = principal;
+            return this;
+        }
+
+        /**
+         * 设置分页信息
+         * @param pagination
+         * @return
+         */
+        public Header setPagination(Pagination pagination) {
+            if (pagination != null) {
+                this.setLimit(pagination.getLimit());
+                this.setOffset(pagination.getOffset());
+                this.setSize(pagination.getSize());
+            }
             return this;
         }
 

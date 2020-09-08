@@ -5,7 +5,7 @@ import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
-import com.rongji.dfish.framework.mvc.controller.BaseActionController;
+import com.rongji.dfish.framework.mvc.controller.FrameworkController;
 import com.rongji.dfish.framework.mvc.response.JsonResponse;
 import com.rongji.dfish.framework.plugin.file.config.DownloadParam;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleManager;
@@ -29,7 +29,6 @@ import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -42,7 +41,7 @@ import java.util.*;
  * @since DFish3.0
  */
 @RequestMapping("/file")
-public class FileController extends BaseActionController {
+public class FileController extends FrameworkController {
 
     @Resource(name = "fileService")
     private FileService fileService;
