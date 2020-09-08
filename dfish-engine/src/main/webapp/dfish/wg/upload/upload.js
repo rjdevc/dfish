@@ -1819,7 +1819,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 				ctx.beginPath();
 				ctx.translate(17, 17);
 				ctx.moveTo(0, 0);
-				ctx.arc(0, 0, 15, -Math.PI * .5, Math.PI * ((2 * a / 100) - .5));
+				ctx.arc(0, 0, 15, -Math.PI / 2, Math.PI * ((2 * a / 100) - .5));
 				ctx.closePath();
 				ctx.fillStyle = 'rgba(255,255,255,.7)';
 				ctx.fill();

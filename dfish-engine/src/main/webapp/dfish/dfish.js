@@ -1753,8 +1753,15 @@ Ajax = _createClass({
 						} else
 							m = l.responseText;
 						self.response = m;
-						if (!r && x.filter && _fnapply(x.filter, c, '$response,$ajax', [m, self]) === F)
-							r = 'filter';
+						if (!r && x.filter) {
+							var t = _fnapply(x.filter, c, '$response,$ajax', [m, self]);
+							if (t) {
+								self.response = t;
+							} else {
+								r = 'filter';
+								if (t === U) f = F;
+							}
+						}
 					} else
 						r = g;
 					// 如果有context且context失效，则不执行error也不执行succcess，只执行complete
@@ -1770,7 +1777,7 @@ Ajax = _createClass({
 									win.console && console.error(s + ((r = l.responseText) ? '\n' + r : ''));
 								}
 							}
-					  } else {
+					  	} else {
 							b && b.call(c, self.response, self);
 							_ajax_cache[u] === self && self.fireEvent('cache');
 						}
