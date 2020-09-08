@@ -655,8 +655,8 @@ public final class FileUtil {
     }
 
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response,
-                                          final File file, String downloadFileName, boolean inline)throws IOException{
-        DownloadResource resource=new DownloadResource(Utils.notEmpty(downloadFileName) ? downloadFileName : file.getName(), file.length(), file.lastModified(),
+                                          final File file, boolean inline)throws IOException{
+        DownloadResource resource=new DownloadResource(file.getName(), file.length(), file.lastModified(),
                 new DownloadResource.InputStreamProvider() {
                     @Override
                     public InputStream open() throws IOException {

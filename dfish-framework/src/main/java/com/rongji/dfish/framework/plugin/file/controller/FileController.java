@@ -16,7 +16,6 @@ import com.rongji.dfish.framework.plugin.file.controller.config.FileHandlingSche
 import com.rongji.dfish.framework.plugin.file.controller.config.ImageHandlingDefine;
 import com.rongji.dfish.framework.plugin.file.controller.plugin.FileUploadPlugin;
 import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
-import com.rongji.dfish.framework.plugin.file.service.FileRecordParam;
 import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.misc.util.ImageUtil;
 import com.rongji.dfish.ui.command.JSCommand;
@@ -39,7 +38,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
