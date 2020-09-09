@@ -68,24 +68,51 @@ define.widget( 'Carousel', {
 			f.push( { type: 'Html', cls: 'w-carousel-big', id: this.id + 'i' + i, width: '*', height: '*', text: s } );
 		}
 		this.tab = this.add( { type: 'ButtonBar', cls: 'w-carousel-bbr', width: '*', height: '*', pub: { name: this.id + 'name', cls: 'w-carousel-btn', focusable: true }, nodes: t, on: { mouseOut: g + '.play()' } } );
-		this.fra = this.add( { type: 'Frame', width: '*', height: x.bigHeight, dft: this.id + 'i0', nodes: f, on: { mouseOver: g + '.pause()', mouseOut: g + '.play()', change: g + '.frameChange()' } } );
-		//this.className += ' z-hideprev';
-		//if (this.tab.length <= 1) this.className += ' z-hidenext';
+		this.fra = this.add( { type: 'Frame', width: '*', height: x.bigHeight, dft: this.id + 'i0', nodes: f, on: { mouseOver: g + '.pause()', mouseOut: g + '.play()' } } );
 		if (this.tab.length <= 1) this.className += ' z-one';
+		if (x.arrow) this.className += ' z-arrow';
+		this.className += ' carousel-' + (x.face || 0);
 	},
 	Extend: 'Vert',
 	Listener: {
 		body: {
-			ready: function() { cssLoad(this.fixText, this); this.play(); }
+			ready: function() { cssLoad(this.fixText, this); this.play(); },
+			resize: function() { cssLoad(this.fixText, this); this.fixImg();}
 		}
 	},
 	Prototype: {
 		className: 'w-carousel',
 		index: 0,
 		fixText: function() {
-			if (this.x.cls && (this.x.cls.indexOf('carousel-3') > -1 || this.x.cls.indexOf('carousel-4') > -1)) {
+			if (this.x.face == 3 || this.x.face == 4) {
 				var w = this.tab.$().offsetWidth;
 				Q('.w-carousel-big ._t', this.$()).css({right: w + 15});
+			}
+		},
+		fixImg: function() {
+			var self = this;
+			Q('._big', this.$()).each(function() {
+				this.isLoaded && self.fixImgSize(this);
+			});
+		},
+		imgLoad: function(a) {
+			a.isLoaded = true;
+			this.fixImgSize(a);
+		},
+		fixImgSize: function(a) {
+			if (!this.x.bigwidth && !this.x.bigheight) {
+				var b = $.widget(a), bw = b.innerWidth(), bh = b.innerHeight();
+				if (bw && bh) {
+					var gw = a.width, gh = a.height, gd = gw/gh, bd = bw/bh;
+					if ((this.x.cover && gd < bd) || (!this.x.cover && gd > bd)) {
+						a.width = bw; a.removeAttribute('height');
+					} else {
+						a.height = bh; a.removeAttribute('width');
+					}
+					if (!$.br.css3 && this.x.cover) {
+						Q(a).css({marginLeft: -a.width / 2, marginTop: -a.height / 2});
+					}
+				}
 			}
 		},
 		play: function() {
@@ -97,7 +124,7 @@ define.widget( 'Carousel', {
 				var t = self.tab.getFocus();
 				(t.next() || self.tab[0]).focus();
 				self.play();
-			}, 3000 );
+			}, (this.x.time || 3) * 1000 );
 		},
 		pause: function( a ) {
 			clearTimeout( this.timer );
@@ -106,21 +133,17 @@ define.widget( 'Carousel', {
 		click: function( a ) {
 			this.formatJS( this.x.value[ a ].href );
 		},
-		frameChange: function() {
-			var f = this.fra.getFocus();
-			//this.addClass('z-hideprev', !f.prev() );
-			//this.addClass('z-hidenext', !f.next() );
-		},
 		prev: function() {
 			var f = this.tab.getFocus();
-			this.pause(f.prev() || f.parentNode.last());
+			this.pause(f.prev() || f.parentNode.get(-1));
 		},
 		next: function() {
 			var f = this.tab.getFocus();
 			this.pause(f.next() || f.parentNode[0]);
 		},
 		html_nodes: function() {
-			return this.fra.html() + this.tab.html() + '<div class="_prev f-i-img-prev" onclick="' + $.abbr + '.widget(this).prev()"></div><div class="_next f-i-img-next" onclick="' + $.abbr + '.widget(this).next()"></div>';
+			!this.innerHeight() && this.addClass('z-autoht');
+			return this.fra.html() + this.tab.html() + '<div class="_prev f-i-prev" onclick="' + $.abbr + '.widget(this).prev()"></div><div class="_next f-i-next" onclick="' + $.abbr + '.widget(this).next()"></div>';
 		},
 		dispose: function() {
 			clearTimeout( this.timer );

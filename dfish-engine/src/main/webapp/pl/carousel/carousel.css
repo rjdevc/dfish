@@ -4,7 +4,6 @@
 
 .w-carousel{position:relative;text-align:center}
 .w-carousel ._big{position:absolute;transform:translate(-50%,-50%);top:50%;left:50%;}
-.f-css2 .w-carousel ._big{position:static}
 .w-carousel .w-button ._t{visibility:hidden}
 .w-carousel ._prev,.w-carousel ._next{position:absolute;top:0;bottom:0;margin:auto 0;}
 .w-carousel ._prev{left:0}

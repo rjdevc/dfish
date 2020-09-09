@@ -24,6 +24,9 @@
 
 .w-frame{white-space:nowrap;overflow:hidden}
 
+.w-fixedtable .w-tbody{overflow:auto}
+.w-tfoot .w-td.z-face-line, .w-tfoot .w-td.z-face-cell{border-top-width:1px;border-bottom-width:0}
+
 .w-label{line-height: inherit;}
 
 .w-combobox ._plus .f-i:before,.w-pickbox ._plus .f-i:before,.w-linkbox ._plus .f-i:before,.w-onlinebox ._plus .f-i:before{content:'\e409'}

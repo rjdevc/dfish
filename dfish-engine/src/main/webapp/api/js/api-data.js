@@ -10,7 +10,7 @@ define( {
         { name: '$.br.ms', type: 'Boolean', remark: '是否微软的浏览器(包含ie5到ie11，edge)', common: true },
         { name: '$.br.css3', type: 'Boolean', remark: '浏览器是否支持css3(ie8及以下浏览器不支持css3；ie9+、chrome等支持css3)', common: true }
       ] },*/
-      { name: '$.globals', id: '$.globals', remark: '设置了 gid 参数的 widget 实例都存放在这里。可以通过 $.globals[ gid ] 来获取该实例。', common: true },
+      { name: '$.globals', id: '$.globals', remark: '设置了 gid 参数的 widget 实例都存放在这里。可以通过 <b>$.globals[gid]</b> 来获取该实例。', common: true },
       { name: '$.x', id: '$.x', remark: '经 $.config() 方法设置的参数对象。', common: true }
     ],
     Methods: [
@@ -112,7 +112,7 @@ define( {
           { name: 'ajaxError', type: 'Function | Boolean', remark: '如果设为false，不提示任何ajax信息。<br>如果设为function，则作为处理错误信息的方法。', param: [
 	        { name: 'ajax', type: 'Ajax', remark: 'CSS类名。多个用空格隔开' }
 	      ]  },
-          { name: 'ajaxFilter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理。如果返回false，则不执行success。', param: [
+          { name: 'ajaxFilter', type: 'Function', remark: '对命令或widget的src返回的数据进行处理。返回类型：<br>1. 返回正常数据，则引擎继续执行下一步。<br>2. 返回false，则由引擎提示错误。<br>3. 无返回，引擎不做任何处理。', param: [
 	        { name: 'response', type: 'Object', remark: '服务器返回的数据JSON对象。' },
 	        { name: 'ajax', type: 'Ajax', remark: 'ajax实例' }
 	      ], example: [
@@ -1275,7 +1275,7 @@ define( {
       { name: 'cls', type: 'String', remark: '样式类名。', common: true },
       { name: 'data', type: 'Object', remark: '扩展数据。key:value键值对。在当前widget及子孙节点范围内的事件可以用变量 $key 的来获取值。', common: true },
       { name: 'display', type: 'Boolean', remark: '是否显示。', common: true },
-      { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 $.globals[ gid ] 方法来获取 widget。', common: true },
+      { name: 'gid', type: 'String', remark: '自定义的全局ID。可通过 <b>$.globals[gid]</b> 方法来获取 widget。', common: true },
       { name: 'height', type: 'Number | String', remark: '高度。可以用数字, *, 百分比。如果设置为 -1, 就是自适应高度。', common: true },
       { name: 'heightMinus', type: 'Number', remark: '如果设置了 cls 参数，并且 cls 里定义了 padding border margin 这三种样式中的至少一种 ，那么就需要手工设置 heightMinus 以减去因这些样式额外增加的高度。<br>注: 如果在 style 参数里设置了这三种样式，系统会自动分析，一般不需要额外设置 heightMinus。', common: true },
       { name: 'id', type: 'String', remark: '自定义的ID。可通过 view.find( id ) 方法来获取 widget。', common: true },

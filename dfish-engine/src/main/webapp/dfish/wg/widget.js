@@ -348,12 +348,8 @@ $.each('Menu Dialog Tip Loading Alert Confirm'.split(' '), function(v, i) {
 $.each('Before After Prepend Append Replace Remove'.split(' '), function(v, i) {
 	_cmdHooks[v] = function(x, a, b) {
 		var d = x.target || (i > 3 && x.node && x.node.id), e;
-		if (d) {
-			if (x.section === 'cmd') {
-				x.node && ((_view(this).x.commands || (_view(this).x.commands = {}))[d] = i === 5 ? N : x.node);
-			} else if (e = _view(this).find(d)) {
-				e[v.toLowerCase()](x.node || x.nodes);
-			}
+		if (d && (e = _view(this).find(d))) {
+			e[v.toLowerCase()](x.node || x.nodes);
 		}
 	}
 });
@@ -761,6 +757,10 @@ W = define('Widget', function() {
 				var r = this.pubParent();
 				r && r.x.pub && $.extendDeep(x, r.x.pub);
 			}
+			// owner_x 是优先的，不可被template重写的属性
+			if (!this.owner_x && (x.template || x.preload || this.hasLayout)) {
+				this.owner_x = $.extend({}, x);
+			}
 			if (x.template) {
 				var t = _getTemplate(x.template, T);
 				if (t) {
@@ -782,9 +782,6 @@ W = define('Widget', function() {
 				// 属性和cls在获取defaultOption之前可能会相互定义，因此需要调用两次
 				this.init_x_cls();
 			}
-			// owner_x 是优先的，不可被template重写的属性
-			if (!this.owner_x && (x.template || x.preload))
-				this.owner_x = $.extend({}, x);
 		},
 		init_x: function(x) {
 			this._init_x(x);
@@ -902,6 +899,10 @@ W = define('Widget', function() {
 		// a -> name, b -> value, c -> old value
 		attrSetter: function(a, b, c) {
 			switch(a) {
+				case 'id':
+					if (c) delete (this.ownerView || this.parent).widgets[c];
+					if (b) (this.ownerView || this.parent).widgets[b] = this;
+				break;
 				case 'cls':
 					c && this.removeClass(c);
 					b && this.addClass(b);
@@ -2387,8 +2388,9 @@ AbsSection = define.widget('AbsSection', {
 		W.call(this, x, p, n);
 	},
 	Prototype: {
-		showLoading: $.rt(),
+		hasLayout: T,
 		showLayout: $.rt(),
+		showLoading: $.rt(),
 		init_x: function(x) {
 			this._init_x(x);
 		},
@@ -2455,28 +2457,37 @@ AbsSection = define.widget('AbsSection', {
 		loadData: function(tar, fn, cache) {
 			this.abort();
 			this.loading = T;
-			var m, n, o, t = this.x.template, self = this,
-				d = this.type_view && _viewResources[this.path],
+			var m, n, t = this.x.template, self = this,
+				d = function() {
+					if (t || n) {
+						var r;
+						// 解析view之前，需要事先加载viewResources
+						if (self.type_view) {
+							var c = self.type_view && !self.owner_x.id && (t ? t.id : n.id);
+							if (c && c != self.x.id)
+								self.attr('id', c);
+							r = _viewResources[self.path];
+						}
+						r ? $.require(r, function() {m = T; e();}) : (m = T);
+					}
+				},
 				e = function() {
-					if (!self._disposed && m && n && o) {self._loadEnd(n); fn && fn.call(self, n); n = N;}
+					if (!self._disposed && m && n) {self._loadEnd(n); fn && fn.call(self, n); n = N;}
 				};
-			if (t && typeof t === _STR) {
+			if (t && typeof t === _STR)
 				t = _getTemplate(t);
-				o = T; e();
-			} else
-				o = T;
-			d ? $.require(d, function() {m = T; e();}) : (m = T);
+			d(), e();
 			var u = this.getSrc();
 			u && typeof u === _STR ? this.exec({type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function(x) {
 				if (this._success(x)) {
-					n = x; e();
+					n = x, d(), e();
 				}
 			}, error: function(a) {
 				if (this._error(a)) {
 					n = new Error({text: Loc.ps(a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status)});
-					e();
+					d(), e();
 				}
-			}}) : (n = u && typeof u === _OBJ ? u : {}, e());
+			}}) : (n = u && typeof u === _OBJ ? u : {}, d(), e());
 			cache && this.addEvent('unload', function() {$.ajaxClean(u)});
 		},
 		_success: function(x) {
@@ -2673,7 +2684,6 @@ Section = define.widget('Section', {
 _initView = function() {
 	this.widgets = {};
 	this.names   = {};
-	this.views   = {};
 	this.initTargets = {};
 	this.layout  = N;
 },
@@ -2730,6 +2740,22 @@ View = define.widget('View', {
 	Prototype: {
 		className: 'w-view',
 		type_view: T,
+		attrSetter: function(a, b, c) {
+			Section.prototype.attrSetter.apply(this, arguments);
+			if (a === 'id' && b != c) {
+				var h = this.path;
+				delete _viewCache[h];
+				_setPath.call(this, this.parent, this.x);
+				for (var i in _viewCache) {
+					if (i.indexOf(h + '/') === 0) {
+						var v = _viewCache[i];
+						delete _viewCache[i];
+						v.path = i.replace(h, this.path);
+						_viewCache[v.path] = v;
+					}
+				}
+			}
+		},
 		// @implement
 		init_x: function(x) {
 			Section.prototype.init_x.call(this, x);
@@ -2763,7 +2789,7 @@ View = define.widget('View', {
 		},
 		// 根据ID获取wg /@a -> id
 		find: function(a) {
-			return this.widgets[a] || this.views[a];
+			return this.widgets[a];
 		},
 		// 获取表单 /@a -> name, b -> range?(elem|widget)
 		f: function(a, b) {
@@ -3241,8 +3267,7 @@ Html = define.widget('Html', {
 		className: 'w-html',
 		attrSetter: function(k, v) {
 			_proto.attrSetter.apply(this, arguments);
-			if (k === 'text')
-				this.text(v);
+			if (k === 'text') this.text(v);
 		},
 		// @a -> text
 		text: function(a) {
@@ -7030,7 +7055,7 @@ Select = define.widget('Select', {
 			return this.getFocusOption(1);
 		},
 		html_nodes: function() {
-			var s = '', v = this.x.value, o = this.x.nodes, i = o && o.length, k = 0, e = this.x.escape !== F;
+			var s = '', v = this.x.value, o = this.x.nodes || [], i = o.length, k = 0, e = this.x.escape !== F;
 			while (i --) {
 				var f = o[i].text;
 				if (this.x.format)
@@ -11526,7 +11551,10 @@ TBody = define.widget('TBody', {
 		body: {
 			scroll: function(e) {
 				_superTrigger(this, Scroll, e);
-				this.rootNode.trigger('scroll');
+				this.table.trigger('scroll');
+			},
+			touchStart: function() {
+				this.rootNode._scrollStart = this.table;
 			},
 			mouseOver: {
 				method: function(e) {
@@ -11554,7 +11582,7 @@ TBody = define.widget('TBody', {
 		className: 'w-tbody',
 		_rowNumCounter: 0,
 		html_nodes: function() {
-			return this.contentTable.html() + (this.table.foot ? this.table.foot.html() : '');
+			return this.contentTable.html() + (!mbi && this.table.foot ? this.table.foot.html() : '');
 		}
 	}
 }),
@@ -11568,11 +11596,11 @@ AbsTable = define.widget('AbsTable', {
 				this.head = new THead($.extend({table: {tHead: x.tHead, columns: x.columns}}, x.tHead, {width: '*'}), this);
 				delete x.scroll;
 			}
+			this.body = new TBody($.extend({table: {tBody: x.tBody, columns: x.columns}}, x.tBody, {width: '*', height: this.head ? '*' : -1, scroll: this.head && s}), this);
 			r = x.tFoot && x.tFoot.nodes;
 			if (r && r.length) {
-				this.foot = new TFoot($.extend({table: {tFoot: x.tFoot, columns: x.columns}}, x.tFoot, {width: '*'}), this, -1);
+				this.foot = new TFoot($.extend({table: {tFoot: x.tFoot, columns: x.columns}}, x.tFoot, {width: '*'}), this, mbi ? N : -1);
 			}
-			this.body = new TBody($.extend({table: {tBody: x.tBody, columns: x.columns}}, x.tBody, {width: '*', height: this.head ? '*' : -1, scroll: this.head && s}), this);
 			x.limit && this.limit();
 			if (this.head && _w_lay.height.call(this))
 				this.addEvent('resize', _w_mix.height).addEvent('ready', _w_mix.height);
@@ -11953,7 +11981,10 @@ AbsTable = define.widget('AbsTable', {
 			}
 		},
 		fixFoot: function() {
-			if (this.foot) {
+			if (!this.foot) return;
+			if (mbi) {
+				this.foot.holdBottom = T;
+			} else {
 				var f = this.foot, r = this.rootNode || this,
 					b = r.body.isScroll() ? r.body : r.isScroll() ? r : N;
 				if (b) {
@@ -12088,7 +12119,13 @@ LeftTable = define.widget('LeftTable', {
 				_superTrigger(this, Vert, e);
 				this.fixSize();
 				this.fixFoot();
-			}
+			},
+			scroll: function(e) {
+				if (this.rootNode._scrollStart == this) {
+					_superTrigger(this, Vert, e);
+					this.rootNode.scrollY(this.body.$().scrollTop);
+				}
+			},
 		}
 	},
 	Prototype: {
@@ -12314,14 +12351,14 @@ StructureItem = define.widget('StructureItem', {
 		},
 		html_nodes: function() {
 			var va = this.attr('vAlign');
-			return '<div class="w-structureitem-t' + (this.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') +
-				'<span class="w-structureitem-s f-inbl f-va">' + this.html_format() + '</span></div>';
+			return '<div class="w-structureitem-t' + (this.x.br === F ? ' f-fix' : '') + '">' + (va && va !== 'top' ? '<i class=f-vi-' + va + '></i>' : '') + '<span class="w-structureitem-s f-inbl f-va">' + this.html_format() + '</span></div>';
 		},
 		html_after: function() {
 			var r = this.rootNode, d = r.x.dir === 'h', m = this.attr('widthMinus') / 2, w = this.attr('width'), h = this.attr('height'), l = this.getLeft(), t = this.getTop(), hs = r.attr('hSpace'), vs = r.attr('vSpace'), i = this.nodeIndex, tl = this.length, pl = this.parentNode.length;
 			return _proto.html_after.call(this) + _proto.html_nodes.call(this) +
-				'<div class="w-structureitem-il z-dir-' + (r.x.dir || 'v') + '" style="left:' + (d ? (l - (this.level&&(pl===1||(i&&i<pl-1)) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (this.level&&(pl===1||(i&&i<pl-1)) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : hs/2) : 0) + 'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : vs/2)) + 'px;"></div>' +
-				(tl > 1 ? '<div class="w-structureitem-cl z-dir-' + (r.x.dir || 'v') + '" style="width:' + (d ? w + hs/2 - m : this.get(-1).getLeft() - this[0].getLeft()) + 'px;height:' + (d ? this.get(-1).getTop() - this[0].getTop() : h + vs/2 - m) + 'px;top:' + (d ? this[0].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[0].getLeft() + w/2 - m) + 'px;"></div>' : '');;
+				'<div class="w-structureitem-il z-dir-' + (r.x.dir || 'v') + '" style="left:' + (d ? (l - (this.level&&(pl===1||(i&&i<pl-1)) ? hs/2 : 0)) : l + w/2) + 'px;top:' + (d ? t + h/2 : t - (this.level&&(pl===1||(i&&i<pl-1)) ? vs/2 : 0)) + 'px;width:' + (d ? w + (tl ? hs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : hs/2) : 0) +
+				'px;height:' + (d ? 0 : h + (tl ? vs : 0) - (this.level&&(pl===1||(i&&i<pl-1)) ? 0 : vs/2)) + 'px;"></div>' + (tl > 1 ? '<div class="w-structureitem-cl z-dir-' + (r.x.dir || 'v') + '" style="width:' + (d ? w + hs/2 - m : this.get(-1).getLeft() - this[0].getLeft()) +
+				'px;height:' + (d ? this.get(-1).getTop() - this[0].getTop() : h + vs/2 - m) + 'px;top:' + (d ? this[0].getTop() + h/2 - m : t + h + vs/2) + 'px;left:' + (d ? l + w + hs/2 : this[0].getLeft() + w/2 - m) + 'px;"></div>' : '');;
 		}
 	}
 }),
