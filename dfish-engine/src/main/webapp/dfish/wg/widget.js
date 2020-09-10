@@ -8825,8 +8825,8 @@ AbsLeaf = define.widget('abs/leaf', {
 					this.attr('text', x.text);
 			}
 			var n = x.nodes, l = n && n.length;
-			if (l && ! this.loading) {
-				if (! this.length) {
+			if (l) {
+				if (!this.length) {
 					this.render_nodes(n);
 					x.open && this.toggle(T);
 				} else {
@@ -8869,6 +8869,8 @@ AbsLeaf = define.widget('abs/leaf', {
 					}
 				},
 				complete: function() {
+					this.loading = F;
+					this.loaded = T;
 					var d = (this.rootNode || this).getFocus();
 					d && d !== f && d.scrollIntoView();
 					c && c.call(this);
