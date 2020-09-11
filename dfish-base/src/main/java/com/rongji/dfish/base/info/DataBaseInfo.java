@@ -76,6 +76,11 @@ public final class DataBaseInfo {
 	public static final int DATABASE_SYBASE = 9;
 
 	/**
+	 * KingbaseES
+	 */
+	public static final int DATABASE_KINGBASE_ES = 10;
+
+	/**
 	 * 使用一个连接来获取数据库的头信息。
 	 * 
 	 * @param conn 链接
@@ -110,7 +115,9 @@ public final class DataBaseInfo {
 			} else if (databaseName.contains("firebird") ) { // "firebird"
 				databaseType = DATABASE_FIREBIRD;
 			} else if (databaseName.contains("adaptive") ) { // "DATABASE_SYBASE"
-				databaseType = DATABASE_SYBASE;
+					databaseType = DATABASE_SYBASE;
+			} else if (databaseName.contains("kingbasees") ) { // KingbaseES
+				databaseType = DATABASE_KINGBASE_ES;
 			} else {
 				databaseType = DATABASE_UNKNOWN;
 			}

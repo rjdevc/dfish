@@ -155,7 +155,7 @@ public class JpegInfo extends ImageInfo {
                 case COM:
                     return "COM";
                 default:
-                    if (type >= APP0 & type <= APP15) {
+                    if (type >= APP0 && type <= APP15) {
                         return "APP" + (type - APP0);
                     }
                     return Integer.toHexString(type & 0xFF).toUpperCase();
@@ -194,7 +194,7 @@ public class JpegInfo extends ImageInfo {
          * @return boolean
          */
         public boolean isEnd() {
-            if (end - start == 2 & src != null) {
+            if (end - start == 2 && src != null) {
                 return src[end - 2] == -1 && src[end - 1] == SOF0;
             }
             return false;
