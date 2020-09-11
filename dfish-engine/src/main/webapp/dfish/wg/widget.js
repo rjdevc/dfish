@@ -8878,7 +8878,7 @@ AbsLeaf = define.widget('abs/leaf', {
 		},
 		// @a -> sync, b -> fn?
 		reload: function(a, b) {
-			typeof b === _FUN && (b = a, a = N);
+			typeof a === _FUN && (b = a, a = N);
 			if (!this.loading && this.x.src) {
 				this.toggle(F);
 				$.ajaxAbort(this);
@@ -8892,7 +8892,7 @@ AbsLeaf = define.widget('abs/leaf', {
 		},
 		// 获取最新的子节点数据，对比原有数据，如果有新增节点就显示出来 / @a -> sync, b -> fn?
 		reloadForAdd: function(a, b) {
-			typeof b === _FUN && (b = a, a = N);
+			typeof a === _FUN && (b = a, a = N);
 			if (this._disposed || this.loading)
 				return;
 			var u = this.x.src, c = _reloadFocusCallack(this, b);
@@ -8904,7 +8904,7 @@ AbsLeaf = define.widget('abs/leaf', {
 		},
 		// 获取父节点的所有子节点数据，取出id相同的项进行更新 / @a -> sync, b -> fn?
 		reloadForModify: function(a, b) {
-			typeof b === _FUN && (b = a, a = N);
+			typeof a === _FUN && (b = a, a = N);
 			if (this._disposed)
 				return;
 			if (this.loading)
