@@ -181,7 +181,7 @@ public class DFishTools extends Application {
                 CryptoUtil.ALGORITHM_BLOWFISH, CryptoUtil.ALGORITHM_AES, CryptoUtil.ALGORITHM_DES,
                 CryptoUtil.ALGORITHM_TRIPLE_DES, CryptoUtil.ALGORITHM_SM4,
                 CryptoUtil.ALGORITHM_MD5, CryptoUtil.ALGORITHM_SHA1, CryptoUtil.ALGORITHM_SHA256,
-                CryptoUtil.ALGORITHM_SHA256, "不加密"));
+                CryptoUtil.ALGORITHM_SM3, "不加密"));
         alg.setValue("Blowfish");
 
         middle.getChildren().add(new Label("字符集"));
