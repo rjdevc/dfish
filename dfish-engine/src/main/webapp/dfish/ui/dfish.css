@@ -788,6 +788,7 @@
 .w-upload.z-ds ._bbar,.w-upload.z-lmt ._bbar{width:0;height:0;overflow:hidden}
 .w-upload ._nofiles{color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
+.w-upload.z-ds.z-nofiles ._bbar{display:block}
 
 .w-upload-icon-local.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -145px -49px}
 .w-upload-icon-net.f-i{display:inline-block;width:22px;height:22px;background:url(g/i.png) no-repeat -172px -49px}

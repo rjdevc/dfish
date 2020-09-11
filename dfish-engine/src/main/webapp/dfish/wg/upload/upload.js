@@ -1179,9 +1179,10 @@ BaseUpload = define.widget( 'upload/base', {
 		this.uploadbar = this.add( { type: this.type + '/buttonbar' } );
 		this.valuebar  = this.add( { type: this.type + '/valuebar', nobr: false, cls: '_vbar' } );
 		this._queues   = [];
-		if ( ! x.uploadbutton ) {
+		if ( ! x.uploadbutton )
 			this.className += ' z-lmt';
-		}
+		if (! this.valuebar.length)
+			this.className += ' z-nofiles';
 	},
 	Default:{ height: -1 },
 	Extend: AbsForm,
