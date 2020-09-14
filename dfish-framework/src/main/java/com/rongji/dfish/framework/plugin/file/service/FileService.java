@@ -159,7 +159,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
             return 0;
         }
         List<UploadItem> itemList = parseUploadItems(itemJson);
-        List<PubFileRecord> oldList = getRecords(fileLink, fileKey);
+        List<PubFileRecord> oldList = listRecords(fileLink, fileKey);
         List<String> newIds = new ArrayList<>(itemList.size());
         for (UploadItem item : itemList) {
             newIds.add(decrypt(item.getId()));
@@ -384,7 +384,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileKey  链接关键字
      * @return List&lt;PubFileRecord&gt; 附件记录集合
      */
-    List<PubFileRecord> getRecords(String fileLink, String fileKey);
+    List<PubFileRecord> listRecords(String fileLink, String fileKey);
 
     /**
      * 查询可用的文件记录
@@ -392,11 +392,11 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      * @param fileLink 附件链接名
      * @param fileKey  链接关键字
      * @return List&lt;PubFileRecord&gt; 附件记录集合
-     * @see #getRecords(String, String)
+     * @see #listRecords(String, String)
      */
     @Deprecated
     default List<PubFileRecord> findFileRecords(String fileLink, String fileKey) {
-        return getRecords(fileLink, fileKey);
+        return listRecords(fileLink, fileKey);
     }
 
     /**

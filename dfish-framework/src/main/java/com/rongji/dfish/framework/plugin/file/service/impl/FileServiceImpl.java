@@ -12,7 +12,6 @@ import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
@@ -317,7 +316,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @return 文件记录列表
      */
     @Override
-    public List<PubFileRecord> getRecords(String fileLink, String fileKey) {
+    public List<PubFileRecord> listRecords(String fileLink, String fileKey) {
         if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             return Collections.emptyList();
         }
@@ -371,7 +370,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      */
     @Override
     public List<UploadItem> listUploadItems(String fileLink, String fileKey) {
-        List<PubFileRecord> fileRecords = getRecords(fileLink, fileKey);
+        List<PubFileRecord> fileRecords = listRecords(fileLink, fileKey);
         return parseUploadItems(fileRecords);
     }
 
