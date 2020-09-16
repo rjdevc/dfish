@@ -5429,7 +5429,12 @@ define( {
       { name: 'uploadLimit', type: 'Number', remark: '最多可上传数量。' },
       { name: 'post', type: 'UploadPost | String', remark: '上传配置对象。如果是字符串，将被视为是UploadPost的src。' },
       { name: 'valueButtons', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
-      { name: 'value', type: 'String | Array', remark: '值。' }
+      { name: 'value', type: 'String | Array', remark: '附件的值是一个数组，数组里每个单项都是一个JSON对象。该JSON对象参数如下:', param: [
+      	{ name: 'id', type: 'String', remark: '文件ID。' },
+      	{ name: 'name', type: 'String', remark: '文件名。' },
+      	{ name: 'thumbnail', type: 'String', optional: true, remark: '可选，文件缩略图地址。' },
+      	{ name: 'url', type: 'String', optional: true, remark: '可选，文件地址。' }
+      ] }
     ],
     Examples: [
       { example: [

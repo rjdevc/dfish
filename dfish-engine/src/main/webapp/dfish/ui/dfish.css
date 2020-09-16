@@ -688,7 +688,8 @@
 .w-button.z-normal.z-hv,.w-button.z-more.z-hv{background:#f8f8f8}
 .w-button.z-normal.z-dn,.w-button.z-more.z-dn{background:#eee}
 .w-button.z-on,.w-tab.z-on{z-index:1}
-.w-button.z-ds,.w-tab.z-ds{background:#e6e6e6;color:#999}
+.w-button.z-ds,.w-tab.z-ds{background:#eee;color:#999}
+.w-button.z-ds ._i{color:#bbb}
 .w-button.z-more ._t,.w-tab.z-more ._t{padding-right:6px;*padding-right:12px}
 .w-button.z-more ._m,.w-tab.z-more ._m{width:21px}
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
@@ -881,7 +882,7 @@
 .w-structureitem.z-dir-h .w-structureitem-t{padding:5px}
 .w-structureitem-t.f-fix .w-structureitem-s{display:inline}
 
-.w-transfer-left,.w-transfer-right{border:1px solid #ddd}
+.w-transfer-no,.w-transfer-yes{border:1px solid #ddd}
 .w-transfer-bbr{width:60px}
 .w-transfer-bbr .w-button ._c{padding-left:8px}
 .w-transfer-bbr .w-button ._i{padding-right:8px}
@@ -956,6 +957,7 @@
 .w-upload ._nofiles{height:32px;line-height:32px;color:#999;display:none}
 .w-upload.z-ds ._nofiles{display:block}
 .w-upload.z-ds.z-nofiles ._vbar{margin:0}
+.w-upload.z-ds.z-nofiles ._bbar{display:block}
 
 .w-imageupload ._bbar,.w-imageupload ._vbar,.w-videoupload ._bbar,.w-videoupload ._vbar{display:inline-block;vertical-align:middle;*display:inline;*zoom:1}
 
@@ -1003,7 +1005,7 @@
 .w-imageupload-value.z-err ._name,.w-imageupload-value:hover ._more,.w-imageupload-value:hover ._close,.w-imageupload-value:hover ._cvr,
 .w-videoupload-value.z-err ._name,.w-videoupload-value:hover ._more,.w-videoupload-value:hover ._close{display:block}
 
-.w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.2)}
+.w-videoupload-value ._cvr{display:block;filter:none;opacity:1;background:rgba(0,0,0,.1)}
 .w-videoupload-value ._play{padding:6px 7px;background:rgba(255,255,255,.4);border-radius:50%}
 .w-videoupload-value ._ico{transform:translate(2px,-1px)}
 

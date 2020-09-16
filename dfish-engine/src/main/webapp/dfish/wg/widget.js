@@ -719,7 +719,7 @@ W = define('Widget', function() {
 			delete this.ownerView.initTargets[this.x.id];
 		}
 	},
-	Helper : {
+	Helper: {
 		all: _all,
 		vm:  _view,
 		w: _widget,
@@ -1086,7 +1086,7 @@ W = define('Widget', function() {
 					var f = arguments.callee;
 					$.ease(function(p) {
 						c.css('opacity', p);
-						p == 1 && t && f( -- t);
+						p == 1 && t && f(--t);
 					}, 300);
 				})(2);
 			}
@@ -1350,6 +1350,7 @@ W = define('Widget', function() {
 		readonly: function(a) {
 			a = a == N || a;
 			this.x.status = a ? 'readonly' : '';
+			this.removeClass('z-hv');
 			this.addClass('z-ds', a);
 			this.trigger('statuschange');
 			return this;
@@ -1357,6 +1358,7 @@ W = define('Widget', function() {
 		validonly: function(a) {
 			a = a == N || a;
 			this.x.status = a ? 'validonly' : '';
+			this.removeClass('z-hv');
 			this.addClass('z-ds', a);
 			this.trigger('statuschange');
 			return this;
@@ -1364,6 +1366,7 @@ W = define('Widget', function() {
 		disable: function(a) {
 			a = a == N || a;
 			this.x.status = a ? 'disabled' : '';
+			this.removeClass('z-hv');
 			this.addClass('z-ds', a);
 			this.trigger('statuschange');
 			return this;
@@ -5910,7 +5913,7 @@ Label = define.widget('Label', {
 			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
-			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
+			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>' : '';
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr('vAlign');
@@ -6859,16 +6862,7 @@ TripleBox = define.widget('TripleBox', {
 	Listener: {
 		body: {
 			ready: function() {
-				var c = this.checkstate();
-				if (this.x.checkAll) {
-					if (c == 1) {
-						this.relate();
-					} else {
-						for (var i = 0, b = this.getRelates(), l = b.length; i < l; i ++) {
-							if (b[i] !== this) {b[i].relate(); break;}
-						}
-					}
-				}
+				!this.x.checkAll && this.relate();
 			},
 			change: {
 				block: function() {return !this.isNormal()},
@@ -6883,12 +6877,15 @@ TripleBox = define.widget('TripleBox', {
 				method: function(e) {
 					var s = this.checkstate();
 					_superTrigger(this, CheckBox, e);
-					$.classAdd(this.$(), 'z-half', this.checkstate() == 2);
+					$.classAdd(this.$(), 'z-half', s == 2);
 					if (e.srcElement) {
 						this.relate();
-						br.ms && this.x.checkAll && s == 2 && this.checkstate(this.isChecked() ? 1 : 0);; // ie点击半选状态的box 要手动触发change
+						br.ms && this.x.checkAll && s == 0 && this.checkstate(this.isChecked() ? 1 : 0);; // ie点击半选状态的box 要手动触发change
 					}	
 				}
+			},
+			remove: function() {
+				this.relate();
 			}
 		}
 	},
@@ -6923,14 +6920,15 @@ TripleBox = define.widget('TripleBox', {
 						if (this != b[i]) {
 							if (c) {this.checkstate(b[i].checkstate()); break;}
 							else b[i].checkstate(this.isChecked());
-						}
+						} else if (l == 1)
+							d = this;
 					} else if (b[i].x.checkAll) {
 						d = b[i];
 					} else {
 						b[i].isChecked() ? (c1 ++) : b[i].isPartial() ? (c2 ++) : (c0 ++);
 					}
 				}
-				if (d && (c0 + c1 + c2))
+				if (d && ((c0 + c1 + c2) || l == 1))
 					d.checkstate(c0 == l - 1 ? 0 : c1 == l - 1 ? 1 : 2);
 			}			
 		},
@@ -11256,6 +11254,7 @@ ContentTBody = define.widget('ContentTBody', {
 	Listener: {
 		body: {
 			nodeChange: function() {
+				if (!this.$()) return;
 				this.table.fixRowCls();
 				this.table.fixFoot();
 			}
@@ -11748,10 +11747,6 @@ AbsTable = define.widget('AbsTable', {
 			if (a != N && (a = this.rows(a))) {
 				var i = a.length;
 				while (i --) a[i].remove();
-			}
-			if(this.head) {
-				var c = this.head.descendant('TableTripleBox');
-				c && c.relate();
 			}
 		},
 		deleteAllRows: function() {
@@ -12417,74 +12412,91 @@ Video = define.widget('Video', {
 		}
 	}
 }),
-
+/** `transfer` */
 Transfer = define.widget('Transfer', {
-	Const: function(x, p) {
+	Const: function(x) {
 		this.x = x;
-		var n = [{type: 'Vert', cls: 'w-transfer-left', width: '*', widthMinus: 2, heightMinus: 2, nodes: [x.suggest]},
+		var n = [{type: 'Vert', cls: 'w-transfer-no', width: '*', widthMinus: 2, heightMinus: 2},
 			{type: 'ButtonBar', cls: 'w-transfer-bbr', dir: 'v', align: 'center', nodes: [
-				{icon: '.f-i-angle-right', on:{click: 'this.closest("Transfer").select()'}}, {icon: '.f-i-angle-left'}]},
-			{type: 'Vert', cls: 'w-transfer-right', width: '*', widthMinus: 2, heightMinus: 2}];
-		x.nodes = n;
+				{icon: '.f-i-angle-right', status: 'disabled', on:{click: 'this.closest("Transfer").select()'}}, {icon: '.f-i-angle-left', status: 'disabled', on:{click: 'this.closest("Transfer").unselect()'}}]},
+			{type: 'Vert', cls: 'w-transfer-yes', width: '*', widthMinus: 2, heightMinus: 2}];
+		this._panels = n;
 		Horz.apply(this, arguments);
-		this.no  = this[0].descendant('Table,Tree');
-		this.yes = this[2].append(this.initTable('yes', '', this.initOptions(x.value, x.text)));
+		this.no  = this[0].append(this.initTable('no',  '', this.x.nodes));
+		this.yes = this[2].append(this.initTable('yes', '', this.initYesOptions(x.value)));
 		this.fixNo();
 	},
 	Extend: Horz,
 	Prototype: {
 		className: 'w-transfer',
-		initOptions: function(v, t) {
-			v = v && v.split(','), t = t && t.split(',');
-			for (var i = 0, a = [], b; i < v.length; i ++) {
-				b = this.param(v[i], T);
-				_all[b.wid].check();
-				a.push({value: v[i], text: t ? t[i] : b.text});
-			}
-			return a;
+		x_nodes: function() {
+			return this._panels;
 		},
-		store: function() {
-			if (this.combo) return this.combo;
-			if (this.x.bind) {
-				var c = this.x.bind.target ? this.find(this.x.bind.target) : this.no;
-				return c && (this.combo = new _comboHooks[c.type](c, this.x.bind));
+		initYesOptions: function(v) {
+			if (v = $.strTrim(v + '')) {
+				v = v.charAt(0) === '[' ? $.jsonParse(v) : v.split(',');
+				for (var i = 0, a = [], b, l = v.length; i < l; i ++) {
+					b = typeof v[i] === _STR ? this.param(v[i]) : v[i];
+					b && a.push(b);
+				}
+				return a;
 			}
 		},
-		// @a -> text|value|Leaf|TR, b -> isValue?
-		param: function(a, b) {
-			var s = this.store();
-			return s && s.getParam(a, b);
+		// @a -> value
+		param: function(a) {
+			for (var i = 0, b = this.x.nodes, l = b.length; i < l; i ++)
+				if (b[i].value == a) return b[i];
+		},
+		getSelectedRows: function() {
+			var b = this.yes.body;
 		},
 		val: function(a) {
 			if (a == N) {
-				//return this.$() ? this.ownerView.getPostData
+				for (var i = 0, b = this.yes.rows(), c = [], l = b.length; i < l; i ++)
+					c.push(b[i].x.data.value);
+				return c.join();
 			}
 		},
+		jsonVal: function() {
+			for (var i = 0, b = this.yes.rows(), c = [], l = b.length; i < l; i ++)
+				c.push(b[i].x.data);
+			return c.join();
+		},
 		fixNo: function() {
-			/*for (var i = 0, a = this.val(), l = a.length; i < l; i ++) {
-				this.no
-			}*/
+			for (var i = 0, a = this.val().split(','), l = a.length; i < l; i ++)
+				this.no.deleteRow({value: a[i]});
 		},
 		select: function() {
-			var a = this.store(), b = a.cab.getCheckedAll(), c = [];
+			var b = this.no.getCheckedAll(), c = [];
 			for (var i = 0, v; i < b.length; i ++) {
-				c.push(this.param(b[i].box.val(), T));
+				c.push(b[i].x.data);
 			}
 			this.yes.insertRow(c);
 			this.no.deleteRow(b);
 		},
+		unselect: function() {
+			var b = this.yes.getCheckedAll(), c = [];
+			for (var i = 0, v; i < b.length; i ++) {
+				c.push(b[i].x.data);
+			}
+			this.no.insertRow(c);
+			this.yes.deleteRow(b);
+		},
+		onCheck: function(a) {
+			this[1][a.x.name == 'no' ? 0: 1].disable(a.checkstate() == 0);
+		},
 		// @a -> name, b -> title, c -> nodes
 		initTable: function(a, b, c) {
 			return {
-			  	type: 'Table', columns: [
-			  	  {field: 'value', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '"}'},
+			  	type: 'Table', height: '*', cls: 'w-transfer-table-' + a, scroll: T, columns: [
+			  	  {field: 'value', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '", value: $value}'},
 			  	  {field: 'text', width: '*'}
 			    ],
 			    tHead: {
-			      nodes: [ {value: {type: 'TripleBox', name: a, checkAll: true}, text: b} ]
+			      nodes: [{value: {type: 'TripleBox', name: a, checkAll: T, on: {change: abbr(this) + '.onCheck(this)'}}, text: b}]
 			    },
-			    tBody: { nodes: c }
-			  };
+			    tBody: {nodes: c}
+			};
 		}
 	}
 });
