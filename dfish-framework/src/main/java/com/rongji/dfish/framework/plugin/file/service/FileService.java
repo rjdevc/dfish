@@ -515,7 +515,7 @@ public class FileService extends BaseService<PubFileRecord, String> {
                 .getQueryList(
                         "FROM PubFileRecord t WHERE t.fileLink=? AND t.fileKey IN ("
                                 + getParamStr(fileKeys.size())
-                                + ") AND t.fileStatus=?", params.toArray());
+                                + ") AND t.fileStatus=? ORDER BY t.fileId", params.toArray());
         Map<String, List<PubFileRecord>> result = new HashMap<>();
         for (PubFileRecord data : dataList) {
             List<PubFileRecord> tempList = result.get(data.getFileKey());
