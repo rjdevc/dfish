@@ -76,7 +76,7 @@ define.widget( 'carousel', {
 	Extend: 'vert',
 	Listener: {
 		body: {
-			ready: function() { cssLoad(this.fixText, this); this.play(); },
+			ready: function() { cssLoad(this.fixText, this); this.fixImg(); this.play();},
 			resize: function() { cssLoad(this.fixText, this); this.fixImg();}
 		}
 	},
@@ -92,12 +92,12 @@ define.widget( 'carousel', {
 		fixImg: function() {
 			var self = this;
 			Q('._big', this.$()).each(function() {
-				this.isLoaded && self.fixImgSize(this);
+				self.fixImgSize(this);
 			});
 		},
 		imgLoad: function(a) {
-			a.isLoaded = true;
-			this.fixImgSize(a);
+			//a.isLoaded = true;
+			//this.fixImgSize(a);
 		},
 		fixImgSize: function(a) {
 			if (!this.x.bigwidth && !this.x.bigheight) {

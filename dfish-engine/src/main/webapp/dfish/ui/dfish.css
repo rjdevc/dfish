@@ -62,7 +62,7 @@
 .f-unsel{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;-o-user-select:none;user-select:none;}
 .f-remark{display:inline-block;*display:inline;*zoom:1;padding:0 6px;vertical-align:middle;white-space:nowrap;word-break:keep-all;word-wrap:normal;}
 
-.f-vi,.f-vi-middle{display:inline-block;height:100%;vertical-align:middle}
+.f-vi,.f-vi-middle{display:inline-block;height:100%;vertical-align:middle;*display:inline;*zoom:1}
 .f-vi-top{display:inline-block;height:100%;vertical-align:top}
 .f-vi-bottom{display:inline-block;height:100%;vertical-align:bottom}
 .f-va,.f-va-middle,.f-nv,.f-nv-middle{vertical-align:middle}
