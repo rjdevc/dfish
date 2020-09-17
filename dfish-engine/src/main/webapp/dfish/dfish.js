@@ -340,7 +340,14 @@ Define = function(uri, id) {
 	}
 	b.template = function(c, d) {
 		d == N && (d = c, c = N);
-		_moduleCache[c ? _mod_uri(uri, (_cfg.templateDir || '') + c) : uri] = d;
+		var t = {body: d, methods: {}};
+		_moduleCache[c ? _mod_uri(uri, (_cfg.templateDir || '') + c) : uri] = t.body;
+		return {
+			methods: function(e) {
+				_merge(t.methods, e);
+				return this;
+			}
+		};
 	}
 	b.preload = function(c, d) {
 		d == N && (d = c, c = N);

@@ -1157,7 +1157,7 @@ W = define('Widget', function() {
 		},
 		// 触发用户定义的事件 / @e -> event, a -> [args]?, f -> func string?
 		triggerHandler: function(e, a, f) {
-			if (this._disposed)
+			if (this._disposed || !this._instanced)
 				return;
 			var d = e.runType || e.type || e, t = _event_hump[d] || d, f = f || (this.x.on && this.x.on[t]), c = {'event': e}, g = a ? [e].concat(a) : [e];
 			if (a != N) {
@@ -1169,7 +1169,7 @@ W = define('Widget', function() {
 		},
 		// 触发系统事件
 		triggerListener: function(e, a) {
-			if (this._disposed)
+			if (this._disposed || !this._instanced)
 				return;
 			var b = this.Const.Listener,
 				d = e.runType || e.type || e,
@@ -1183,7 +1183,7 @@ W = define('Widget', function() {
 		// 触发用户定义的事件和系统事件 / @e -> event, @a -> [data]
 		// 优先返回用户事件的返回值，其次返回系统事件的值
 		trigger: function(e, a) {
-			if (this._disposed)
+			if (this._disposed || !this._instanced)
 				return;
 			var b = this.Const.Listener,
 				c = this.proxyHooks,
@@ -12007,12 +12007,12 @@ Table = define.widget('Table', {
 		this._pad = x.cellPadding != N ? x.cellPadding : 5;
 		this._face = x.face || 'none';
 		x.face && (this.className += ' z-face-' + x.face);
+		this.fixed = [];
 		W.apply(this, arguments);
 		x.scroll == N && (x.scroll = T);
 		this.initBody(x);
 		if (x.hiddens)
 			this._hiddens = new Hiddens({type: 'hiddens', nodes: x.hiddens}, this, -1);
-		this.fixed = [];
 		if (!ie7) {//@fixme: 暂不支持ie7
 			var xl = [], xr = [];
 			for (var i = 0, f, c = x.columns, l = c ? c.length : 0; i < l; i ++) {
