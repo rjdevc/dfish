@@ -3037,9 +3037,8 @@ Horz = define.widget('Horz', {
 			// @compat: 兼容模式下，horz的没有高度的子节点，加上z-htmn样式(float:left)。如果不使用float，子节点内容不会自动撑开
 			// @fixme: 当widget的高度在-1和固定高度之间转变时，z-htmn也应该跟着增加或删除
 			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align === 'left') && (this.childCls += ' z-htmn');
-			var s = _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : ''),
-				ih = ie7 && this.x.scroll && this.innerHeight(); // ie7在有scroll和vAlign时，f-vi的100%会包含底部滚动条的高度，导致撑开。需要设置负值的margin-bottom来抵消
-			return v ? '<div id=' + this.id + 'cont class="w-horizontal-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
+			var s = _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : '');
+			return !ie7 && v ? '<div id=' + this.id + 'vln class="w-horz-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + '></i>' : s;
 		}
 	}
 }),
@@ -5872,7 +5871,7 @@ Label = define.widget('Label', {
 		body: {
 			ready: function() {
 				if (this.ie7td) {
-					var b = $(this.id + 'bg'), c = $.bcr(this.ie7td.$()), d = $.bcr(b);
+					var b = this.$('bg'), c = $.bcr(this.ie7td.$()), d = $.bcr(b);
 					Q(b).css({
 						height: c.height -1,
 						marginLeft: c.left - d.left,
@@ -5881,8 +5880,8 @@ Label = define.widget('Label', {
 				}
 			},
 			resize: function() {
-				if (this.parentNode.label == this) {
-					$(this.id + 'bg').style.width = Math.max(this.innerWidth() -1, 0) + 'px';
+				if (this.parentNode.label == this && this.$('bg')) {
+					this.$('bg').style.width = Math.max(this.innerWidth() -1, 0) + 'px';
 					this.ie7td && this.ie7td.fireEvent('nodeChange');
 				}
 			}

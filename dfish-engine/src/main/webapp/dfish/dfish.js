@@ -59,16 +59,16 @@ detectZoom = function() {
     var ratio = 0;
     if (win.devicePixelRatio !== U) {
         ratio = win.devicePixelRatio;
-  } else if (br.ie) {// ie
-        if (screen.deviceXDPI && screen.logicalXDPI) {
-            ratio = screen.deviceXDPI / screen.logicalXDPI;
-      }
-  } else if (win.outerWidth !== U && win.innerWidth !== U) {
-        ratio = win.outerWidth / win.innerWidth;
-  }
+  	} else if (br.ie) {// ie
+      	if (screen.deviceXDPI && screen.logicalXDPI) {
+      		ratio = screen.deviceXDPI / screen.logicalXDPI;
+    	}
+  	} else if (win.outerWidth !== U && win.innerWidth !== U) {
+    	ratio = win.outerWidth / win.innerWidth;
+  	}
     if (ratio) {
     	ratio = Math.round(ratio * 100);
-  }
+  	}
     return ratio;
 },
 // 浏览器信息
