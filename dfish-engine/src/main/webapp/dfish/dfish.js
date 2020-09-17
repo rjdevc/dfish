@@ -341,7 +341,7 @@ Define = function(uri, id) {
 	b.template = function(c, d) {
 		d == N && (d = c, c = N);
 		var t = {body: d, methods: {}};
-		_moduleCache[c ? _mod_uri(uri, (_cfg.templateDir || '') + c) : uri] = t.body;
+		_moduleCache[c ? _mod_uri(uri, (_cfg.templateDir || '') + c) : uri] = t;
 		return {
 			methods: function(e) {
 				_merge(t.methods, e);

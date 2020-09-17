@@ -52,6 +52,8 @@
 
 .w-input{height:38px}
 .w-input-t{line-height:38px}
+.w-input-placeholder{pointer-events:none}
+
 
 .w-select .w-input-t{background:#fff}
 

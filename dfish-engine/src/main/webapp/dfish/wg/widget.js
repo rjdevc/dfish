@@ -44,9 +44,14 @@ _dfcls = (function() {
 	}
 	return r;
 })(),
-// 获取模板  /@a -> template id, b -> clone?
-_getTemplate = function(a, b) {
-	var t = typeof a === _OBJ ? a : $.require((cfg.templateDir || '') + a);
+// 获取模板  /@a -> template id
+_getTemplate = function(a) {
+	var t = typeof a === _OBJ ? {body: a} : $.require((cfg.templateDir || '') + a);
+	return t || {};
+},
+// 获取模板内容  /@a -> template id, b -> clone?
+_getTemplateBody = function(a, b) {
+	var t = _getTemplate(a).body;
 	return b && t ? $.jsonClone(t) : t;
 },
 // 获取预装模板  /@a -> template id, b -> clone?
@@ -411,7 +416,7 @@ Error = $.createClass({
 }),
 
 _compileTemplate = function(g, d, s) {
-	var t = new Template(s || g.x.template, d, g), r = t.compile(t.template);
+	var t = new Template(s || g.x.template, d, g), r = t.compile(t.templateBody);
 	!r.type && (r.type = g.type);
 	return r;
 },
@@ -431,6 +436,22 @@ TemplateWidget = $.createClass({
 		}
 	}
 }),
+Tmpl = $.createClass({
+	Const: function(t) {
+		this.data = t.data;
+		this.widget = t.wg;
+		
+	},
+	Prototype: {
+		isWidget: T,
+		data: function() {
+			return _proto.data.apply(this, arguments);
+		},
+		closest: function(a) {
+			return this.parentNode.closest(a);
+		}
+	}
+});
 _regAt = function(x, k, v) {
 	(_atCache[x.at] || (new TemplateMark(x))).addProp(k, v);
 	return x.at;
@@ -469,8 +490,9 @@ _mergeAtPropHooks = {
 Template = $.createClass({
 	// @ t -> template, d -> data, g -> widget, r -> target
 	Const: function(t, d, g) {
-		this.wg   = g;
-		this.template = _getTemplate(t);
+		var t = _getTemplate(t);
+		this.wg = g;
+		this.templateBody = t.body;
 		if ($.isArray(d)) {
 			this.data = d;
 		} else {
@@ -482,6 +504,9 @@ Template = $.createClass({
 					this.data[i] = a[i];
 			}
 		}
+		//var f = new Function;
+		//f.prototype = t.methods;
+		//g.tmpl = $.extend(new f, {data: this.data, widget: g});
 	},
 	Extend: Node,
 	Prototype: {
@@ -492,7 +517,6 @@ Template = $.createClass({
 			} catch(ex) {
 				if (a && a.indexOf('(') > -1) window.console && console.error(ex.stack || ex);
 			}
-			//return a ? _proto.formatJS.call(g, 'return ' + a, y, this.data) : N;
 		},
 		switcher: function(s, r, g, y) {
 			if (typeof s === _STR) {
@@ -514,7 +538,7 @@ Template = $.createClass({
 			}
 			var r = {}, b, f = {}, g = x && (new TemplateWidget(x, this));
 			if ((b = x['@w-include'])) {
-				var d = _getTemplate(b, T);
+				var d = _getTemplateBody(b, T);
 				if (d) {
 					d = $.extend({}, d);
 					for (var k in x)
@@ -760,9 +784,10 @@ W = define('Widget', function() {
 			// owner_x 是优先的，不可被template重写的属性
 			if (!this.owner_x && (x.template || x.preload || this.hasLayout)) {
 				this.owner_x = $.extend({}, x);
+				delete this.owner_x.pub; this.owner_x.data; // data和pub要合并，不计入优先队列
 			}
 			if (x.template) {
-				var t = _getTemplate(x.template, T);
+				var t = _getTemplateBody(x.template, T);
 				if (t) {
 					if (!t.type || t.type === this.type) {
 						for (var k in t) {
@@ -912,6 +937,9 @@ W = define('Widget', function() {
 				break;
 				case 'data':
 					b && c && (this.x.data = $.extend(c, b));
+				break;
+				case 'pub':
+					b && c && (this.x.pub = $.extend(c, b));
 				break;
 				case 'width':
 					this.width(b);
@@ -1164,8 +1192,14 @@ W = define('Widget', function() {
 				for (var i = 1, l = g.length; i < l; i ++)
 					c['$' + (i - 1)] = g[i];
 			}
-			f && _event_stop[t] && _event_stop[t](e);
-			return f && (typeof f === _FUN ? f.apply(this, g) : this.formatJS(f, c));
+			if (f) {
+				_event_stop[t] && _event_stop[t](e);
+				if (typeof f === _FUN)
+					return f.apply(this, g);
+				//if (this.tmpl && typeof this.tmpl[f] === _FUN)
+				//	return this.tmpl[f](e);
+				return this.formatJS(f, c);
+			}
 		},
 		// 触发系统事件
 		triggerListener: function(e, a) {
@@ -2353,8 +2387,8 @@ Scroll = define.widget('Scroll', {
 			this._scr_usable = T;
 			var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll, t = (w ? 'width:' + (w + c) + 'px;' : '') + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
 				(h ? 'height:' + (h + c) + 'px;' : '') + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '');
-			return mbi ? '<div id=' + this.id + 'cont>' + s + '</div>' : '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
-				t + '" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div id=' + this.id + 'cont>' + (s || '') + (this.x.pullUp ? this.html_pullup() : '') + '</div>' + _html_resize_sensor.call(this) + '</div></div></div><div id=' +
+			return mbi ? '<div class=w-scroll-cont id=' + this.id + 'cont>' + s + '</div>' : '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
+				t + '" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div class=w-scroll-cont id=' + this.id + 'cont>' + (s || '') + (this.x.pullUp ? this.html_pullup() : '') + '</div>' + _html_resize_sensor.call(this) + '</div></div></div><div id=' +
 				this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
 				this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 		},
@@ -2414,7 +2448,7 @@ AbsSection = define.widget('AbsSection', {
 			var u = this.x.src; 
 			if (!u) {
 				var t = this.x.template;
-				t && (t = _getTemplate(t)) && (u = t.src);
+				t && (t = _getTemplateBody(t)) && (u = t.src);
 			}
 			if (a)
 				return u;
@@ -2427,7 +2461,7 @@ AbsSection = define.widget('AbsSection', {
 			if (f == N) {
 				var t = this.x.template;
 				if (t) {
-					typeof t === _STR && (t = _getTemplate(t));
+					typeof t === _STR && (t = _getTemplateBody(t));
 					t && this.isContentData(t) && t.on && t.on.filter && (f = t.on.filter);
 				}
 			}
@@ -2478,7 +2512,7 @@ AbsSection = define.widget('AbsSection', {
 					if (!self._disposed && m && n) {self._loadEnd(n); fn && fn.call(self, n); n = N;}
 				};
 			if (t && typeof t === _STR)
-				t = _getTemplate(t);
+				t = _getTemplateBody(t);
 			d(), e();
 			var u = this.getSrc();
 			u && typeof u === _STR ? this.exec({type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function(x) {
@@ -2494,7 +2528,7 @@ AbsSection = define.widget('AbsSection', {
 			cache && this.addEvent('unload', function() {$.ajaxClean(u)});
 		},
 		_success: function(x) {
-			var t = this.x.template && _getTemplate(this.x.template), s = this.x.success || (t && t.success);
+			var t = this.x.template && _getTemplateBody(this.x.template), s = this.x.success || (t && t.success);
 			s && this.formatJS(s, {'$response': x});
 			if (this._disposed) return F;
 			s = this.x.complete || (t && t.complete);
@@ -2503,7 +2537,7 @@ AbsSection = define.widget('AbsSection', {
 			return T;
 		},
 		_error: function(x) {
-			var t = this.x.template && _getTemplate(this.x.template), s = this.x.error || (t && t.error);
+			var t = this.x.template && _getTemplateBody(this.x.template), s = this.x.error || (t && t.error);
 			s && this.formatJS(s, {'$response': N});
 			if (this._disposed) return F;
 			s = this.x.complete || (t && t.complete);
@@ -10012,7 +10046,7 @@ AbsLeaf = define.widget('AbsLeaf', {
 		request: function(a, b) {
 			this.loading = T;
 			var f = this.x.filter, t = this.x.template;
-			t && (t = _getTemplate(t));
+			t && (t = _getTemplateBody(t));
 			this.exec({type: 'Ajax', src: this.getSrc(), filter: this.x.filter || (t && t.filter), sync: a, loading: F,
 				success: function(x) {
 					if (!this._success(x))
