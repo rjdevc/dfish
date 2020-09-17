@@ -89,9 +89,21 @@ public abstract class BaseDao<T, ID extends Serializable> {
         if (entityClass != null) {
             for (Method method : entityClass.getMethods()) {
                 if (method.getAnnotation(Id.class) != null) {
-                    String methodsName = method.getName();
-                    if (methodsName.startsWith("get")) {
+                    String methodName = method.getName();
+                    if (methodName.startsWith("get")) {
                         return method;
+                    }
+                    break;
+                }
+            }
+            for (Field field : entityClass.getFields()) {
+                if (field.getAnnotation(Id.class) != null) {
+                    String methodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+                    try {
+                        Method method = entityClass.getMethod(methodName, field.getType());
+                        return method;
+                    } catch (NoSuchMethodException e) {
+                        FrameworkHelper.LOG.warn("实体类找不到主键标识@" + entityClass.getName(), e);
                     }
                     break;
                 }
@@ -154,45 +166,45 @@ public abstract class BaseDao<T, ID extends Serializable> {
         if (ids == null) {
             return null;
         }
-        final Class<?> entityClass = getEntityType();
-        String idName = null;
-        Method getterMethod = null;
-        for (Method m : entityClass.getMethods()) {
-            if (m.getAnnotation(Id.class) != null) {
-                String methodsName = m.getName();
-                if (methodsName.startsWith("get") || methodsName.startsWith("set")) {
-                    idName = methodsName.substring(3);
-                    char c = idName.charAt(0);
-                    if (c >= 'A' && c <= 'Z') {
-                        idName = ((char) (c + 32)) + idName.substring(1);
-                    }
-                    if (methodsName.startsWith("get")) {
-                        getterMethod = m;
-                    }
-                }
-                break;
-            }
-        }
-        if (idName == null) {
-            for (Field f : entityClass.getFields()) {
-                if (f.getAnnotation(Id.class) != null) {
-                    idName = f.getName();
-                    break;
-                }
-            }
-        }
-        if (getterMethod == null) {
-            char c = idName.charAt(0);
-            if (c >= 'a' && c <= 'z') {
-                String getterName = "get" + ((char) (c - 32)) + idName.substring(1);
-                try {
-                    getterMethod = entityClass.getMethod(getterName, NO_PARAMS);
-                } catch (Exception e) {
-                    FrameworkHelper.LOG.error("", e);
-                }
-            }
-        }
-        final String idName2 = idName;
+//        final Class<?> entityClass = getEntityType();
+//        String idName = null;
+//        Method getterMethod = null;
+//        for (Method m : entityClass.getMethods()) {
+//            if (m.getAnnotation(Id.class) != null) {
+//                String methodsName = m.getName();
+//                if (methodsName.startsWith("get") || methodsName.startsWith("set")) {
+//                    idName = methodsName.substring(3);
+//                    char c = idName.charAt(0);
+//                    if (c >= 'A' && c <= 'Z') {
+//                        idName = ((char) (c + 32)) + idName.substring(1);
+//                    }
+//                    if (methodsName.startsWith("get")) {
+//                        getterMethod = m;
+//                    }
+//                }
+//                break;
+//            }
+//        }
+//        if (idName == null) {
+//            for (Field f : entityClass.getFields()) {
+//                if (f.getAnnotation(Id.class) != null) {
+//                    idName = f.getName();
+//                    break;
+//                }
+//            }
+//        }
+//        if (getterMethod == null) {
+//            char c = idName.charAt(0);
+//            if (c >= 'a' && c <= 'z') {
+//                String getterName = "get" + ((char) (c - 32)) + idName.substring(1);
+//                try {
+//                    getterMethod = entityClass.getMethod(getterName, NO_PARAMS);
+//                } catch (Exception e) {
+//                    FrameworkHelper.LOG.error("", e);
+//                }
+//            }
+//        }
+        final String entityIdName = getEntityIdName();
         Set<ID> idSet = new HashSet<ID>(ids);
         idSet.remove(null);
         final List<ID> norepeat = new ArrayList<ID>(idSet);
@@ -205,9 +217,9 @@ public abstract class BaseDao<T, ID extends Serializable> {
                     if (tofetch.size() > FETCH_SIZE) {
                         List<ID> cur = tofetch.subList(0, FETCH_SIZE);
                         tofetch = tofetch.subList(FETCH_SIZE, tofetch.size());
-                        result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idName2, cur)).list());
+                        result.addAll(session.createCriteria(entityClass).add(Restrictions.in(entityIdName, cur)).list());
                     } else {
-                        result.addAll(session.createCriteria(entityClass).add(Restrictions.in(idName2, tofetch)).list());
+                        result.addAll(session.createCriteria(entityClass).add(Restrictions.in(entityIdName, tofetch)).list());
                         tofetch = tofetch.subList(tofetch.size(), tofetch.size());
                     }
                 }
@@ -216,9 +228,10 @@ public abstract class BaseDao<T, ID extends Serializable> {
         });
         //重新排序并且,补充没查到的数据
         HashMap<ID, T> map = new HashMap<ID, T>();
+        Method idGetter = getEntityIdGetter();
         for (T item : dbrs) {
             try {
-                ID i = (ID) getterMethod.invoke(item, NO_ARGS);
+                ID i = (ID) idGetter.invoke(item, NO_ARGS);
                 map.put(i, item);
             } catch (Exception e) {
                 FrameworkHelper.LOG.error("", e);
@@ -232,7 +245,7 @@ public abstract class BaseDao<T, ID extends Serializable> {
     }
 
     private static final Object[] NO_ARGS = new Object[0];
-    private static final Class<?>[] NO_PARAMS = new Class<?>[0];
+//    private static final Class<?>[] NO_PARAMS = new Class<?>[0];
 
     /**
      * 利用hibernate默认的get方法获取对象
