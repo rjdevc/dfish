@@ -96,11 +96,11 @@ public abstract class BaseDao<T, ID extends Serializable> {
                     break;
                 }
             }
-            for (Field field : entityClass.getFields()) {
+            for (Field field : entityClass.getDeclaredFields()) {
                 if (field.getAnnotation(Id.class) != null) {
                     String methodName = "get" + field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
                     try {
-                        Method method = entityClass.getMethod(methodName, field.getType());
+                        Method method = entityClass.getMethod(methodName);
                         return method;
                     } catch (NoSuchMethodException e) {
                         FrameworkHelper.LOG.warn("实体类找不到主键标识@" + entityClass.getName(), e);
