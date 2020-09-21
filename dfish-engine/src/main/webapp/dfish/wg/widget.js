@@ -1158,7 +1158,7 @@ W = define('Widget', function() {
 			if (typeof a === _STR) {
 				var e = _view(self).x.commands;
 				if (e && (e = e[a])) {
-					a = $.jsonClone(e);
+					a = typeof e === _STR ? {type: 'JS', text: e} : $.jsonClone(e);
 				} else if (/^\{[\s\S]+\}$/.test(a)) {
 					a = $.jsonParse(a);
 				} else {
@@ -1221,14 +1221,7 @@ W = define('Widget', function() {
 			}
 			if (f) {
 				_event_stop[t] && _event_stop[t](e);
-				if (typeof f === _FUN)
-					return f.apply(this, g);
-				if (this.tmpl && typeof this.tmpl[f] === _FUN) {
-					typeof e === _STR && (e = {type: e});
-					e.widget = this;
-					return this.tmpl[f](e);
-				}
-				return this.formatJS(f, c);
+				return typeof f === _FUN ? f.apply(this, g) : this.formatJS(f, c);
 			}
 		},
 		// 触发系统事件
@@ -1328,6 +1321,12 @@ W = define('Widget', function() {
 		},
 		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({name: value})?, c -> data?, d -> callback?
 		formatJS: function(a, b, c, d, x) {
+			if (this.tmpl && typeof this.tmpl[a] === _FUN) {
+				var e = (c && c.event) || {};
+				if (typeof e === _STR) e = {type: e};
+				e.widget = this;
+				return this.tmpl[a](e);
+			}
 			var x = x || this.x, n = ['$this'], m = [c || x.data];
 			if (b) {
 				if ($.isArray(b)) {

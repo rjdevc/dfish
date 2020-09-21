@@ -17,7 +17,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _uiPath, _dftPath, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
+_path, _uiPath, _dftPath, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.3',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -616,7 +616,7 @@ _idsAdd = $.idsAdd = function(s, n, p) {
 _idsRemove = $.idsRemove = function(s, n, p) {
 	if (s == N) return '';
 	if (!p) p = ',';
-	return (p + s + p).replace(new RegExp(p + n + p, 'g'), p).slice(1, -1);
+	return (p + s + p).replace(new RegExp(p + n + '\\b', 'g'), '').slice(1, -1);
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAny = $.idsAny = function(s, n, p) {
