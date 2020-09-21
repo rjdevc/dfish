@@ -616,7 +616,7 @@ _idsAdd = $.idsAdd = function(s, n, p) {
 _idsRemove = $.idsRemove = function(s, n, p) {
 	if (s == N) return '';
 	if (!p) p = ',';
-	return (p + s + p).replace(p + n + p, p).slice(1, -1);
+	return (p + s + p).replace(new RegExp(p + n + p, 'g'), p).slice(1, -1);
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAny = $.idsAny = function(s, n, p) {

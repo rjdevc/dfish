@@ -83,12 +83,14 @@ _widget = function(a) {
 	var b = typeof a === _STR ? a : a.id;
 	if (b && (b = _getWidgetById(b)))
 		return b;
-	if (a.nodeType) {// htmlElement
+	if (a.isWidget) {
+		return a;
+	} else if (a.widget) {
+		return a.widget;
+	} else if (a.nodeType) {
 		do {
 			if (a.id && (b = _getWidgetById(a.id))) return b;
 		} while ((a = a.parentNode) && a.nodeType === 1);
-	} else if (a.isWidget) {// widget
-		return a;
 	} else if (a.type && Q.isPlainObject(a)) {
 		return new (require(a.type))(a);
 	}
@@ -101,12 +103,24 @@ _getWidgetById = function(a) {
 	}
 },
 // 触发事件的入口，在html标签上显示为 onEvent="$.e(this)"  /@ a -> element
-_widgetEvent = function(a) {
+_widgetEvent = function(a, b) {
 	var e = arguments.callee.caller.arguments[0] || window.event, // _widgetEvent.caller: 解决firefox下没有window.event的问题
 		t = _event_hump[e.type] || e.type;
 	if (!_event_enter[t] || _event_enter[t](a, e)) {
 		e.elemId = a.id;
-		(a = _widget(a)) ? a.trigger(e) : $.stop(e);
+		var c = _widget(a);
+		if (c) {
+			if (b) {
+				if (c.tmpl && c.tmpl[b]) {
+					if (!e.currentTarget) e.currentTarget = a;
+					e.widget = c;
+					c.tmpl[b](e);
+				} else
+					throw new Error(Loc.ps(Loc.debug.tmpl_method_undefined, b));
+			} else
+				c.trigger(e);
+		} else
+			$.stop(e);
 	}
 },
 // _view(), _view('/') 返回docView
@@ -178,6 +192,16 @@ _s_html_on = function(s, h, i, r) {
 	} else
 		s.indexOf('on' + i + '=') < 0 && r[i] && (s += ' on' + i + '=' + eve);
 	return s;
+},
+_s_html_title = function(a, b, c) {
+	var l = arguments.length, t = this.attr('tip');
+	if (l < 1) {
+		a = t === T ? this.x.text : t;
+	}
+	l < 2 && (b = this.x.format);
+	l < 3 && (c = this.x.escape);
+	if (typeof a === _NUM) a = '' + a;
+	return a && typeof a === _STR && (!t || typeof t !== _OBJ) && !b ? $.strQuot(c ? a.replace(/&/g, '&amp;') : a, !c) : '';
 },
 // 取得一个表单的值  /@ a -> input el, b -> json mode?
 _f_val = function(a, b, r) {
@@ -504,9 +528,9 @@ Template = $.createClass({
 					this.data[i] = a[i];
 			}
 		}
-		//var f = new Function;
-		//f.prototype = t.methods;
-		//g.tmpl = $.extend(new f, {data: this.data, widget: g});
+		var f = new Function;
+		f.prototype = t.methods;
+		g.tmpl = $.extend(new f, {data: this.data, widget: g});
 	},
 	Extend: Node,
 	Prototype: {
@@ -716,6 +740,7 @@ _regWidget = function(x, p, n) {
 	p && p.addNode(this, n);
 	_all[$.uid(this)] = this;
 	this.init_x(x);
+	p && p.tmpl && (this.tmpl = p.tmpl);
 },
 _regTarget = function(a) {
 	var a = $.proxy(this, a), b = this.x.target.split(',');
@@ -1066,8 +1091,10 @@ W = define('Widget', function() {
 				return (this.x.data && this.x.data[a]);
 			else if (a == N)
 				return this.x.data;
-			else
+			else {
 				(this.x.data || (this.x.data = {}))[a] = b;
+				this.tmpl && this.tmpl.widget == this && (this.tmpl.data[a] = b);
+			}
 		},
 		closestData: function(a) {
 			var d = this.x.data && this.x.data[a];
@@ -1196,8 +1223,11 @@ W = define('Widget', function() {
 				_event_stop[t] && _event_stop[t](e);
 				if (typeof f === _FUN)
 					return f.apply(this, g);
-				//if (this.tmpl && typeof this.tmpl[f] === _FUN)
-				//	return this.tmpl[f](e);
+				if (this.tmpl && typeof this.tmpl[f] === _FUN) {
+					typeof e === _STR && (e = {type: e});
+					e.widget = this;
+					return this.tmpl[f](e);
+				}
 				return this.formatJS(f, c);
 			}
 		},
@@ -1538,14 +1568,8 @@ W = define('Widget', function() {
 		},
 		// @a -> text, @b -> format, @c -> escape
 		prop_title: function(a, b, c) {
-			var l = arguments.length, t = this.attr('tip');
-			if (l < 1) {
-				a = t === T ? this.x.text : t;
-			}
-			l < 2 && (b = this.x.format);
-			l < 3 && (c = this.x.escape);
-			if (typeof a === _NUM) a = '' + a;
-			return a && typeof a === _STR && (!t || typeof t !== _OBJ) && !b ? ' title="' + $.strQuot(c ? a.replace(/&/g, '&amp;') : a, !c) + '"' : '';
+			var t = _s_html_title.apply(this, arguments);
+			return t ? ' title="' + t + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function(a, b, c, d, e) {
@@ -1554,10 +1578,21 @@ W = define('Widget', function() {
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
 			if (b) {
-				var s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
+				var s;
+				if (this.tmpl && this.tmpl[b]) {
+					s = this.tmpl[b]({type: 'format', widget: this});
+					s = (s || '').replace(/@(\w+)=["']?([\w]+)["']?/g, 'on\$1=' + $.abbr + '.e(this,"\$2")')
+				} else {
+					s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
+				}
 				return typeof s === _STR ? _parseHTML.call(this, s) : s;
 			} else
 				return c !== F ? $.strEscape(a) : (a == N ? '' : '' + a);
+		},
+		formatCall: function(a, b, c) {
+			!b.currentTarget && (b.currentTarget = a);
+			b.widget = this;
+			this.tmpl && this.tmpl[c] && this.tmpl[c](b);
 		},
 		html_prop: function() {
 			var b = ' w-type="' + this.type + '" id=' + this.id,
@@ -1629,8 +1664,8 @@ W = define('Widget', function() {
 			}
 			if (this.x.gid && _globals[this.x.gid] === this)
 				delete _globals[this.x.gid];
+			delete _all[this.id], delete this.tmpl;
 			this._disposed = T;
-			delete _all[this.id];			
 		}
 	}
 	});
@@ -3873,9 +3908,12 @@ Button = define.widget('Button', {
 				else
 					this.removeElem('i');
 			} else if (a === 'text') {
-				if (b != '' && b != N)
+				if (b != '' && b != N) {
 					this.$('t') ? Q('em', this.$('t')).html(b) : $.append(this.$('c'), this.html_text(b));
-				else
+					if (this.attr('tip') === T && this.$()) {
+						this.$().title = _s_html_title.call(this);
+					}
+				} else
 					this.removeElem('t');
 			} else if (a === 'status') {
 				this.status(a, b);
