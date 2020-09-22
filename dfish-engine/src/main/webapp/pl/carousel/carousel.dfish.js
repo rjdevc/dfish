@@ -97,7 +97,7 @@ define.widget( 'carousel', {
 		},
 		imgLoad: function(a) {
 			//a.isLoaded = true;
-			//this.fixImgSize(a);
+			this.fixImgSize(a);
 		},
 		fixImgSize: function(a) {
 			if (!this.x.bigwidth && !this.x.bigheight) {
