@@ -163,7 +163,7 @@ DFishAMapPicker = define.widget( 'AMapPicker', {
 		this.hd_lat = c.add( { type: 'Hidden', value: v ? v.lat : '' } );
 		this.cn_map = c.add( { type: 'Html', height: '*' } );
 		var d = c.add( { type: 'Horz', height: 50, style: 'padding:10px', nodes: [ { type: 'Html', text: '地点: &nbsp; ', width: 50, style: 'text-align:right;line-height:30px;' } ] } );
-		this.cn_adr = d.add( { type: 'Text', cls: 'z-clear', width: '*', on: { keyDown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
+		this.cn_adr = d.add( { type: 'Text', cls: 'z-clear', width: '*', placeholder: '', on: { keyDown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
 			prependContent: '<div style="float:right;width:28px;height:100%;text-align:center;cursor:pointer;left:auto;padding:0;right:0;" onclick="' + $.abbr + '.widget(this).trigger(\'keydown\')"><i class=f-vi></i><i class="f-i f-i-search"></i><input type=hidden id=' + this.id + 'v name="' + (x.name || '') + '"></div>' } );
 	},
 	Extend: DFishAMap,
