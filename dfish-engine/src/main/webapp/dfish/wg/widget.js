@@ -8327,7 +8327,7 @@ DropBox = define.widget('DropBox', {
 				d.close();
 			} else {
 				this.focus();
-				var d = {type: 'Dialog', ownproperty: T, id: this.id, widthMinus: 2, heightMinus: 2,
+				var d = {type: 'Dialog', ownproperty: T, id: this.id, widthMinus: 0, heightMinus: 0,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
 					node: {type: 'Html', id: 'list', scroll: T, text: this.html_options()},
 					on: {load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)'}
@@ -8335,7 +8335,7 @@ DropBox = define.widget('DropBox', {
 				this._dropper = this.exec($.extend(d, mbi ? {
 					width: $.width() - 40, maxHeight: $.height() - 40, cover: T
 				} : {
-					minWidth: this.formWidth(), maxWidth: Math.max($.width() - a.left - 2, a.right - 2), maxHeight: Math.max($.height() - a.bottom, a.top),
+					minWidth: this.formWidth() - 2, maxWidth: Math.max($.width() - a.left - 2, a.right - 2), maxHeight: Math.max($.height() - a.bottom, a.top),
 					snap: {target: this.$('f'), position: 'v', indent: 1}
 				}));
 			}
