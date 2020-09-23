@@ -6834,9 +6834,7 @@ CheckBox = define.widget('CheckBox', {
 		text: function() {
 			return this.x.text;
 		},
-		groupVal: function() {
-			return this.parentNode.isBoxGroup && this.parentNode.val.apply(this, arguments);
-		},
+		groupVal: CheckBoxGroup.prototype.val,
 		val: function() {
 			var t = this.$t();
 			return t.disabled || !t.checked ? '' : t.value;
