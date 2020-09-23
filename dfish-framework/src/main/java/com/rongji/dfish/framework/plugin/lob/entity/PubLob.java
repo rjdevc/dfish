@@ -1,5 +1,7 @@
 package com.rongji.dfish.framework.plugin.lob.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
 import java.util.Date;
 
 /**
@@ -12,10 +14,16 @@ import java.util.Date;
 public class PubLob implements java.io.Serializable {
 
     private static final long serialVersionUID = -3653424051971393087L;
+    @Id
+    @Column(name = "LOB_ID")
     private String lobId;
+    @Column(name = "LOB_DATA")
     private byte[] lobData;
+    @Column(name = "OPER_TIME")
     private Date operTime;
+    @Column(name = "ARCHIVE_FLAG")
     private String archiveFlag;
+    @Column(name = "ARCHIVE_TIME")
     private Date archiveTime;
 
     /**

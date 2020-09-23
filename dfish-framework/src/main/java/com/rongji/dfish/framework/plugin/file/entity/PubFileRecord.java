@@ -1,5 +1,8 @@
 package com.rongji.dfish.framework.plugin.file.entity;
 
+import javax.persistence.Column;
+import javax.persistence.Id;
+import java.beans.Transient;
 import java.util.Date;
 
 /**
@@ -8,26 +11,36 @@ import java.util.Date;
 public class PubFileRecord implements java.io.Serializable {
 
 	// Fields
-
-	/**
-	 * 
-	 */
     private static final long serialVersionUID = 3466920245217817895L;
+	@Id
+	@Column(name = "FILE_ID")
 	private String fileId;
+	@Column(name = "FILE_NAME")
 	private String fileName;
+	@Column(name = "FILE_EXTENSION")
 	private String fileExtension;
+	@Column(name = "FILE_TYPE")
 	private String fileType;
+	@Column(name = "FILE_URL")
 	private String fileUrl;
+	@Column(name = "FILE_SIZE")
 	private Long fileSize;
+	@Column(name = "FILE_CREATOR")
 	private String fileCreator;
+	@Column(name = "CREATE_TIME")
 	private Date createTime;
+	@Column(name = "UPDATE_TIME")
 	private Date updateTime;
+	@Column(name = "FILE_LINK")
 	private String fileLink;
+	@Column(name = "FILE_KEY")
 	private String fileKey;
+	@Column(name = "FILE_STATUS")
 	private String fileStatus;
+	@Column(name = "FILE_DURATION")
 	private Integer fileDuration;
+	@Column(name = "FILE_SCHEME")
 	private String fileScheme;
-
 	/**
 	 * 记录是否改变
 	 */
@@ -269,10 +282,12 @@ public class PubFileRecord implements java.io.Serializable {
 		this.fileScheme = fileScheme;
 	}
 
+	@Transient
 	public boolean isChange() {
 		return change;
 	}
 
+	@Transient
 	public void setChange(boolean change) {
 		this.change = change;
 	}
