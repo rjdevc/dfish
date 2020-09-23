@@ -142,13 +142,14 @@ dfish.config({
     ajaxFilter: function (response) {
         var hasError = response.error;
         if (hasError) {
-            app.response.error(response);
+            // 这里不返回代表框架不进行任何处理,如果是false,按照框架的错误提示,response代表正常
+            return app.response.error(response);
         // } else if (response.data === undefined) {
         //     // 有点业务,这里注释了,在项目中补充
         //     // 不允许data是空的,这么做解决大部分页面的容错问题
         //     response.data = {};
         }
-        return !hasError;
+        return response;
     },
     // 一个汉字算3个字节
     cnBytes: 3
