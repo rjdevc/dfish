@@ -392,12 +392,14 @@
 .w-dialog.w-f-dialog{border:1px solid #2498fe;background:#fff;box-shadow:0 4px 4px -2px #eee}
 
 .f-boxbtn{float:right;width:20px;height:30px;line-height:1;vertical-align:top;text-align:left;color:#999;cursor:pointer}
-.f-boxbtn._pick{width:26px}
+.f-boxbtn._pick,.f-boxbtn._x{width:26px}
+.f-boxbtn._x,.w-f.z-ds .f-boxbtn._x{display:none}
 .f-boxbtn:hover{color:#2498ff}
 .w-f .f-boxbtn{font-size:18px}
 .f-boxbtn .f-i-caret-down{font-size:20px;margin-left:-5px}
 .w-f.z-ds .f-boxbtn{cursor:default}
 .w-f.z-ds .f-boxbtn:hover{color:#999}
+.w-f:hover ._x{display:block}
 
 .w-input{border:1px solid #ddd;background:#fff;position:relative;height:30px;text-align:left}
 .w-input-c{position:relative;padding:0 5px 0 10px;height:100%;overflow:hidden}
@@ -559,6 +561,7 @@
 .w-onlinebox .w-input-t{font-family:verdana}
 
 .w-pickbox.z-loading{color:gray}
+.w-pickbox.z-empty .f-boxbtn._x{display:none}
 
 .w-imgbox.z-ds{background:#eee;cursor:default;}
 .w-imgbox-c{height:auto!important}

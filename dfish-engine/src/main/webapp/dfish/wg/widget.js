@@ -110,15 +110,7 @@ _widgetEvent = function(a, b) {
 		e.elemId = a.id;
 		var c = _widget(a);
 		if (c) {
-			if (b) {
-				if (c.tmpl && c.tmpl[b]) {
-					if (!e.currentTarget) e.currentTarget = a;
-					e.widget = c;
-					c.tmpl[b](e);
-				} else
-					throw new Error(Loc.ps(Loc.debug.tmpl_method_undefined, b));
-			} else
-				c.trigger(e);
+			c.trigger(e);
 		} else
 			$.stop(e);
 	}
@@ -528,9 +520,6 @@ Template = $.createClass({
 					this.data[i] = a[i];
 			}
 		}
-		var f = new Function;
-		f.prototype = t.methods;
-		g.tmpl = $.extend(new f, {data: this.data, widget: g});
 	},
 	Extend: Node,
 	Prototype: {
@@ -740,7 +729,6 @@ _regWidget = function(x, p, n) {
 	p && p.addNode(this, n);
 	_all[$.uid(this)] = this;
 	this.init_x(x);
-	p && p.tmpl && (this.tmpl = p.tmpl);
 },
 _regTarget = function(a) {
 	var a = $.proxy(this, a), b = this.x.target.split(',');
@@ -1093,7 +1081,6 @@ W = define('Widget', function() {
 				return this.x.data;
 			else {
 				(this.x.data || (this.x.data = {}))[a] = b;
-				this.tmpl && this.tmpl.widget == this && (this.tmpl.data[a] = b);
 			}
 		},
 		closestData: function(a) {
@@ -1321,12 +1308,6 @@ W = define('Widget', function() {
 		},
 		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({name: value})?, c -> data?, d -> callback?
 		formatJS: function(a, b, c, d, x) {
-			if (this.tmpl && typeof this.tmpl[a] === _FUN) {
-				var e = (c && c.event) || {};
-				if (typeof e === _STR) e = {type: e};
-				e.widget = this;
-				return this.tmpl[a](e);
-			}
 			var x = x || this.x, n = ['$this'], m = [c || x.data];
 			if (b) {
 				if ($.isArray(b)) {
@@ -1577,21 +1558,10 @@ W = define('Widget', function() {
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
 			if (b) {
-				var s;
-				if (this.tmpl && this.tmpl[b]) {
-					s = this.tmpl[b]({type: 'format', widget: this});
-					s = (s || '').replace(/@(\w+)=["']?([\w]+)["']?/g, 'on\$1=' + $.abbr + '.e(this,"\$2")')
-				} else {
-					s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
-				}
+				var s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
 				return typeof s === _STR ? _parseHTML.call(this, s) : s;
 			} else
 				return c !== F ? $.strEscape(a) : (a == N ? '' : '' + a);
-		},
-		formatCall: function(a, b, c) {
-			!b.currentTarget && (b.currentTarget = a);
-			b.widget = this;
-			this.tmpl && this.tmpl[c] && this.tmpl[c](b);
 		},
 		html_prop: function() {
 			var b = ' w-type="' + this.type + '" id=' + this.id,
@@ -8741,10 +8711,6 @@ ComboBox = define.widget('ComboBox', {
 				}
 			}
 		},
-		resetOptions: function() {
-			this._init_more();
-			this._init_ready();
-		},
 		// @implement
 		insertHTML: function(a, b) {
 			!b || b === 'append' ? $.before(this.$t(), a) : b === 'prepend' ? $.prepend(this.$('c'), a) : _proto.insertHTML.apply(this, arguments);
@@ -9736,9 +9702,11 @@ PickBox = define.widget('PickBox', {
 		loading: F,
 		$v: function() {return $(this.id + 'v')},
 		_init_ready: function() {
+			if (!this._xDrop)
+				this._xDrop = $.jsonClone(this.x.drop);
 			// 如果有设置value而text为空时，尝试从drop中匹配文本
 			var v = this._val();
-			if (v && !this.x.text && this.x.drop) {
+			if (v && !this.x.text && this._xDrop) {
 				this.loading = T;
 				this.addClass('z-loading');
 				var self = this;
@@ -9750,10 +9718,7 @@ PickBox = define.widget('PickBox', {
 					self.removeClass('z-loading');
 				});
 			}
-		},
-		resetOptions: function() {
-			this.x.text = '';
-			this._init_ready();
+			this.addClass('z-empty', !v);
 		},
 		_storeView: function(a) {
 			return (a || this.dropper).getContentView();
@@ -9764,7 +9729,10 @@ PickBox = define.widget('PickBox', {
 		val: function(v, t) {
 			v != N && this.text(t || v);
 			var v = AbsForm.prototype.val.apply(this, arguments);
-			v != N && this.checkPlaceholder(v);
+			if (v != N) {
+				this.checkPlaceholder(v);
+				this.addClass('z-empty', !v);
+			}
 			return v;
 		},
 		text: function(t) {
@@ -9779,6 +9747,19 @@ PickBox = define.widget('PickBox', {
 			var d = this.store(this.pop()).getParam(a);
 			this.val(d.value, d.text);
 			a.focus && a.focus(T);
+		},
+		clear: function() {
+			this.val('', '');
+			if(this.dropper) {
+				var f = this.dropper.isShow();
+				this.dropper.remove();
+				this.dropper = this.createPop($.jsonClone(this._xDrop));
+				f && this.dropper.show();
+			}
+		},
+		html_btn: function() {
+			var s = '<em class="f-boxbtn _x" onclick=' + evw + '.clear()><i class=f-vi></i>' + $.image('.f-i-close') + '</em>';
+			return OnlineBox.prototype.html_btn.call(this) + s;
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
