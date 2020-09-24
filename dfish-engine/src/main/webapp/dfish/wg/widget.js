@@ -8176,6 +8176,7 @@ DropBox = define.widget('DropBox', {
 		}
 	},
 	Prototype: {
+		placeholder_type: 'placeholder_select',
 		x_nodes: $.rt(N),
 		$v: function() {return $(this.id + 'v')},
 		init_x: function(x) {
@@ -9704,6 +9705,7 @@ PickBox = define.widget('PickBox', {
 	},
 	Prototype: {
 		loading: F,
+		placeholder_type: 'placeholder_select',
 		$v: function() {return $(this.id + 'v')},
 		_init_ready: function() {
 			if (!this._xDrop)
