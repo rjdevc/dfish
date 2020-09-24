@@ -46,13 +46,26 @@ DFishAMap = define.widget( 'AMap', {
 	Extend: 'Vert',
 	Listener: {
 		body: {
-			ready: function() { this._render(); }
+			ready: function() { this.render(); }
 		}
 	},
 	Prototype: {
 		className: 'w-amap',
 		val: function() {
 			return this.x.value;
+		},
+		render: function() {
+			if (!window.AMap) {
+				var s = document.createElement('script'), o = !$.br.css3, self = this;
+				s.type = 'text/javascript';
+				s.src = 'https://webapi.amap.com/maps?v=1.3&key=248c8c0a0e198cc298fc48920cfd967f';
+				s[o ? 'onreadystatechange' : 'onload'] = function() {
+					if (!o || (s.readyState == 'loaded' || s.readyState == 'complete'))
+						self._render();
+				}
+				document.getElementsByTagName('head')[0].appendChild(s);
+			} else
+				this._render();
 		},
 		_render: function() {
 			var v = $.jsonParse( this.val() ), self = this, opt = {};
