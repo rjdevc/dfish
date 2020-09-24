@@ -4922,10 +4922,10 @@ var Label = define.widget('label', {
 			return '<span class=f-required>*</span>';
 		},
 		html_text: function() {
-			var t = this.html_format(this.x.text, this.x.format, this.x.escape), d = this.parentNode.x.validate;
+			var t = this.html_format(this.x.text, this.x.format, this.x.escape);
 			if (typeof t === _OBJ)
 				t = this.add(t, -1).html();
-			d && d.required && (t = this.html_star() + t);
+			this.parentNode.isRequired() && (t = this.html_star() + t);
 			return t + (this.x.suffix || '');
 		},
 		html_bg: function() {
@@ -5091,6 +5091,9 @@ AbsForm = define.widget('abs/form', {
 		saveModified: function(b) {
 			this._modval = this.$v().value || '';
 			b && (this.x.value = this._modval);
+		},
+		isRequired: function() {
+			return this.x.validate && this.x.validate.required && (this.x.validate.required === T ? T : this.x.validate.required.value);
 		},
 		//@implement
 		attrSetter: function(a, b) {
@@ -5465,6 +5468,9 @@ CheckboxGroup = define.widget('checkboxgroup', {
 				return $.arrSelect(this.elements(T, T), 'v.value', T).join(',');
 			this.elements().each(function() {this.checked = $.idsAny(a, this.value)});
 			this.trigger('change');
+		},
+		isRequired: function() {
+			return AbsForm.prototype.isRequired.call(this) || (this[0] && this[0].isRequired());
 		},
 		// @a -> valid name
 		getValidError: function(a) {
@@ -6490,7 +6496,10 @@ Range = define.widget('range', {
 		},
 		scaleWidth: function(a, b) {
 			return _w_scale.width.call(this, a, b, a == this.label ? U : this.formWidth());
-		}
+		},
+		isRequired: function() {
+			return (this.begin && this.begin.isRequired()) || (this.end && this.end.isRequired());
+		}		
 	}
 }),
 /* `muldate` */
