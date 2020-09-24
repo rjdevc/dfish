@@ -54,7 +54,7 @@
 .f-form-hide{visibility:hidden}
 
 
-.f-required{color:red;font-family:tahoma;font-style:normal;margin-right:2px}
+.f-required{position:relative;top:2px;margin-right:2px;color:red;font-family:tahoma;font-style:normal}
 .f-keyword{color:red;font-style:normal}
 .f-addcon{font-style:normal}
 .f-nobr,.f-omit,.f-fix{white-space:nowrap;word-break:keep-all;word-wrap:normal}
@@ -461,7 +461,7 @@
 .w-spinner.z-ds ._b em{cursor:default}
 .w-spinner.z-ds ._b em:hover{border-bottom-color:#999}
 .w-spinner.z-ds ._b em:hover{border-top-color:#999}
-.w-spinner .w-f-main.z-auto{width:112px}
+.w-spinner .w-f-main.z-auto{width:140px}
 
 .w-numberbox .w-input-t{vertical-align:middle}
 .w-numberbox ._l{float:left;margin-right:-1px}
@@ -519,7 +519,7 @@
 .w-dropbox-dialog ._o.z-on{background:#2498ff;color:#fff}
 .w-dropbox-dialog ._box{visibility:hidden}
 .w-dropbox-dialog.z-mul ._o.z-on{background:#fff;color:#2498ff}
-.w-dropbox-dialog.z-cancel ._o.z-on ._box,.w-dropbox-dialog.z-mul ._o.z-on ._box{position:absolute;visibility:visible;width:16px;height:100%;top:0;right:10px;font-family:"Times New Roman";font-weight:normal;font-style:normal;font-size:18px}
+.w-dropbox-dialog.z-cancel ._o.z-on ._box,.w-dropbox-dialog.z-mul ._o.z-on ._box{position:absolute;visibility:visible;width:16px;height:100%;top:0;right:14px;font-family:"Times New Roman";font-weight:normal;font-style:normal;font-size:18px}
 
 .w-combobox .w-input-c{padding-left:0;min-height:28px;cursor:text}
 .w-combobox ._v{display:inline-block;height:100%;font-style:normal;vertical-align:middle}

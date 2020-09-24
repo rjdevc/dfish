@@ -8165,6 +8165,7 @@ DropBox = define.widget('DropBox', {
 		body: {
 			ready: function() {
 				(!this.x.nodes || !this.x.nodes.length) && this.x.src && this.load();
+				this.checkPlaceholder();
 			},
 			click: {
 				method: function() {
@@ -8249,6 +8250,13 @@ DropBox = define.widget('DropBox', {
 		isEmpty: function() {
 			return !this.val();
 		},
+		clkhdr: function(e) {
+			this.drop();
+			AbsInput.prototype.clkhdr.apply(this, arguments);
+		},
+		checkPlaceholder: function(v) {
+			this.$('ph') && $.classAdd(this.$('ph'), 'f-none', !!(arguments.length === 0 ? this.val() : v) || !(this.x.cancelable || this.x.multiple));
+		},
 		focus: function(a) {
 			_z_on.call(this, a == N || a);
 		},
@@ -8278,6 +8286,7 @@ DropBox = define.widget('DropBox', {
 				this._val(s.join(', '));
 				if (this.attr('tip') === T)
 					this.$t().title = t.join().replace(/<[^>]+>/g, '');
+				this.checkPlaceholder(t.length);
 				if (v != u)
 					this.trigger('change');
 			} else {
@@ -8385,9 +8394,6 @@ DropBox = define.widget('DropBox', {
 			if (this.x.format)
 				t = this.html_format(t, this.x.format, this.x.escape, N, a);
 			return t;
-		},
-		html_placeholder: function() {
-			return '';
 		},
 		html_li: function(a, b) {
 			return a ? (a.icon ? $.image(a.icon, {cls: 'w-dropbox-ico'}) : '') + this.option_text(a) + (!b ? '<i class=_box>\u2714</i>' : '') : '';
