@@ -6480,7 +6480,7 @@ Hidden = define.widget('Hidden', {
 			return a === U ? ($(this.id) || this.x).value : (($(this.id) || this.x).value = a);
 		},
 		html: function() {
-			return '<input type=hidden id="' + this.id + '" name="' + this.input_name() + (this.isDisabled() ? ' disabled' : '') + '" value="' + $.strQuot(this.x.value || '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>';
+			return '<input type=hidden id="' + this.id + '" name="' + this.input_name() + (this.isDisabled() ? ' disabled' : '') + '" value="' + this.input_prop_value()+ '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>';
 		}
 	}
 }),
