@@ -920,7 +920,7 @@ W = define('Widget', function() {
 		},
 		// 读/写属性
 		attr: function(a, b) {
-			if (b !== U) {
+			if (arguments.length === 2) {
 				var c = this.x[a];
 				this.x[a] = b;
 				this.attrSetter(a, b, c);
