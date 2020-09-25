@@ -9719,12 +9719,13 @@ PickBox = define.widget('PickBox', {
 				this.text(Loc.loading);
 				(this.dropper = this.createPop(this.x.drop)).preload(function() {
 					var r = self.param(v, T);
-					r ? self.val(r.value, r.text) : self.val('', '');
+					r ? self.val(r.value, r.text) : self.text('');
 					self.loading = F;
 					self.removeClass('z-loading');
+					self.addClass('z-empty', !r);
 				});
-			}
-			this.addClass('z-empty', !v);
+			} else
+				this.addClass('z-empty', !v);
 		},
 		_storeView: function(a) {
 			return (a || this.dropper).getContentView();
