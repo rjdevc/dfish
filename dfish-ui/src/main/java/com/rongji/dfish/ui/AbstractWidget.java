@@ -371,7 +371,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
             } else {
                 Set<String> clsSet = parseClsSet(this.cls);
                 if (clsSet.add(cls)) {
-                    this.setCls(StringUtil.jion(clsSet, ' '));
+                    this.setCls(StringUtil.join(clsSet, ' '));
                 }
             }
         }
@@ -390,7 +390,7 @@ public abstract class AbstractWidget<T extends AbstractWidget<T>> extends Abstra
             cls = cls.trim();
             Set<String> clsSet = parseClsSet(this.cls);
             if (clsSet.remove(cls)) {
-                this.setCls(StringUtil.jion(clsSet, ' '));
+                this.setCls(StringUtil.join(clsSet, ' '));
             }
         }
         return (T) this;
