@@ -99,10 +99,14 @@ public interface FrameworkDao<P, ID extends Serializable> {
         if (entity == null) {
             return 0;
         }
-        int count = update(entity);
-        if (count < 1) {
-            count = save(entity);
+        ID id = getEntityId(entity);
+        P old = null;
+        if (id != null && !"".equals(id)) {
+            old = get(id);
+            evict(old);
         }
+        // Hibernate版本如果id不存在的update会抛异常,所以这里只能先查询是否有数据来执行,这样执行更安全
+        int count = old != null ? update(entity) : save(entity);
         return count;
     }
 
