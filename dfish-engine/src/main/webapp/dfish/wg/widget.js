@@ -3760,22 +3760,24 @@ Button = define.widget('Button', {
 		// 在触发事件之前做判断，如果返回true，则停止执行事件(包括系统事件和用户事件)
 		block: function(e) {
 			var t = e.type || e;
-			return t !== 'unlock' && t !== 'remove' && t !== 'focus' && t !== 'blur' && !this.usa();
+			return t !== 'unlock' && t !== 'remove' && t !== 'focus' && t !== 'blur' && t !== 'mouseover' && t !== 'mouseout' &&  !this.usa();
 		},
 		body: {
 			ready: function() {
 				this.isFocus() && this.focus();
 			},
 			mouseOver: function(e) {
-				$.classAdd($(e.elemId || this.id), 'z-hv');
-				var m = _inst_get('Menu');
-				if (this.type === 'MenuButton') {
-					this.show();
+				if (this.usa()) {
+					$.classAdd($(e.elemId || this.id), 'z-hv');
+					var m = _inst_get('Menu');
+					if (this.type === 'MenuButton') {
+						this.show();
+					}
 				}
 				_hover_tip.call(this);
 			},
 			mouseOut: function(e) {
-				$.classRemove($(e.elemId || this.id), 'z-hv');
+				this.usa() && $.classRemove($(e.elemId || this.id), 'z-hv');
 			},
 			mouseDown: function(e) {
 				$.classAdd($(e.elemId || this.id), 'z-dn');
@@ -5957,15 +5959,11 @@ Label = define.widget('Label', {
 		html_bg: function() {
 			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>' : '';
 		},
-		html_nodes: function() {
-			return (br.css3 ? '' : '<i class=f-vi></i>') + '<label id=' + this.id + 'lb class="_lb f-va">' + this.html_text() + '</label>' + this.html_bg();
-		},
 		html: function() {
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + (br.css3 ? '' : '<i class=f-vi></i>') + 
 				'<div class="_lb f-nv">' + this.html_prepend() + 
 				this.html_text() + this.html_append() + '</div>' + this.html_bg() + '</' + this.tagName + '>' + this.html_after();
-		},
-
+		}
 	}
 });
 
