@@ -2148,6 +2148,8 @@ var boot = {
 						t = 'path: ' + m.path + (d ? '\ndialog: ' + (d.x.id || '') : '') + '\nsrc: ' + (m.x.src || '');
 					if (m.x.template)
 						t += '\ntemplate: ' + m.x.template;
+					else if (d && d.x.template)
+						t += '\ntemplate: ' + d.x.template;
 					if (br.css3) {
 						Q(e.target).closest('[w-type="Section"]').each(function() {
 							var g = $.all[this.id], c = $.bcr(this);
