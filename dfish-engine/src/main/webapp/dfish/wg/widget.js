@@ -5934,7 +5934,7 @@ Label = define.widget('Label', {
 		scaleWidth: _w_scale.width,
 		setValidate: function(x) {
 			if (x && x.required) {
-				this.$() && !$.get('.f-required', this.$()) && $.prepend(this.$('lb'), this.html_star());
+				this.$() && !$.get('.f-required', this.$()) && $.before(this.$('t'), this.html_star());
 			} else {
 				this.$() && Q('.f-required', this.$()).remove();
 			}
@@ -5946,21 +5946,26 @@ Label = define.widget('Label', {
 			return (this._pad ? 'margin-right:' + this._pad + 'px;' : '') + _proto.prop_style.call(this);
 		},
 		html_star: function() {
-			return '<span class=f-required>*</span>';
+			return '<span class="f-required f-va-bottom">*</span>';
 		},
 		html_text: function() {
 			var t = this.html_format();
 			if (typeof t === _OBJ)
 				t = this.add(t, -1).html();
-			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span>' + t + (this.x.suffix || '') + '</span>';
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span id=' + this.id + 't class=f-va>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
 			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>' : '';
 		},
 		html_nodes: function() {
-			var s = this.html_text(), v = this.attr('vAlign');
-			return (br.css3 ? '<label id=' + this.id + 'lb class=_lb>' + s + '</label>' : '<i class=f-vi></i><label id=' + this.id + 'lb class=_lb>' + s + '</label>') + this.html_bg();
-		}
+			return (br.css3 ? '' : '<i class=f-vi></i>') + '<label id=' + this.id + 'lb class="_lb f-va">' + this.html_text() + '</label>' + this.html_bg();
+		},
+		html: function() {
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + (br.css3 ? '' : '<i class=f-vi></i>') + 
+				'<div class="_lb f-nv">' + this.html_prepend() + 
+				this.html_text() + this.html_append() + '</div>' + this.html_bg() + '</' + this.tagName + '>' + this.html_after();
+		},
+
 	}
 });
 
