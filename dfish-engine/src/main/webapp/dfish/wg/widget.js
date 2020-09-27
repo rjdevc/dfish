@@ -5931,6 +5931,7 @@ Label = define.widget('Label', {
 	},
 	Prototype: {
 		className: 'w-label f-nv f-wdbr',
+		scaleWidth: _w_scale.width,
 		setValidate: function(x) {
 			if (x && x.required) {
 				this.$() && !$.get('.f-required', this.$()) && $.prepend(this.$('lb'), this.html_star());
@@ -5958,7 +5959,7 @@ Label = define.widget('Label', {
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr('vAlign');
-			return (br.css3 ? '<div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>') + this.html_bg();
+			return (br.css3 ? '<label id=' + this.id + 'lb class=_lb>' + s + '</label>' : '<i class=f-vi></i><label id=' + this.id + 'lb class=_lb>' + s + '</label>') + this.html_bg();
 		}
 	}
 });
