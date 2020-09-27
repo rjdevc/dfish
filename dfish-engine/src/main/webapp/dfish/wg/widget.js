@@ -4411,6 +4411,7 @@ Img = define.widget('Img', {
 		body: {
 			mouseOver: function() {
 				$.classAdd(this.$(), 'z-hv');
+				_hover_tip.call(this);
 			},
 			mouseOut: function() {
 				$.classRemove(this.$(), 'z-hv');
@@ -4429,7 +4430,7 @@ Img = define.widget('Img', {
 	},
 	Prototype: {
 		rootType: 'Album',
-		className: 'w-img',
+		className: 'w-img f-inbl',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
 		init_badge: function() {
@@ -4495,7 +4496,7 @@ Img = define.widget('Img', {
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call(this, this.x.src),
 				iw = $.scale(mw, [this.x.imgWidth])[0], ih = $.scale(mh, [this.x.imgHeight])[0], w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
 				g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
 		},
 		html_text: function() {
 			var t = this.html_format(), w = this.x.textWidth;
@@ -5957,7 +5958,7 @@ Label = define.widget('Label', {
 		},
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr('vAlign');
-			return (br.css3 ? '<div id=' + this.id + 'lb class=_lb>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>') + this.html_bg();
+			return (br.css3 ? '<div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>') + this.html_bg();
 		}
 	}
 });

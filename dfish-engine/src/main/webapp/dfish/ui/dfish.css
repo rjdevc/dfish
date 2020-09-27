@@ -417,6 +417,7 @@
 .w-label ._bg{position:absolute;top:0;left:0}
 .w-label.z-va-top{vertical-align:top}
 .w-label.z-va-top ._lb{padding-top:6px}
+.w-label .f-addcon{position:relative;z-index:1}
 
 .w-range{overflow:visible}
 .w-range .f-sub-horz{vertical-align:middle}
