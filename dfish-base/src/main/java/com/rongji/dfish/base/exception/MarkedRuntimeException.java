@@ -6,10 +6,11 @@ package com.rongji.dfish.base.exception;
  * @author lamontYu
  * @since DFish5.0
  */
-public class MarkedRuntimeException extends RuntimeException implements Marked {
+public class MarkedRuntimeException extends RuntimeException implements MarkedCause {
 
     private static final long serialVersionUID = -7624791248986463899L;
     private String code;
+    private String localMessage;
 
     /**
      * 构造函数
@@ -83,4 +84,18 @@ public class MarkedRuntimeException extends RuntimeException implements Marked {
         return this;
     }
 
+    @Override
+    public String getLocalMessage() {
+        return localMessage;
+    }
+
+    /**
+     * 设置本地化信息
+     * @param localMessage String 本地化信息
+     * @return 本身，这样可以继续设置属性
+     */
+    public MarkedRuntimeException setLocalMessage(String localMessage) {
+        this.localMessage = localMessage;
+        return this;
+    }
 }

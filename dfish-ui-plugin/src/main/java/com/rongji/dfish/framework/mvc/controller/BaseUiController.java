@@ -1,6 +1,6 @@
 package com.rongji.dfish.framework.mvc.controller;
 
-import com.rongji.dfish.base.exception.Marked;
+import com.rongji.dfish.base.exception.MarkedCause;
 import com.rongji.dfish.base.exception.MarkedException;
 import com.rongji.dfish.base.Page;
 import com.rongji.dfish.base.util.Utils;
@@ -89,17 +89,18 @@ public class BaseUiController extends FrameworkController {
                 return buildWarnAlert(alertMsg);
             }
             Throwable cause = getCause(e);
-            if (cause instanceof Marked) {
+            if (cause instanceof MarkedCause) {
+                MarkedCause markedCause = (MarkedCause) cause;
                 // 有DFish异常,基本上是业务的异常,所以提示相对友好些用alert
-                String code = ((Marked) cause).getCode();
+                String code = markedCause.getCode();
                 if (Utils.notEmpty(code)) {
 //					if (cast.getCode().startsWith("DFISH")) {
 //						LogUtil.error("==========系统异常==========", e);
 //					}
                     alertMsg += "(" + code + ")";
                 }
-                if (Utils.notEmpty(cause.getMessage())) {
-                    alertMsg += cause.getMessage();
+                if (Utils.notEmpty(markedCause.message())) {
+                    alertMsg += markedCause.message();
                 }
             }
         }
