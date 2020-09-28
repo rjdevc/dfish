@@ -98,6 +98,7 @@ public final class FileUtil {
 
     /**
      * 如果有扩展名,包括点号 如 txt doc等(注意这里不带.).否则返回""
+     *
      * @param fileName String
      * @return String
      */
@@ -141,57 +142,48 @@ public final class FileUtil {
     /**
      * 将上传文件保存成硬盘文件
      *
-     * @param stream       InputStream
+     * @param input        InputStream
      * @param folderPath   String
      * @param realFileName String
      */
-    public static void saveFile(InputStream stream, String folderPath,
-                                String realFileName) {
+    public static void saveFile(InputStream input, String folderPath, String realFileName) throws IOException {
 //		InputStream stream = null;
-        OutputStream bos = null;
-        try {
-            // 接收到的附件数据流
+        // 接收到的附件数据流
 
 
-            // 附件保存的相对位置
+        // 附件保存的相对位置
 
-            String attachUrl = folderPath + "/" + realFileName;
+        String attachUrl = folderPath + "/" + realFileName;
 
-            // 如果绝对目录不存在，新建目录
-            File filePath = new File(folderPath
-                    .replace('/', File.separatorChar));
+        // 如果绝对目录不存在，新建目录
+        File filePath = new File(folderPath
+                .replace('/', File.separatorChar));
 
-            if (!filePath.exists()) {
-                filePath.mkdirs();
-            }
-            File targetFile = new File(attachUrl.replace('/',
-                    File.separatorChar));
-            if (targetFile.exists()) {
-                targetFile.delete(); // 由于有些时候文件大小问题。
-            }
-            targetFile = new File(attachUrl.replace('/', File.separatorChar));
+        if (!filePath.exists()) {
+            filePath.mkdirs();
+        }
+        File targetFile = new File(attachUrl.replace('/',
+                File.separatorChar));
+        if (targetFile.exists()) {
+            targetFile.delete(); // 由于有些时候文件大小问题。
+        }
+        targetFile = new File(attachUrl.replace('/', File.separatorChar));
+        try (OutputStream bos = new FileOutputStream(targetFile)) {
             // 将数据流写入文件
-            bos = new FileOutputStream(targetFile);
             int bytesRead = 0;
             byte[] buffer = new byte[8192];
 
-            while ((bytesRead = stream.read(buffer, 0, 8192)) != -1) {
+            while ((bytesRead = input.read(buffer, 0, 8192)) != -1) {
                 bos.write(buffer, 0, bytesRead);
             }
-
         } catch (Exception e) {
-            LogUtil.error("FileUtil.saveFile error", e);
+            throw e;
         } finally {
-            if (bos != null) {
+            if (input != null) {
                 try {
-                    bos.close();
+                    input.close();
                 } catch (IOException ex) {
-                }
-            }
-            if (stream != null) {
-                try {
-                    stream.close();
-                } catch (IOException ex) {
+                    LogUtil.error(null, ex);
                 }
             }
         }
@@ -199,7 +191,8 @@ public final class FileUtil {
 
     /**
      * 进行流的读写操作
-     * @param input InputStream
+     *
+     * @param input  InputStream
      * @param output OutputStream
      * @throws IOException
      */
@@ -212,8 +205,8 @@ public final class FileUtil {
                     output.write(buff, 0, bytesRead);
                 }
             }
-        } catch (final IOException e) {
-            LogUtil.error("FileUtil.readAndWrite error", e);
+        } catch (IOException e) {
+            throw e;
         } finally {
             if (input != null) {
                 input.close();
@@ -232,7 +225,7 @@ public final class FileUtil {
      * @param charset  String
      * @return boolean
      */
-    public static boolean writeFile(String content, String fileName, String charset) {
+    public static boolean writeFile(String content, String fileName, String charset) throws IOException {
         return writeFile(content, ((fileName == null) ? null : new File(fileName)), charset, false);
     }
 
@@ -284,7 +277,7 @@ public final class FileUtil {
      * @param append  boolean
      * @return boolean
      */
-    public static boolean writeFile(String content, File file, String charset, boolean append) {
+    public static boolean writeFile(String content, File file, String charset, boolean append) throws IOException {
         Writer writer = null;
         FileOutputStream fos = null;
 
@@ -301,9 +294,8 @@ public final class FileUtil {
             writer.write(content);
 
             return true;
-        } catch (Exception e) {
-            LogUtil.error("FileUtil.writeFile error", e);
-            return false;
+        } catch (IOException e) {
+            throw e;
         } finally {
             try {
                 if (fos != null) {
@@ -312,8 +304,8 @@ public final class FileUtil {
                     }
                     fos.close();
                 }
-
             } catch (Exception ex) {
+                LogUtil.error(null, ex);
             }
         }
     }
@@ -325,7 +317,7 @@ public final class FileUtil {
      * @param fileName String
      * @return boolean
      */
-    public static boolean writeFile(String content, String fileName) {
+    public static boolean writeFile(String content, String fileName) throws IOException {
         return writeFile(content, new File(fileName), ENCODING, false);
     }
 
@@ -465,7 +457,7 @@ public final class FileUtil {
      * @param fileNameFilter FileFilter 用指定的过滤条件使某些文件不添加到zip包里。参见java.io.FileFilter
      * @throws IOException
      */
-    public static void addDirectoyToZip(File path, ZipOutputStream zos, String pathInZip, FileFilter fileNameFilter) throws IOException {
+    public static void addDirectoryToZip(File path, ZipOutputStream zos, String pathInZip, FileFilter fileNameFilter) throws IOException {
         if (pathInZip == null || "/".equals(pathInZip) || "\\".equals(pathInZip)) {
             pathInZip = "";
         }
@@ -474,25 +466,18 @@ public final class FileUtil {
         }
         if (path.isDirectory()) {
             File[] subs = path.listFiles();
-            if(subs!=null) {
+            if (subs != null) {
                 for (int i = 0; i < subs.length; i++) {
                     if ("".equals(pathInZip)) {
-                        addDirectoyToZip(subs[i], zos, subs[i].getName(), fileNameFilter);
+                        addDirectoryToZip(subs[i], zos, subs[i].getName(), fileNameFilter);
                     } else {
-                        addDirectoyToZip(subs[i], zos, pathInZip + "/" + subs[i].getName(), fileNameFilter);
+                        addDirectoryToZip(subs[i], zos, pathInZip + "/" + subs[i].getName(), fileNameFilter);
                     }
                 }
             }
         } else if (path.isFile()) {
-            InputStream data = null;
-            try {
-                data = new FileInputStream(path);
-                addDataToZipASFile(zos, pathInZip, data); // 如果是文件则添加
-            } catch (IOException ex) {
-                if (data != null) {
-                    data.close(); // 保证流关闭
-                }
-                throw ex;
+            try (InputStream input = new FileInputStream(path)) {
+                addDataToZipASFile(zos, pathInZip, input); // 如果是文件则添加
             }
         }
     }
@@ -520,51 +505,34 @@ public final class FileUtil {
     /**
      * 用流方式 深度拷贝文件。
      * 不过,如果环境是 JDK7以上 通常建议用操作系统的拷贝会更快。
+     *
      * @param fromFileFullName String
-     * @param toFileFolder String
-     * @param toFileName String
-     * @see java.nio.file.Files#copy(Path, Path, CopyOption...)
+     * @param toFileFolder     String
+     * @param toFileName       String
      * @return 是否成功
+     * @see java.nio.file.Files#copy(Path, Path, CopyOption...)
      */
-    public static boolean copyFile(String fromFileFullName, String toFileFolder, String toFileName) {
-        boolean isExist = true;
-        OutputStream os = null;
-        InputStream ins = null;
-        try {
-            File attachFile = new File(fromFileFullName.replace('/',
-                    File.separatorChar));
-            if (attachFile.exists() && attachFile.isFile()) { // 原附件存在
-                File file = new File(toFileFolder);
-                if (!file.exists()) {
-                    file.mkdirs();
-                }
-                os = new FileOutputStream((toFileFolder + "/" + toFileName).replace('/', File.separatorChar));
-                ins = new FileInputStream(attachFile);
-                int r = 0;
-                byte[] buffer = new byte[8192];
-                while ((r = ins.read(buffer, 0, 8192)) != -1) {
-                    os.write(buffer, 0, r);
-                }
-            } else {
-                isExist = false;
-            }
-        } catch (Exception e) {
-            LogUtil.error("FileUtil.copyFile error", e);
-        } finally {
-            if (os != null) {
-                try {
-                    os.close();
-                } catch (IOException ex) {
-                }
-            }
-            if (ins != null) {
-                try {
-                    ins.close();
-                } catch (IOException ex1) {
-                }
+    public static boolean copyFile(String fromFileFullName, String toFileFolder, String toFileName) throws IOException {
+
+        File attachFile = new File(fromFileFullName.replace('/', File.separatorChar));
+        if (!attachFile.exists() || !attachFile.isFile()) {
+            return false;
+        }
+
+        File file = new File(toFileFolder);
+        if (!file.exists()) {
+            file.mkdirs();
+        }
+        try (InputStream input = new FileInputStream(attachFile);
+             OutputStream output = new FileOutputStream((toFileFolder + "/" + toFileName).replace('/', File.separatorChar))) {
+
+            int r = 0;
+            byte[] buffer = new byte[8192];
+            while ((r = input.read(buffer, 0, 8192)) != -1) {
+                output.write(buffer, 0, r);
             }
         }
-        return isExist;
+        return true;
     }
 
     /**
