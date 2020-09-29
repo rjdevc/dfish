@@ -2974,7 +2974,7 @@ View = define.widget('View', {
 			this.layout.prepend.apply(this.layout, arguments);
 		},
 		html_nodes: function() {
-			return this.layout ? this.layout.html() : this.html_loading();
+			return this.layout ? this.layout.html() : '';
 		},
 		dispose: function() {
 			this.trigger('unload');
