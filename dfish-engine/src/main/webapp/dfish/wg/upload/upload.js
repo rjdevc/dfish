@@ -314,7 +314,7 @@ SWFUpload.prototype.getFlashHTML = function (flashVersion) {
 		'<param name="movie" value="', (this.support.imageResize ? this.settings.flash_url : this.settings.flash9_url), '" />',
 		'<param name="quality" value="high" />',
 		'<param name="menu" value="false" />',
-		'<param name="allowScriptAccess" value="always" />',
+		'<param name="allowScriptAccess" value="sameDomain" />',
 		'<param name="flashvars" value="', this.getFlashVars(), '" />'
 	].join("");
 	if (navigator.userAgent.search(/MSIE/) > -1){
@@ -2060,7 +2060,7 @@ swfTranslate = {
 	uploadLimit: 'file_upload_limit', maxFileSize: 'file_size_limit', fileTypes: 'file_types'
 };
 function getSuffix(url) {
-	var a = $.strFrom(url, '.', true).toLowerCase();
+	var a = $.strFrom(url || '', '.', true).toLowerCase();
 	return suffix[a] || 'file';
 };
 function swfOptions(x) {
