@@ -2564,6 +2564,7 @@ AbsSection = define.widget('AbsSection', {
 			tpl != N && (y.template = tpl);
 			$.merge(this.x, y);
 			this.reset(tar);
+			this.addEventOnce('load', _w_rsz_all, this.parentNode);
 			if (this.$()) {
 				var s = this.getSrc();
 				if (typeof s === _STR) {
@@ -11013,7 +11014,8 @@ TableRow = define.widget('TableRow', {
 						g += this.prop_title((d && d[f.tip.field || f.field]) || '', f.format, h);
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') : '') +
-						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>');
+						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
+						(this.type_thr && u.x.removable ? '<div class=w-th-rm><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
 			return b.join('');
@@ -11365,7 +11367,7 @@ ContentTBody = define.widget('ContentTBody', {
 				s.push(r[i].html(i));
 			return s.join('');
 		},
-		html: function() {return '<tbody id=' + this.id + '>' + this.html_nodes() + '</tbody>'}
+		html: function() {return '<tbody id=' + this.id + ' type=' + this.type + '>' + this.html_nodes() + '</tbody>'}
 	}
 });
 _parallel_methods(ContentTBody, 'prepend append before after');
@@ -11377,10 +11379,10 @@ ContentTHead = define.widget('ContentTHead', {
 		body: {
 			ready: function() {
 				// 拖动表头调整大小
-				var r = this.rootNode, g = this.table, c = this.parentNode.colgroup;
+				var r = this.rootNode, g = this.table, p = this.parentNode, c = p.colgroup, self = this;
 				if (r.x.resizable) {
 					Q('td', this.$()).append('<div class=w-th-rsz></div>');
-					Q('.w-th-rsz', this.$()).height(this.height()).on('mousedown', function(e) {
+					Q('.w-th-rsz', this.$()).height(this.$().offsetHeight).on('mousedown', function(e) {
 						var b = this, n = Column.index(b.parentNode), x = e.pageX, o;
 						$.moveup(function(e) {
 							if (!o) o = $.db('<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr(b).top + 'px;background:#aaa;z-index:100"></div>');
@@ -11393,6 +11395,28 @@ ContentTHead = define.widget('ContentTHead', {
 							}
 							o && $.remove(o);
 						}, e);
+					});
+				}
+				if (r.x.removable) {
+					var _colHide = [];
+					Q('.w-th-rm', this.$()).height(this.$().offsetHeight).on('click', function() {
+						for (var i = 0, d = [], e = Q(this).closest('tr').find('.w-th'), t; i < c.length; i ++) {
+							(t = e.eq(i).text()) && d.push({text: t, data: {colIndex: i}, checked: T, on: {
+								change: function() {
+									if (!p._fixed_width) {
+										p._fixed_width = p.innerWidth();
+									}
+									var w = 0, h = !!this.isChecked(), n = this.x.data.colIndex;
+									_colHide[n] = !h;
+									Q('tbody[type] > tr > td:eq(' + this.x.data.colIndex + ')', g.$()).toggle(h);
+									for (var j = 0; j < c.length; j ++) {
+										if (!_colHide[j]) w += c[j].width();
+									}
+									p.css('width', p._fixed_width = w);
+								}
+							}});
+						}
+						g.cmd({type: 'Dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d}});
 					});
 				}
 				// 排序
@@ -11524,7 +11548,9 @@ ContentTable = define.widget('ContentTable', {
 	},
 	Listener: {
 		body: {
-			ready: function() { this.rootNode != this.table && this.fixWidth(); },
+			ready: function() {
+				this.rootNode != this.table && this.fixWidth();
+			},
 			resize: function() { this.rootNode != this.table && this.fixWidth(); }
 		}
 	},
@@ -11568,6 +11594,9 @@ THead = define.widget('THead', {
 		pubParent: $.rt(),
 		x_childtype: $.rt('TR'),
 		x_nodes: $.rt(),
+		scaleWidth: function(a) {
+			return a._fixed_width || _w_scale.width.apply(this, arguments);
+		},
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = getScroll(this.rootNode), b, f;
@@ -11657,7 +11686,7 @@ AbsTable = define.widget('AbsTable', {
 			if (r && r.length) {
 				this.head = new THead($.extend({table: {tHead: x.tHead, columns: x.columns}}, x.tHead, {width: '*'}), this);
 				delete x.scroll;
-			}
+			} 
 			this.body = new TBody($.extend({table: {tBody: x.tBody, columns: x.columns}}, x.tBody, {width: '*', height: this.head ? '*' : -1, scroll: this.head && s}), this);
 			r = x.tFoot && x.tFoot.nodes;
 			if (r && r.length) {
