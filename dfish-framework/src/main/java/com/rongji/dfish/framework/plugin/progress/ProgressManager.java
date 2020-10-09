@@ -365,7 +365,9 @@ public class ProgressManager {
             throw new UnsupportedOperationException("The progress register failed, the Runnable can not be null.");
         }
         ProgressData progressData = getProgressData(progressKey);
-        if (progressData == null) {
+        // 等待旧流程完成进展
+        boolean waitingFlush = progressData != null && progressData.isFinish();
+        if (progressData == null || progressData.isFinish()) {
             progressData = new ProgressData();
             progressData.setProgressKey(progressKey);
             progressData.setProgressText(progressText);
@@ -377,38 +379,42 @@ public class ProgressManager {
                     EXECUTOR_SERVICE = ThreadUtil.newFixedThreadPool(executorSize);
                 }
 
-                EXECUTOR_SERVICE.execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            // 执行线程数加1
-                            executingCount.incrementAndGet();
-                            // 开始执行
-                            runnable.run();
-                        } catch (Throwable e) {
-                            String errorMsg = null;
-                            String errorCode = null;
-                            if (e instanceof MarkedCause) {
-                                errorMsg = ((MarkedCause) e).message();
-                                errorCode = ((MarkedCause) e).getCode();
-                            } else {
-                                errorMsg = "进度条运行异常@" + System.currentTimeMillis();
-                                LogUtil.error(errorMsg, e);
+                EXECUTOR_SERVICE.execute(() -> {
+                    try {
+                        if (waitingFlush) {
+                            try {
+                                Thread.sleep(getMaxDelay());
+                            } catch (Exception e) {
+                                LogUtil.error(null, e);
                             }
-                            ProgressData progressData = getProgressData(progressKey);
-                            if (progressData != null) {
-                                // 进度条运行异常,异常信息展示
-                                progressData.setErrorCode(errorCode);
-                                progressData.setErrorMsg(errorMsg);
-                                // 异常数据提示需要放到缓存中
-                                setProgressData(progressData);
-                            }
-                        } finally {
-                            // 执行线程数减1
-                            executingCount.decrementAndGet();
-                            // 强制结束流程进度
-                            finishProgress(progressKey);
                         }
+                        // 执行线程数加1
+                        executingCount.incrementAndGet();
+                        // 开始执行
+                        runnable.run();
+                    } catch (Throwable e) {
+                        String errorMsg = null;
+                        String errorCode = null;
+                        if (e instanceof MarkedCause) {
+                            errorMsg = ((MarkedCause) e).message();
+                            errorCode = ((MarkedCause) e).getCode();
+                        } else {
+                            errorMsg = "进度条运行异常@" + System.currentTimeMillis();
+                            LogUtil.error(errorMsg, e);
+                        }
+                        ProgressData currentProgress = getProgressData(progressKey);
+                        if (currentProgress != null) {
+                            // 进度条运行异常,异常信息展示
+                            currentProgress.setErrorCode(errorCode);
+                            currentProgress.setErrorMsg(errorMsg);
+                            // 异常数据提示需要放到缓存中
+                            setProgressData(currentProgress);
+                        }
+                    } finally {
+                        // 执行线程数减1
+                        executingCount.decrementAndGet();
+                        // 强制结束流程进度
+                        finishProgress(progressKey);
                     }
                 });
             }
