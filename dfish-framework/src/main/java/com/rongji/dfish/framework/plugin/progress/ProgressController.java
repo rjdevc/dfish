@@ -46,8 +46,8 @@ public class ProgressController extends FrameworkController {
         }
         if (progressData != null) {
             if (progressData.getError() != null) {
-                jsonReponse.setErrCode(progressData.getError().getCode());
-                jsonReponse.setErrMsg(progressData.getError().getMsg());
+                jsonReponse.setErrorCode(progressData.getError().getCode());
+                jsonReponse.setErrorMessage(progressData.getError().getMsg());
             } else {
                 jsonReponse.setData(progressData);
             }
