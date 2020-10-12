@@ -114,15 +114,17 @@
 		        { "id": "iconfont", "text": "字体图标" }
 		      ] },
 		  	  { "text": "模板", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
-		  	    { "text": "模板说明", "id": "@", "expanded": false, "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@propName", "id": "@propName", "expanded": false, "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-for", "id": "@w-for", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-if", "id": "@w-if", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-elseif", "id": "@w-elseif", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-else", "id": "@w-else", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "@w-include", "id": "@w-include", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "$dataKey", "id": "$dataKey", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
-		  	    { "text": "$this", "id": "$this", "collapsedIcon": ".icon .icon-component", "datasrc": "@" }
+		  	  	//{ "text": "Template 创建", "id": "define.template", "expanded": false, "collapsedIcon": ".icon .icon-component"},
+		  	    { "text": "Template 解析", "id": "@", "expanded": true, "collapsedIcon": ".icon .icon-component", "datasrc": "@", nodes:[
+			  	    { "text": "@propName", "id": "@propName", "expanded": false, "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "@w-for", "id": "@w-for", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "@w-if", "id": "@w-if", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "@w-elseif", "id": "@w-elseif", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "@w-else", "id": "@w-else", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "@w-include", "id": "@w-include", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "$dataKey", "id": "$dataKey", "collapsedIcon": ".icon .icon-component", "datasrc": "@" },
+			  	    { "text": "$this", "id": "$this", "collapsedIcon": ".icon .icon-component", "datasrc": "@" }
+		  	    ] }
 		  	  ] },
 		  	  { "text": "命令", "expanded": false, "collapsedIcon": ".icon .icon-pkg", "nodes": [
 		        { "id": "After", "text": "After", "collapsedIcon": ".icon .icon-class" },
