@@ -13,6 +13,15 @@ public class ResponseError implements Serializable {
     private String code;
     private String message;
 
+    public ResponseError(String code) {
+        this.code = code;
+    }
+
+    public ResponseError(String code, String message) {
+        this.code = code;
+        this.message = message;
+    }
+
     /**
      * 错误代码
      * @return String
