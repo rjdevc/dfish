@@ -4881,7 +4881,7 @@ Dialog = define.widget('Dialog', {
 		Section.call(this, x, p, n == N ? -1 : n);
 		Dialog.all[this.id] = this;
 		if (x.id) {
-			Dialog.custom[x.id] && Dialog.custom[x.id].remove();
+			Dialog.custom[x.id] && Dialog.custom[x.id].close();
 			Dialog.custom[x.id] = this;
 		}
 		if (p !== _docView) {
@@ -6647,7 +6647,7 @@ CheckBoxGroup = define.widget('CheckBoxGroup', {
 		},
 		// @a -> T/F 是否只获取所有选中项
 		elements: function(a, b) {
-			return this[0] ? this[0].elements(a, b) : Q([]);
+			return Q(':input' + (b ? ':not(:disabled)' : '') + (a === T ? ':checked' : a === F ? ':not(:checked)' : (a || '')), this.$());
 		},
 		getOptions: function(a) {
 			return this.elements(a).map(function() {return _widget(this)});
@@ -11015,7 +11015,7 @@ TableRow = define.widget('TableRow', {
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') : '') +
 						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
-						(this.type_thr && u.x.removable ? '<div class=w-th-rm><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
+						(this.type_thr && f.removable ? '<div class=w-th-rm><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
 			return b.join('');
@@ -11397,28 +11397,27 @@ ContentTHead = define.widget('ContentTHead', {
 						}, e);
 					});
 				}
-				if (r.x.removable) {
-					var _colHide = [];
-					Q('.w-th-rm', this.$()).height(this.$().offsetHeight).on('click', function() {
-						for (var i = 0, d = [], e = Q(this).closest('tr').find('.w-th'), t; i < c.length; i ++) {
-							(t = e.eq(i).text()) && d.push({text: t, data: {colIndex: i}, checked: T, on: {
-								change: function() {
-									if (!p._fixed_width) {
-										p._fixed_width = p.innerWidth();
-									}
-									var w = 0, h = !!this.isChecked(), n = this.x.data.colIndex;
-									_colHide[n] = !h;
-									Q('tbody[type] > tr > td:eq(' + this.x.data.colIndex + ')', g.$()).toggle(h);
-									for (var j = 0; j < c.length; j ++) {
-										if (!_colHide[j]) w += c[j].width();
-									}
-									p.css('width', p._fixed_width = w);
-								}
-							}});
+				var m = Q('.w-th-rm', this.$());
+				m.height(this.$().offsetHeight).on('click', function() {
+					for (var i = 0, d = []; i < m.length; i ++) {
+						var f = m.eq(i).parent(), h = f.prop('cellIndex');
+						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
+							change: function() {
+								var f = !this.isChecked(), n = this.x.data.colIndex;
+								g.toggleColumn(n, f);
+								this.parentNode.trigger('usable');
+							}
+						}});
+					}
+					g.cmd({type: 'Dialog', id: 'w-th-rm-dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+						usable: function() {
+							var a = this.elements(T).length == 1;
+							for (var i = 0; i < this.length; i ++) {
+								if (this[i].isChecked()) this[i].disable(a);
+							}
 						}
-						g.cmd({type: 'Dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d}});
-					});
-				}
+					}}});
+				});
 				// 排序
 				for (var i = 0, d = F; i < c.length; i ++) {
 					if (c[i].x.sort) {
@@ -11557,6 +11556,21 @@ ContentTable = define.widget('ContentTable', {
 	Prototype: {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
+		hideCol: function(a, b) {
+			if (!this._fixed_width) {
+				this._fixed_width = this.innerWidth();
+			}
+			var c = this.colgroup, w = 0;
+			c[a]._hide = b;
+			if (!c[a]._ori_width) c[a]._ori_width = c[a].$().style.width;
+			for (var i = 0; i < c.length; i ++) {
+				if(!c[i]._hide) w += c[i].innerWidth();
+				c[i].$().style.width = c[i]._hide ? 0 : c[i]._ori_width;
+			}
+			Q('._fix_thead > tr, tbody[type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', b);
+			this._fixed_width = w;
+			this.css('width', w);
+		},
 		fixWidth: function() {
 			for (var i = 0, c = this.table.getColGroup(), w = 0, l = c.length; i < l; i ++) w += c[i].width();
 			this.css('width', w);
@@ -11917,6 +11931,12 @@ AbsTable = define.widget('AbsTable', {
 				this.insertColumn(a, b);
 			}
 		},
+		//@public 显示或隐藏一列 / @a -> colIndex, b -> hide?
+		toggleColumn: function(a, b) {
+			this.head && this.head.contentTable.hideCol(a, b);
+			this.body && this.body.contentTable.hideCol(a, b);
+			this.foot && this.foot.contentTable.hideCol(a, b);
+		},
 		// 获取焦点行 / @a -> visible(是否可见)?
 		getFocus: function(a) {
 			return this.getFocusAll(a)[0];
@@ -12092,7 +12112,7 @@ AbsTable = define.widget('AbsTable', {
 		}
 	}
 });
-_parallel_methods(AbsTable, '_sortRow fixScroll');
+_parallel_methods(AbsTable, '_sortRow fixScroll toggleColumn');
 var
 /* `table` */
 Table = define.widget('Table', {
