@@ -165,15 +165,9 @@ public class Pagination implements Serializable {
         return offset < 0 ? 0 : offset;
     }
 
-    /**
-     * 转化
-     *
-     * @param page Page 分页信息
-     * @return Pagination对象
-     */
-    public static Pagination fromPage(Page page) {
+    public static Pagination of(Page page) {
         if (page == null) {
-            return null;
+            throw new IllegalArgumentException("page is null");
         }
         Pagination pagination = new Pagination();
         pagination.setLimit(page.getPageSize());
@@ -181,6 +175,16 @@ public class Pagination implements Serializable {
         pagination.setAutoRowCount(page.isAutoRowCount());
         pagination.setSize(page.getRowCount());
         return pagination;
+    }
+
+    /**
+     * 转化
+     *
+     * @param page Page 分页信息
+     * @return Pagination对象
+     */
+    public static Pagination fromPage(Page page) {
+        return of(page);
     }
 
     /**

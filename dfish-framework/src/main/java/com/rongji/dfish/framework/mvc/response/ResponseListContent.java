@@ -7,6 +7,7 @@ import java.util.List;
 
 /**
  * 响应列表内容
+ *
  * @param <E> 列表元素
  * @author lamontYu
  * @since 5.0

@@ -6,8 +6,8 @@ window.app = {
             if (error.code) {
                 errorMsg = '[' + error.code + ']';
             }
-            if (error.msg) {
-                errorMsg += error.msg;
+            if (error.message) {
+                errorMsg += error.message;
             } else {
                 errorMsg += '操作失败';
             }

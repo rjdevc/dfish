@@ -1,5 +1,8 @@
 package com.rongji.dfish.framework.mvc.response;
 
+import com.rongji.dfish.base.Page;
+import com.rongji.dfish.base.Pagination;
+
 import java.io.Serializable;
 
 
@@ -21,20 +24,19 @@ public class JsonResponse<T> implements Serializable {
         setData(data);
     }
 
-//    public JsonResponse(T data, Pagination pagination) {
-//        setData(data);
-//        setPagination(pagination);
-//    }
+    public JsonResponse(T data, Pagination pagination) {
+        setData(data);
+        setPagination(pagination);
+    }
 
     public static <T> JsonResponse<T> of(T data) {
         JsonResponse<T> response = new JsonResponse<>(data);
         return response;
     }
 
-//    public static <T> JsonResponse<T> of(T data, Pagination pagination) {
-//        JsonResponse<T> response = new JsonResponse<>(data, pagination);
-//        return response;
-//    }
+    public static <T> JsonResponse<T> of(T data, Pagination pagination) {
+        return new JsonResponse<>(data, pagination);
+    }
 
     /**
      * 接口响应的头部信息
@@ -85,7 +87,7 @@ public class JsonResponse<T> implements Serializable {
 
     public ResponseError error() {
         if (error == null) {
-            error = new ResponseError();
+            error = new ResponseError(null);
         }
         return error;
     }
@@ -145,26 +147,26 @@ public class JsonResponse<T> implements Serializable {
         return setErrorCode(code);
     }
 
-//    /**
-//     * 设置分批调用接口时的信息
-//     * @param pagination 分页信息
-//     * @return 本身，这样可以继续设置其他属性
-//     */
-//    public JsonResponse<T> setPagination(Pagination pagination) {
-//        if (pagination != null) {
-//            header().setPagination(pagination);
-//        }
-//        return this;
-//    }
-//
-//    /**
-//     * 设置分批调用接口时的信息
-//     * @param page 分页信息
-//     * @return 本身，这样可以继续设置其他属性
-//     */
-//    public JsonResponse<T> setPage(Page page) {
-//        return setPagination(Pagination.fromPage(page));
-//    }
+    /**
+     * 设置分批调用接口时的信息
+     * @param pagination 分页信息
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public JsonResponse<T> setPagination(Pagination pagination) {
+        if (pagination != null) {
+            header().setPagination(pagination);
+        }
+        return this;
+    }
+
+    /**
+     * 设置分批调用接口时的信息
+     * @param page 分页信息
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public JsonResponse<T> setPage(Page page) {
+        return setPagination(Pagination.fromPage(page));
+    }
 
     /**
      * 接口调用时,响应头部信息
