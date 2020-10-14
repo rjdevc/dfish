@@ -2008,8 +2008,8 @@ define( {
               type: "Tabs",
               pub: { cls: "f-tab", height: 30 }, // 设置标签按钮的默认参数
               nodes: [
-                { type: "Tab", text: "首页", target: { type: "Html", text: "内容1" } }, // 这里的 type 属性定义可以省略
-                { type: "Tab", text: "文档", target: { type: "Html", text: "内容2" } }
+                { type: "Tab", text: "首页", target: { type: 'Html', text: '内容1' } }, // 这里的 type 属性定义可以省略
+                { type: "Tab", text: "文档", target: { type: 'Html', text: '内容2' } }
               ]
             }
           }
@@ -3620,6 +3620,7 @@ define( {
       { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'text', type: 'String', remark: 'html内容。支持 &lt;d:wg&gt; 标签。' },
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '浮动显示的提示文本。' },
       { name: 'thumbWidth', type: 'Number | String', remark: '设置内容区域所有图片的最大宽度。点击图片可以预览大图。' }
     ],
     Methods: [

@@ -3300,7 +3300,7 @@ Html = define.widget('Html', {
 			this.addEvent('ready',  this.thumb);
 			this.addEvent('resize', this.thumb);
 		}
-		!x.vAlign && p && p.x.vAlign && this.defaults({vAlign: p.x.vAlign});
+		//!x.vAlign && p && p.x.vAlign && this.defaults({vAlign: p.x.vAlign});
 		this.attr('align') && (this.property = ' align=' + this.attr('align'));
 	},
 	Extend: Scroll,
@@ -3337,10 +3337,11 @@ Html = define.widget('Html', {
 			}
 			return t;
 		},
+		html_prop: _html_prop_title,
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr('vAlign');
 			if (v && v !== 'top')
-				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'cont class="w-html-text f-va-' + v + '">' + s + '</span>';
+				s = '<span id=' + this.id + 'cont class="w-html-text f-va-' + v + '">' + s + '</span><i class=f-vi-' + v + '></i>';
 			return s;
 		}
 	}
@@ -11399,7 +11400,7 @@ ContentTHead = define.widget('ContentTHead', {
 				}
 				var m = Q('.w-th-rm', this.$());
 				m.height(this.$().offsetHeight).on('click', function() {
-					for (var i = 0, d = []; i < m.length; i ++) {
+					for (var i = 0, d = [], e = Column.index(this.parentNode); i < m.length; i ++) {
 						var f = m.eq(i).parent(), h = f.prop('cellIndex');
 						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
 							change: function() {
@@ -11409,14 +11410,15 @@ ContentTHead = define.widget('ContentTHead', {
 							}
 						}});
 					}
-					g.cmd({type: 'Dialog', id: 'w-th-rm-dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+					g.cmd({type: 'Dialog', id: '#w-th-rm-dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+						ready: 'this.trigger("usable")',
 						usable: function() {
 							var a = this.elements(T).length == 1;
 							for (var i = 0; i < this.length; i ++) {
 								if (this[i].isChecked()) this[i].disable(a);
 							}
 						}
-					}}});
+					}}, on: {mouseLeave: 'this.close()'}});
 				});
 				// 排序
 				for (var i = 0, d = F; i < c.length; i ++) {
