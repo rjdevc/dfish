@@ -46,13 +46,26 @@ DFishAMap = define.widget( 'AMap', {
 	Extend: 'Vert',
 	Listener: {
 		body: {
-			ready: function() { this._render(); }
+			ready: function() { this.render(); }
 		}
 	},
 	Prototype: {
 		className: 'w-amap',
 		val: function() {
 			return this.x.value;
+		},
+		render: function() {
+			if (!window.AMap) {
+				var s = document.createElement('script'), o = !$.br.css3, self = this;
+				s.type = 'text/javascript';
+				s.src = 'https://webapi.amap.com/maps?v=1.3&key=248c8c0a0e198cc298fc48920cfd967f';
+				s[o ? 'onreadystatechange' : 'onload'] = function() {
+					if (!o || (s.readyState == 'loaded' || s.readyState == 'complete'))
+						self._render();
+				}
+				document.getElementsByTagName('head')[0].appendChild(s);
+			} else
+				this._render();
 		},
 		_render: function() {
 			var v = $.jsonParse( this.val() ), self = this, opt = {};
@@ -163,7 +176,7 @@ DFishAMapPicker = define.widget( 'AMapPicker', {
 		this.hd_lat = c.add( { type: 'Hidden', value: v ? v.lat : '' } );
 		this.cn_map = c.add( { type: 'Html', height: '*' } );
 		var d = c.add( { type: 'Horz', height: 50, style: 'padding:10px', nodes: [ { type: 'Html', text: '地点: &nbsp; ', width: 50, style: 'text-align:right;line-height:30px;' } ] } );
-		this.cn_adr = d.add( { type: 'Text', cls: 'z-clear', width: '*', on: { keyDown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
+		this.cn_adr = d.add( { type: 'Text', cls: 'z-clear', width: '*', placeholder: '', on: { keyDown: function( e ) { (! e.keyCode || e.keyCode===13)&&self.markByAddress([this.val()]); } },
 			prependContent: '<div style="float:right;width:28px;height:100%;text-align:center;cursor:pointer;left:auto;padding:0;right:0;" onclick="' + $.abbr + '.widget(this).trigger(\'keydown\')"><i class=f-vi></i><i class="f-i f-i-search"></i><input type=hidden id=' + this.id + 'v name="' + (x.name || '') + '"></div>' } );
 	},
 	Extend: DFishAMap,

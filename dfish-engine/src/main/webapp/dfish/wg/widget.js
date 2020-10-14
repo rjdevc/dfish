@@ -44,9 +44,14 @@ _dfcls = (function() {
 	}
 	return r;
 })(),
-// 获取模板  /@a -> template id, b -> clone?
-_getTemplate = function(a, b) {
-	var t = typeof a === _OBJ ? a : $.require((cfg.templateDir || '') + a);
+// 获取模板  /@a -> template id
+_getTemplate = function(a) {
+	var t = typeof a === _OBJ ? {body: a} : $.require((cfg.templateDir || '') + a);
+	return t || {};
+},
+// 获取模板内容  /@a -> template id, b -> clone?
+_getTemplateBody = function(a, b) {
+	var t = _getTemplate(a).body;
 	return b && t ? $.jsonClone(t) : t;
 },
 // 获取预装模板  /@a -> template id, b -> clone?
@@ -78,12 +83,14 @@ _widget = function(a) {
 	var b = typeof a === _STR ? a : a.id;
 	if (b && (b = _getWidgetById(b)))
 		return b;
-	if (a.nodeType) {// htmlElement
+	if (a.isWidget) {
+		return a;
+	} else if (a.widget) {
+		return a.widget;
+	} else if (a.nodeType) {
 		do {
 			if (a.id && (b = _getWidgetById(a.id))) return b;
 		} while ((a = a.parentNode) && a.nodeType === 1);
-	} else if (a.isWidget) {// widget
-		return a;
 	} else if (a.type && Q.isPlainObject(a)) {
 		return new (require(a.type))(a);
 	}
@@ -96,12 +103,16 @@ _getWidgetById = function(a) {
 	}
 },
 // 触发事件的入口，在html标签上显示为 onEvent="$.e(this)"  /@ a -> element
-_widgetEvent = function(a) {
+_widgetEvent = function(a, b) {
 	var e = arguments.callee.caller.arguments[0] || window.event, // _widgetEvent.caller: 解决firefox下没有window.event的问题
 		t = _event_hump[e.type] || e.type;
 	if (!_event_enter[t] || _event_enter[t](a, e)) {
 		e.elemId = a.id;
-		(a = _widget(a)) ? a.trigger(e) : $.stop(e);
+		var c = _widget(a);
+		if (c) {
+			c.trigger(e);
+		} else
+			$.stop(e);
 	}
 },
 // _view(), _view('/') 返回docView
@@ -173,6 +184,16 @@ _s_html_on = function(s, h, i, r) {
 	} else
 		s.indexOf('on' + i + '=') < 0 && r[i] && (s += ' on' + i + '=' + eve);
 	return s;
+},
+_s_html_title = function(a, b, c) {
+	var l = arguments.length, t = this.attr('tip');
+	if (l < 1) {
+		a = t === T ? this.x.text : t;
+	}
+	l < 2 && (b = this.x.format);
+	l < 3 && (c = this.x.escape);
+	if (typeof a === _NUM) a = '' + a;
+	return a && typeof a === _STR && (!t || typeof t !== _OBJ) && !b ? $.strQuot(c ? a.replace(/&/g, '&amp;') : a, !c) : '';
 },
 // 取得一个表单的值  /@ a -> input el, b -> json mode?
 _f_val = function(a, b, r) {
@@ -411,7 +432,7 @@ Error = $.createClass({
 }),
 
 _compileTemplate = function(g, d, s) {
-	var t = new Template(s || g.x.template, d, g), r = t.compile(t.template);
+	var t = new Template(s || g.x.template, d, g), r = t.compile(t.templateBody);
 	!r.type && (r.type = g.type);
 	return r;
 },
@@ -431,6 +452,22 @@ TemplateWidget = $.createClass({
 		}
 	}
 }),
+Tmpl = $.createClass({
+	Const: function(t) {
+		this.data = t.data;
+		this.widget = t.wg;
+		
+	},
+	Prototype: {
+		isWidget: T,
+		data: function() {
+			return _proto.data.apply(this, arguments);
+		},
+		closest: function(a) {
+			return this.parentNode.closest(a);
+		}
+	}
+});
 _regAt = function(x, k, v) {
 	(_atCache[x.at] || (new TemplateMark(x))).addProp(k, v);
 	return x.at;
@@ -469,8 +506,9 @@ _mergeAtPropHooks = {
 Template = $.createClass({
 	// @ t -> template, d -> data, g -> widget, r -> target
 	Const: function(t, d, g) {
-		this.wg   = g;
-		this.template = _getTemplate(t);
+		var t = _getTemplate(t);
+		this.wg = g;
+		this.templateBody = t.body;
 		if ($.isArray(d)) {
 			this.data = d;
 		} else {
@@ -492,7 +530,6 @@ Template = $.createClass({
 			} catch(ex) {
 				if (a && a.indexOf('(') > -1) window.console && console.error(ex.stack || ex);
 			}
-			//return a ? _proto.formatJS.call(g, 'return ' + a, y, this.data) : N;
 		},
 		switcher: function(s, r, g, y) {
 			if (typeof s === _STR) {
@@ -514,7 +551,7 @@ Template = $.createClass({
 			}
 			var r = {}, b, f = {}, g = x && (new TemplateWidget(x, this));
 			if ((b = x['@w-include'])) {
-				var d = _getTemplate(b, T);
+				var d = _getTemplateBody(b, T);
 				if (d) {
 					d = $.extend({}, d);
 					for (var k in x)
@@ -719,7 +756,7 @@ W = define('Widget', function() {
 			delete this.ownerView.initTargets[this.x.id];
 		}
 	},
-	Helper : {
+	Helper: {
 		all: _all,
 		vm:  _view,
 		w: _widget,
@@ -760,9 +797,10 @@ W = define('Widget', function() {
 			// owner_x 是优先的，不可被template重写的属性
 			if (!this.owner_x && (x.template || x.preload || this.hasLayout)) {
 				this.owner_x = $.extend({}, x);
+				delete this.owner_x.pub; this.owner_x.data; // data和pub要合并，不计入优先队列
 			}
 			if (x.template) {
-				var t = _getTemplate(x.template, T);
+				var t = _getTemplateBody(x.template, T);
 				if (t) {
 					if (!t.type || t.type === this.type) {
 						for (var k in t) {
@@ -882,7 +920,7 @@ W = define('Widget', function() {
 		},
 		// 读/写属性
 		attr: function(a, b) {
-			if (b !== U) {
+			if (arguments.length === 2) {
 				var c = this.x[a];
 				this.x[a] = b;
 				this.attrSetter(a, b, c);
@@ -912,6 +950,9 @@ W = define('Widget', function() {
 				break;
 				case 'data':
 					b && c && (this.x.data = $.extend(c, b));
+				break;
+				case 'pub':
+					b && c && (this.x.pub = $.extend(c, b));
 				break;
 				case 'width':
 					this.width(b);
@@ -1038,8 +1079,9 @@ W = define('Widget', function() {
 				return (this.x.data && this.x.data[a]);
 			else if (a == N)
 				return this.x.data;
-			else
+			else {
 				(this.x.data || (this.x.data = {}))[a] = b;
+			}
 		},
 		closestData: function(a) {
 			var d = this.x.data && this.x.data[a];
@@ -1086,7 +1128,7 @@ W = define('Widget', function() {
 					var f = arguments.callee;
 					$.ease(function(p) {
 						c.css('opacity', p);
-						p == 1 && t && f( -- t);
+						p == 1 && t && f(--t);
 					}, 300);
 				})(2);
 			}
@@ -1103,7 +1145,7 @@ W = define('Widget', function() {
 			if (typeof a === _STR) {
 				var e = _view(self).x.commands;
 				if (e && (e = e[a])) {
-					a = $.jsonClone(e);
+					a = typeof e === _STR ? {type: 'JS', text: e} : $.jsonClone(e);
 				} else if (/^\{[\s\S]+\}$/.test(a)) {
 					a = $.jsonParse(a);
 				} else {
@@ -1157,19 +1199,21 @@ W = define('Widget', function() {
 		},
 		// 触发用户定义的事件 / @e -> event, a -> [args]?, f -> func string?
 		triggerHandler: function(e, a, f) {
-			if (this._disposed)
+			if (this._disposed || !this._instanced)
 				return;
 			var d = e.runType || e.type || e, t = _event_hump[d] || d, f = f || (this.x.on && this.x.on[t]), c = {'event': e}, g = a ? [e].concat(a) : [e];
 			if (a != N) {
 				for (var i = 1, l = g.length; i < l; i ++)
 					c['$' + (i - 1)] = g[i];
 			}
-			f && _event_stop[t] && _event_stop[t](e);
-			return f && (typeof f === _FUN ? f.apply(this, g) : this.formatJS(f, c));
+			if (f) {
+				_event_stop[t] && _event_stop[t](e);
+				return typeof f === _FUN ? f.apply(this, g) : this.formatJS(f, c);
+			}
 		},
 		// 触发系统事件
 		triggerListener: function(e, a) {
-			if (this._disposed)
+			if (this._disposed || !this._instanced)
 				return;
 			var b = this.Const.Listener,
 				d = e.runType || e.type || e,
@@ -1183,7 +1227,7 @@ W = define('Widget', function() {
 		// 触发用户定义的事件和系统事件 / @e -> event, @a -> [data]
 		// 优先返回用户事件的返回值，其次返回系统事件的值
 		trigger: function(e, a) {
-			if (this._disposed)
+			if (this._disposed || !this._instanced)
 				return;
 			var b = this.Const.Listener,
 				c = this.proxyHooks,
@@ -1350,6 +1394,7 @@ W = define('Widget', function() {
 		readonly: function(a) {
 			a = a == N || a;
 			this.x.status = a ? 'readonly' : '';
+			this.removeClass('z-hv');
 			this.addClass('z-ds', a);
 			this.trigger('statuschange');
 			return this;
@@ -1357,6 +1402,7 @@ W = define('Widget', function() {
 		validonly: function(a) {
 			a = a == N || a;
 			this.x.status = a ? 'validonly' : '';
+			this.removeClass('z-hv');
 			this.addClass('z-ds', a);
 			this.trigger('statuschange');
 			return this;
@@ -1364,6 +1410,7 @@ W = define('Widget', function() {
 		disable: function(a) {
 			a = a == N || a;
 			this.x.status = a ? 'disabled' : '';
+			this.removeClass('z-hv');
 			this.addClass('z-ds', a);
 			this.trigger('statuschange');
 			return this;
@@ -1501,14 +1548,8 @@ W = define('Widget', function() {
 		},
 		// @a -> text, @b -> format, @c -> escape
 		prop_title: function(a, b, c) {
-			var l = arguments.length, t = this.attr('tip');
-			if (l < 1) {
-				a = t === T ? this.x.text : t;
-			}
-			l < 2 && (b = this.x.format);
-			l < 3 && (c = this.x.escape);
-			if (typeof a === _NUM) a = '' + a;
-			return a && typeof a === _STR && (!t || typeof t !== _OBJ) && !b ? ' title="' + $.strQuot(c ? a.replace(/&/g, '&amp;') : a, !c) + '"' : '';
+			var t = _s_html_title.apply(this, arguments);
+			return t ? ' title="' + t + '"' : '';
 		},
 		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
 		html_format: function(a, b, c, d, e) {
@@ -1592,8 +1633,8 @@ W = define('Widget', function() {
 			}
 			if (this.x.gid && _globals[this.x.gid] === this)
 				delete _globals[this.x.gid];
+			delete _all[this.id], delete this.tmpl;
 			this._disposed = T;
-			delete _all[this.id];			
 		}
 	}
 	});
@@ -2350,8 +2391,8 @@ Scroll = define.widget('Scroll', {
 			this._scr_usable = T;
 			var w = this.innerWidth(), h = this.innerHeight(), c = br.scroll, t = (w ? 'width:' + (w + c) + 'px;' : '') + (this.x.maxWidth ? 'max-width:' + (+this.x.maxWidth + c) + 'px;' : '') + (this.x.minWidth ? 'min-width:' + (+this.x.minWidth + c) + 'px;' : '') +
 				(h ? 'height:' + (h + c) + 'px;' : '') + (this.x.maxHeight ? 'max-height:' + (+this.x.maxHeight + c) + 'px;' : '') + (this.x.minHeight ? 'min-height:' + (+this.x.minHeight + c) + 'px;' : '');
-			return mbi ? '<div id=' + this.id + 'cont>' + s + '</div>' : '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
-				t + '" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div id=' + this.id + 'cont>' + (s || '') + (this.x.pullUp ? this.html_pullup() : '') + '</div>' + _html_resize_sensor.call(this) + '</div></div></div><div id=' +
+			return mbi ? '<div class=w-scroll-cont id=' + this.id + 'cont>' + s + '</div>' : '<div id=' + this.id + 'tank class=f-scroll-tank><div id=' + this.id + 'ovf class="' + this.prop_cls_scroll_overflow() + '" style="margin-bottom:-' + br.scroll + 'px;' + (w == N ? 'margin-right:-' + br.scroll + 'px;' : '') +
+				t + '" onscroll=' + eve + '><div id=' + this.id + 'gut' + (ie7 ? '' : ' class="f-rel"') + '><div class=w-scroll-cont id=' + this.id + 'cont>' + (s || '') + (this.x.pullUp ? this.html_pullup() : '') + '</div>' + _html_resize_sensor.call(this) + '</div></div></div><div id=' +
 				this.id + 'x class=f-scroll-x><div id=' + this.id + 'xtr class=f-scroll-x-track onmousedown=' + evw + '.scrollDragX(this,event)></div></div><div id=' +
 				this.id + 'y class=f-scroll-y><div id=' + this.id + 'ytr class=f-scroll-y-track onmousedown=' + evw + '.scrollDragY(this,event)></div></div>';
 		},
@@ -2411,7 +2452,7 @@ AbsSection = define.widget('AbsSection', {
 			var u = this.x.src; 
 			if (!u) {
 				var t = this.x.template;
-				t && (t = _getTemplate(t)) && (u = t.src);
+				t && (t = _getTemplateBody(t)) && (u = t.src);
 			}
 			if (a)
 				return u;
@@ -2424,7 +2465,7 @@ AbsSection = define.widget('AbsSection', {
 			if (f == N) {
 				var t = this.x.template;
 				if (t) {
-					typeof t === _STR && (t = _getTemplate(t));
+					typeof t === _STR && (t = _getTemplateBody(t));
 					t && this.isContentData(t) && t.on && t.on.filter && (f = t.on.filter);
 				}
 			}
@@ -2475,7 +2516,7 @@ AbsSection = define.widget('AbsSection', {
 					if (!self._disposed && m && n) {self._loadEnd(n); fn && fn.call(self, n); n = N;}
 				};
 			if (t && typeof t === _STR)
-				t = _getTemplate(t);
+				t = _getTemplateBody(t);
 			d(), e();
 			var u = this.getSrc();
 			u && typeof u === _STR ? this.exec({type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function(x) {
@@ -2491,7 +2532,7 @@ AbsSection = define.widget('AbsSection', {
 			cache && this.addEvent('unload', function() {$.ajaxClean(u)});
 		},
 		_success: function(x) {
-			var t = this.x.template && _getTemplate(this.x.template), s = this.x.success || (t && t.success);
+			var t = this.x.template && _getTemplateBody(this.x.template), s = this.x.success || (t && t.success);
 			s && this.formatJS(s, {'$response': x});
 			if (this._disposed) return F;
 			s = this.x.complete || (t && t.complete);
@@ -2500,7 +2541,7 @@ AbsSection = define.widget('AbsSection', {
 			return T;
 		},
 		_error: function(x) {
-			var t = this.x.template && _getTemplate(this.x.template), s = this.x.error || (t && t.error);
+			var t = this.x.template && _getTemplateBody(this.x.template), s = this.x.error || (t && t.error);
 			s && this.formatJS(s, {'$response': N});
 			if (this._disposed) return F;
 			s = this.x.complete || (t && t.complete);
@@ -2523,6 +2564,7 @@ AbsSection = define.widget('AbsSection', {
 			tpl != N && (y.template = tpl);
 			$.merge(this.x, y);
 			this.reset(tar);
+			this.addEventOnce('load', _w_rsz_all, this.parentNode);
 			if (this.$()) {
 				var s = this.getSrc();
 				if (typeof s === _STR) {
@@ -2933,7 +2975,7 @@ View = define.widget('View', {
 			this.layout.prepend.apply(this.layout, arguments);
 		},
 		html_nodes: function() {
-			return this.layout ? this.layout.html() : this.html_loading();
+			return this.layout ? this.layout.html() : '';
 		},
 		dispose: function() {
 			this.trigger('unload');
@@ -3034,9 +3076,8 @@ Horz = define.widget('Horz', {
 			// @compat: 兼容模式下，horz的没有高度的子节点，加上z-htmn样式(float:left)。如果不使用float，子节点内容不会自动撑开
 			// @fixme: 当widget的高度在-1和固定高度之间转变时，z-htmn也应该跟着增加或删除
 			!br.css3 && !this.innerHeight() && (!this.x.align || this.x.align === 'left') && (this.childCls += ' z-htmn');
-			var s = _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : ''),
-				ih = ie7 && this.x.scroll && this.innerHeight(); // ie7在有scroll和vAlign时，f-vi的100%会包含底部滚动条的高度，导致撑开。需要设置负值的margin-bottom来抵消
-			return v ? '<div id=' + this.id + 'cont class="w-horizontal-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + (ih ? ' style="margin-bottom:-' + br.scroll + 'px"' : '') + '></i>' : s;
+			var s = _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : '');
+			return !ie7 && v ? '<div id=' + this.id + 'vln class="w-horz-vln f-nv-' + v + '">' + s + '</div><i class=f-vi-' + v + '></i>' : s;
 		}
 	}
 }),
@@ -3259,7 +3300,7 @@ Html = define.widget('Html', {
 			this.addEvent('ready',  this.thumb);
 			this.addEvent('resize', this.thumb);
 		}
-		!x.vAlign && p && p.x.vAlign && this.defaults({vAlign: p.x.vAlign});
+		//!x.vAlign && p && p.x.vAlign && this.defaults({vAlign: p.x.vAlign});
 		this.attr('align') && (this.property = ' align=' + this.attr('align'));
 	},
 	Extend: Scroll,
@@ -3296,10 +3337,11 @@ Html = define.widget('Html', {
 			}
 			return t;
 		},
+		html_prop: _html_prop_title,
 		html_nodes: function() {
 			var s = this.html_text(), v = this.attr('vAlign');
 			if (v && v !== 'top')
-				s = '<i class=f-vi-' + v + '></i><span id=' + this.id + 'cont class="w-html-text f-va-' + v + '">' + s + '</span>';
+				s = '<span id=' + this.id + 'cont class="w-html-text f-va-' + v + '">' + s + '</span><i class=f-vi-' + v + '></i>';
 			return s;
 		}
 	}
@@ -3720,22 +3762,24 @@ Button = define.widget('Button', {
 		// 在触发事件之前做判断，如果返回true，则停止执行事件(包括系统事件和用户事件)
 		block: function(e) {
 			var t = e.type || e;
-			return t !== 'unlock' && t !== 'remove' && t !== 'focus' && t !== 'blur' && !this.usa();
+			return t !== 'unlock' && t !== 'remove' && t !== 'focus' && t !== 'blur' && t !== 'mouseover' && t !== 'mouseout' &&  !this.usa();
 		},
 		body: {
 			ready: function() {
 				this.isFocus() && this.focus();
 			},
 			mouseOver: function(e) {
-				$.classAdd($(e.elemId || this.id), 'z-hv');
-				var m = _inst_get('Menu');
-				if (this.type === 'MenuButton') {
-					this.show();
+				if (this.usa()) {
+					$.classAdd($(e.elemId || this.id), 'z-hv');
+					var m = _inst_get('Menu');
+					if (this.type === 'MenuButton') {
+						this.show();
+					}
 				}
 				_hover_tip.call(this);
 			},
 			mouseOut: function(e) {
-				$.classRemove($(e.elemId || this.id), 'z-hv');
+				this.usa() && $.classRemove($(e.elemId || this.id), 'z-hv');
 			},
 			mouseDown: function(e) {
 				$.classAdd($(e.elemId || this.id), 'z-dn');
@@ -3837,9 +3881,12 @@ Button = define.widget('Button', {
 				else
 					this.removeElem('i');
 			} else if (a === 'text') {
-				if (b != '' && b != N)
+				if (b != '' && b != N) {
 					this.$('t') ? Q('em', this.$('t')).html(b) : $.append(this.$('c'), this.html_text(b));
-				else
+					if (this.attr('tip') === T && this.$()) {
+						this.$().title = _s_html_title.call(this);
+					}
+				} else
 					this.removeElem('t');
 			} else if (a === 'status') {
 				this.status(a, b);
@@ -4368,6 +4415,7 @@ Img = define.widget('Img', {
 		body: {
 			mouseOver: function() {
 				$.classAdd(this.$(), 'z-hv');
+				_hover_tip.call(this);
 			},
 			mouseOut: function() {
 				$.classRemove(this.$(), 'z-hv');
@@ -4386,7 +4434,7 @@ Img = define.widget('Img', {
 	},
 	Prototype: {
 		rootType: 'Album',
-		className: 'w-img',
+		className: 'w-img f-inbl',
 		// @implement
 		repaintSelf: _repaintSelfWithBox,
 		init_badge: function() {
@@ -4452,7 +4500,7 @@ Img = define.widget('Img', {
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call(this, this.x.src),
 				iw = $.scale(mw, [this.x.imgWidth])[0], ih = $.scale(mh, [this.x.imgHeight])[0], w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
 				g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
-			return '<div id=' + this.id + 'i class="w-img-i f-inbl" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
 		},
 		html_text: function() {
 			var t = this.html_format(), w = this.x.textWidth;
@@ -4834,7 +4882,7 @@ Dialog = define.widget('Dialog', {
 		Section.call(this, x, p, n == N ? -1 : n);
 		Dialog.all[this.id] = this;
 		if (x.id) {
-			Dialog.custom[x.id] && Dialog.custom[x.id].remove();
+			Dialog.custom[x.id] && Dialog.custom[x.id].close();
 			Dialog.custom[x.id] = this;
 		}
 		if (p !== _docView) {
@@ -5869,7 +5917,7 @@ Label = define.widget('Label', {
 		body: {
 			ready: function() {
 				if (this.ie7td) {
-					var b = $(this.id + 'bg'), c = $.bcr(this.ie7td.$()), d = $.bcr(b);
+					var b = this.$('bg'), c = $.bcr(this.ie7td.$()), d = $.bcr(b);
 					Q(b).css({
 						height: c.height -1,
 						marginLeft: c.left - d.left,
@@ -5878,8 +5926,8 @@ Label = define.widget('Label', {
 				}
 			},
 			resize: function() {
-				if (this.parentNode.label == this) {
-					$(this.id + 'bg').style.width = Math.max(this.innerWidth() -1, 0) + 'px';
+				if (this.parentNode.label == this && this.$('bg')) {
+					this.$('bg').style.width = Math.max(this.innerWidth() -1, 0) + 'px';
 					this.ie7td && this.ie7td.fireEvent('nodeChange');
 				}
 			}
@@ -5887,9 +5935,10 @@ Label = define.widget('Label', {
 	},
 	Prototype: {
 		className: 'w-label f-nv f-wdbr',
+		scaleWidth: _w_scale.width,
 		setValidate: function(x) {
 			if (x && x.required) {
-				this.$() && !$.get('.f-required', this.$()) && $.prepend(this.$('lb'), this.html_star());
+				this.$() && !$.get('.f-required', this.$()) && $.before(this.$('t'), this.html_star());
 			} else {
 				this.$() && Q('.f-required', this.$()).remove();
 			}
@@ -5901,20 +5950,21 @@ Label = define.widget('Label', {
 			return (this._pad ? 'margin-right:' + this._pad + 'px;' : '') + _proto.prop_style.call(this);
 		},
 		html_star: function() {
-			return '<span class=f-required>*</span>';
+			return '<span class="f-required f-va-bottom">*</span>';
 		},
 		html_text: function() {
 			var t = this.html_format();
 			if (typeof t === _OBJ)
 				t = this.add(t, -1).html();
-			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span>' + t + (this.x.suffix || '') + '</span>';
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span id=' + this.id + 't class=f-va>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
-			return '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>';
+			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>' : '';
 		},
-		html_nodes: function() {
-			var s = this.html_text(), v = this.attr('vAlign');
-			return (br.css3 ? '<div id=' + this.id + 'lb class=_lb>' + s + '</div>' : '<i class=f-vi></i><div id=' + this.id + 'lb class="_lb f-nv">' + s + '</div>') + this.html_bg();
+		html: function() {
+			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + (br.css3 ? '' : '<i class=f-vi></i>') + 
+				'<div class="_lb f-nv">' + this.html_prepend() + 
+				this.html_text() + this.html_append() + '</div>' + this.html_bg() + '</' + this.tagName + '>' + this.html_after();
 		}
 	}
 });
@@ -6437,7 +6487,7 @@ Hidden = define.widget('Hidden', {
 			return a === U ? ($(this.id) || this.x).value : (($(this.id) || this.x).value = a);
 		},
 		html: function() {
-			return '<input type=hidden id="' + this.id + '" name="' + this.input_name() + (this.isDisabled() ? ' disabled' : '') + '" value="' + $.strQuot(this.x.value || '') + '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>';
+			return '<input type=hidden id="' + this.id + '" name="' + this.input_name() + (this.isDisabled() ? ' disabled' : '') + '" value="' + this.input_prop_value()+ '"' + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '>';
 		}
 	}
 }),
@@ -6598,7 +6648,7 @@ CheckBoxGroup = define.widget('CheckBoxGroup', {
 		},
 		// @a -> T/F 是否只获取所有选中项
 		elements: function(a, b) {
-			return this[0] ? this[0].elements(a, b) : Q([]);
+			return Q(':input' + (b ? ':not(:disabled)' : '') + (a === T ? ':checked' : a === F ? ':not(:checked)' : (a || '')), this.$());
 		},
 		getOptions: function(a) {
 			return this.elements(a).map(function() {return _widget(this)});
@@ -6791,9 +6841,7 @@ CheckBox = define.widget('CheckBox', {
 		text: function() {
 			return this.x.text;
 		},
-		groupVal: function() {
-			return this.parentNode.isBoxGroup && this.parentNode.val.apply(this, arguments);
-		},
+		groupVal: CheckBoxGroup.prototype.val,
 		val: function() {
 			var t = this.$t();
 			return t.disabled || !t.checked ? '' : t.value;
@@ -6859,16 +6907,7 @@ TripleBox = define.widget('TripleBox', {
 	Listener: {
 		body: {
 			ready: function() {
-				var c = this.checkstate();
-				if (this.x.checkAll) {
-					if (c == 1) {
-						this.relate();
-					} else {
-						for (var i = 0, b = this.getRelates(), l = b.length; i < l; i ++) {
-							if (b[i] !== this) {b[i].relate(); break;}
-						}
-					}
-				}
+				!this.x.checkAll && this.relate();
 			},
 			change: {
 				block: function() {return !this.isNormal()},
@@ -6883,12 +6922,15 @@ TripleBox = define.widget('TripleBox', {
 				method: function(e) {
 					var s = this.checkstate();
 					_superTrigger(this, CheckBox, e);
-					$.classAdd(this.$(), 'z-half', this.checkstate() == 2);
+					$.classAdd(this.$(), 'z-half', s == 2);
 					if (e.srcElement) {
 						this.relate();
-						br.ms && this.x.checkAll && s == 2 && this.checkstate(this.isChecked() ? 1 : 0);; // ie点击半选状态的box 要手动触发change
+						br.ms && this.x.checkAll && s == 0 && this.checkstate(this.isChecked() ? 1 : 0);; // ie点击半选状态的box 要手动触发change
 					}	
 				}
+			},
+			remove: function() {
+				this.relate();
 			}
 		}
 	},
@@ -6923,14 +6965,15 @@ TripleBox = define.widget('TripleBox', {
 						if (this != b[i]) {
 							if (c) {this.checkstate(b[i].checkstate()); break;}
 							else b[i].checkstate(this.isChecked());
-						}
+						} else if (l == 1)
+							d = this;
 					} else if (b[i].x.checkAll) {
 						d = b[i];
 					} else {
 						b[i].isChecked() ? (c1 ++) : b[i].isPartial() ? (c2 ++) : (c0 ++);
 					}
 				}
-				if (d && (c0 + c1 + c2))
+				if (d && ((c0 + c1 + c2) || l == 1))
 					d.checkstate(c0 == l - 1 ? 0 : c1 == l - 1 ? 1 : 2);
 			}			
 		},
@@ -8129,6 +8172,7 @@ DropBox = define.widget('DropBox', {
 		body: {
 			ready: function() {
 				(!this.x.nodes || !this.x.nodes.length) && this.x.src && this.load();
+				this.checkPlaceholder();
 			},
 			click: {
 				method: function() {
@@ -8139,6 +8183,7 @@ DropBox = define.widget('DropBox', {
 		}
 	},
 	Prototype: {
+		placeholder_type: 'placeholder_select',
 		x_nodes: $.rt(N),
 		$v: function() {return $(this.id + 'v')},
 		init_x: function(x) {
@@ -8213,6 +8258,13 @@ DropBox = define.widget('DropBox', {
 		isEmpty: function() {
 			return !this.val();
 		},
+		clkhdr: function(e) {
+			this.drop();
+			AbsInput.prototype.clkhdr.apply(this, arguments);
+		},
+		checkPlaceholder: function(v) {
+			this.$('ph') && $.classAdd(this.$('ph'), 'f-none', !!(arguments.length === 0 ? this.val() : v) || !(this.x.cancelable || this.x.multiple));
+		},
 		focus: function(a) {
 			_z_on.call(this, a == N || a);
 		},
@@ -8242,6 +8294,7 @@ DropBox = define.widget('DropBox', {
 				this._val(s.join(', '));
 				if (this.attr('tip') === T)
 					this.$t().title = t.join().replace(/<[^>]+>/g, '');
+				this.checkPlaceholder(t.length);
 				if (v != u)
 					this.trigger('change');
 			} else {
@@ -8291,7 +8344,7 @@ DropBox = define.widget('DropBox', {
 				d.close();
 			} else {
 				this.focus();
-				var d = {type: 'Dialog', ownproperty: T, id: this.id, widthMinus: 2, heightMinus: 2,
+				var d = {type: 'Dialog', ownproperty: T, id: this.id, widthMinus: 0, heightMinus: 0,
 					cls: 'w-dropbox-dialog w-f-dialog' + (this.x.multiple ? ' z-mul' : (this.x.cancelable ? ' z-cancel' : '')), autoHide: T,
 					node: {type: 'Html', id: 'list', scroll: T, text: this.html_options()},
 					on: {load: 'this.commander.listenPop(!0)', close: 'this.commander.listenPop(!1)'}
@@ -8299,7 +8352,7 @@ DropBox = define.widget('DropBox', {
 				this._dropper = this.exec($.extend(d, mbi ? {
 					width: $.width() - 40, maxHeight: $.height() - 40, cover: T
 				} : {
-					minWidth: this.formWidth(), maxWidth: Math.max($.width() - a.left - 2, a.right - 2), maxHeight: Math.max($.height() - a.bottom, a.top),
+					minWidth: this.formWidth() - 2, maxWidth: Math.max($.width() - a.left - 2, a.right - 2), maxHeight: Math.max($.height() - a.bottom, a.top),
 					snap: {target: this.$('f'), position: 'v', indent: 1}
 				}));
 			}
@@ -8349,9 +8402,6 @@ DropBox = define.widget('DropBox', {
 			if (this.x.format)
 				t = this.html_format(t, this.x.format, this.x.escape, N, a);
 			return t;
-		},
-		html_placeholder: function() {
-			return '';
 		},
 		html_li: function(a, b) {
 			return a ? (a.icon ? $.image(a.icon, {cls: 'w-dropbox-ico'}) : '') + this.option_text(a) + (!b ? '<i class=_box>\u2714</i>' : '') : '';
@@ -8672,10 +8722,6 @@ ComboBox = define.widget('ComboBox', {
 					}
 				}
 			}
-		},
-		resetOptions: function() {
-			this._init_more();
-			this._init_ready();
 		},
 		// @implement
 		insertHTML: function(a, b) {
@@ -9666,26 +9712,27 @@ PickBox = define.widget('PickBox', {
 	},
 	Prototype: {
 		loading: F,
+		placeholder_type: 'placeholder_select',
 		$v: function() {return $(this.id + 'v')},
 		_init_ready: function() {
+			if (!this._xDrop)
+				this._xDrop = $.jsonClone(this.x.drop);
 			// 如果有设置value而text为空时，尝试从drop中匹配文本
 			var v = this._val();
-			if (v && !this.x.text && this.x.drop) {
+			if (v && !this.x.text && this._xDrop) {
 				this.loading = T;
 				this.addClass('z-loading');
 				var self = this;
 				this.text(Loc.loading);
 				(this.dropper = this.createPop(this.x.drop)).preload(function() {
 					var r = self.param(v, T);
-					r ? self.val(r.value, r.text) : self.val('', '');
+					r ? self.val(r.value, r.text) : self.text('');
 					self.loading = F;
 					self.removeClass('z-loading');
+					self.addClass('z-empty', !r);
 				});
-			}
-		},
-		resetOptions: function() {
-			this.x.text = '';
-			this._init_ready();
+			} else
+				this.addClass('z-empty', !v);
 		},
 		_storeView: function(a) {
 			return (a || this.dropper).getContentView();
@@ -9696,7 +9743,10 @@ PickBox = define.widget('PickBox', {
 		val: function(v, t) {
 			v != N && this.text(t || v);
 			var v = AbsForm.prototype.val.apply(this, arguments);
-			v != N && this.checkPlaceholder(v);
+			if (v != N) {
+				this.checkPlaceholder(v);
+				this.addClass('z-empty', !v);
+			}
 			return v;
 		},
 		text: function(t) {
@@ -9711,6 +9761,19 @@ PickBox = define.widget('PickBox', {
 			var d = this.store(this.pop()).getParam(a);
 			this.val(d.value, d.text);
 			a.focus && a.focus(T);
+		},
+		clear: function() {
+			this.val('', '');
+			if(this.dropper) {
+				var f = this.dropper.isShow();
+				this.dropper.remove();
+				this.dropper = this.createPop($.jsonClone(this._xDrop));
+				f && this.dropper.show();
+			}
+		},
+		html_btn: function() {
+			var s = '<em class="f-boxbtn _x" onclick=' + evw + '.clear()><i class=f-vi></i>' + $.image('.f-i-close') + '</em>';
+			return OnlineBox.prototype.html_btn.call(this) + s;
 		},
 		html_input: function() {
 			return '<input type=hidden id=' + this.id + 'v' + (this.x.name ? ' name="' + this.x.name + '"' : '') + ' value="' + $.strQuot(this.x.value || '') + '"><div id="' + this.id + 
@@ -10015,7 +10078,7 @@ AbsLeaf = define.widget('AbsLeaf', {
 		request: function(a, b) {
 			this.loading = T;
 			var f = this.x.filter, t = this.x.template;
-			t && (t = _getTemplate(t));
+			t && (t = _getTemplateBody(t));
 			this.exec({type: 'Ajax', src: this.getSrc(), filter: this.x.filter || (t && t.filter), sync: a, loading: F,
 				success: function(x) {
 					if (!this._success(x))
@@ -10952,7 +11015,8 @@ TableRow = define.widget('TableRow', {
 						g += this.prop_title((d && d[f.tip.field || f.field]) || '', f.format, h);
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') : '') +
-						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) + '</td>');
+						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
+						(this.type_thr && f.removable ? '<div class=w-th-rm><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
 			return b.join('');
@@ -11256,6 +11320,7 @@ ContentTBody = define.widget('ContentTBody', {
 	Listener: {
 		body: {
 			nodeChange: function() {
+				if (!this.$()) return;
 				this.table.fixRowCls();
 				this.table.fixFoot();
 			}
@@ -11303,7 +11368,7 @@ ContentTBody = define.widget('ContentTBody', {
 				s.push(r[i].html(i));
 			return s.join('');
 		},
-		html: function() {return '<tbody id=' + this.id + '>' + this.html_nodes() + '</tbody>'}
+		html: function() {return '<tbody id=' + this.id + ' type=' + this.type + '>' + this.html_nodes() + '</tbody>'}
 	}
 });
 _parallel_methods(ContentTBody, 'prepend append before after');
@@ -11315,10 +11380,10 @@ ContentTHead = define.widget('ContentTHead', {
 		body: {
 			ready: function() {
 				// 拖动表头调整大小
-				var r = this.rootNode, g = this.table, c = this.parentNode.colgroup;
+				var r = this.rootNode, g = this.table, p = this.parentNode, c = p.colgroup, self = this;
 				if (r.x.resizable) {
 					Q('td', this.$()).append('<div class=w-th-rsz></div>');
-					Q('.w-th-rsz', this.$()).height(this.height()).on('mousedown', function(e) {
+					Q('.w-th-rsz', this.$()).height(this.$().offsetHeight).on('mousedown', function(e) {
 						var b = this, n = Column.index(b.parentNode), x = e.pageX, o;
 						$.moveup(function(e) {
 							if (!o) o = $.db('<div style="position:absolute;width:1px;height:' + r.height() + 'px;top:' + $.bcr(b).top + 'px;background:#aaa;z-index:100"></div>');
@@ -11333,6 +11398,28 @@ ContentTHead = define.widget('ContentTHead', {
 						}, e);
 					});
 				}
+				var m = Q('.w-th-rm', this.$());
+				m.height(this.$().offsetHeight).on('click', function() {
+					for (var i = 0, d = [], e = Column.index(this.parentNode); i < m.length; i ++) {
+						var f = m.eq(i).parent(), h = f.prop('cellIndex');
+						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
+							change: function() {
+								var f = !this.isChecked(), n = this.x.data.colIndex;
+								g.toggleColumn(n, f);
+								this.parentNode.trigger('usable');
+							}
+						}});
+					}
+					g.cmd({type: 'Dialog', id: '#w-th-rm-dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+						ready: 'this.trigger("usable")',
+						usable: function() {
+							var a = this.elements(T).length == 1;
+							for (var i = 0; i < this.length; i ++) {
+								if (this[i].isChecked()) this[i].disable(a);
+							}
+						}
+					}}, on: {mouseLeave: 'this.close()'}});
+				});
 				// 排序
 				for (var i = 0, d = F; i < c.length; i ++) {
 					if (c[i].x.sort) {
@@ -11462,13 +11549,30 @@ ContentTable = define.widget('ContentTable', {
 	},
 	Listener: {
 		body: {
-			ready: function() { this.rootNode != this.table && this.fixWidth(); },
+			ready: function() {
+				this.rootNode != this.table && this.fixWidth();
+			},
 			resize: function() { this.rootNode != this.table && this.fixWidth(); }
 		}
 	},
 	Prototype: {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
+		hideCol: function(a, b) {
+			if (!this._fixed_width) {
+				this._fixed_width = this.innerWidth();
+			}
+			var c = this.colgroup, w = 0;
+			c[a]._hide = b;
+			if (!c[a]._ori_width) c[a]._ori_width = c[a].$().style.width;
+			for (var i = 0; i < c.length; i ++) {
+				if(!c[i]._hide) w += c[i].innerWidth();
+				c[i].$().style.width = c[i]._hide ? 0 : c[i]._ori_width;
+			}
+			Q('._fix_thead > tr, tbody[type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', b);
+			this._fixed_width = w;
+			this.css('width', w);
+		},
 		fixWidth: function() {
 			for (var i = 0, c = this.table.getColGroup(), w = 0, l = c.length; i < l; i ++) w += c[i].width();
 			this.css('width', w);
@@ -11506,6 +11610,9 @@ THead = define.widget('THead', {
 		pubParent: $.rt(),
 		x_childtype: $.rt('TR'),
 		x_nodes: $.rt(),
+		scaleWidth: function(a) {
+			return a._fixed_width || _w_scale.width.apply(this, arguments);
+		},
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = getScroll(this.rootNode), b, f;
@@ -11595,7 +11702,7 @@ AbsTable = define.widget('AbsTable', {
 			if (r && r.length) {
 				this.head = new THead($.extend({table: {tHead: x.tHead, columns: x.columns}}, x.tHead, {width: '*'}), this);
 				delete x.scroll;
-			}
+			} 
 			this.body = new TBody($.extend({table: {tBody: x.tBody, columns: x.columns}}, x.tBody, {width: '*', height: this.head ? '*' : -1, scroll: this.head && s}), this);
 			r = x.tFoot && x.tFoot.nodes;
 			if (r && r.length) {
@@ -11749,10 +11856,6 @@ AbsTable = define.widget('AbsTable', {
 				var i = a.length;
 				while (i --) a[i].remove();
 			}
-			if(this.head) {
-				var c = this.head.descendant('TableTripleBox');
-				c && c.relate();
-			}
 		},
 		deleteAllRows: function() {
 			var a = this.rows(), i = a.length;
@@ -11829,6 +11932,12 @@ AbsTable = define.widget('AbsTable', {
 				this.deleteColumn(b);
 				this.insertColumn(a, b);
 			}
+		},
+		//@public 显示或隐藏一列 / @a -> colIndex, b -> hide?
+		toggleColumn: function(a, b) {
+			this.head && this.head.contentTable.hideCol(a, b);
+			this.body && this.body.contentTable.hideCol(a, b);
+			this.foot && this.foot.contentTable.hideCol(a, b);
 		},
 		// 获取焦点行 / @a -> visible(是否可见)?
 		getFocus: function(a) {
@@ -12005,7 +12114,7 @@ AbsTable = define.widget('AbsTable', {
 		}
 	}
 });
-_parallel_methods(AbsTable, '_sortRow fixScroll');
+_parallel_methods(AbsTable, '_sortRow fixScroll toggleColumn');
 var
 /* `table` */
 Table = define.widget('Table', {
@@ -12013,12 +12122,12 @@ Table = define.widget('Table', {
 		this._pad = x.cellPadding != N ? x.cellPadding : 5;
 		this._face = x.face || 'none';
 		x.face && (this.className += ' z-face-' + x.face);
+		this.fixed = [];
 		W.apply(this, arguments);
 		x.scroll == N && (x.scroll = T);
 		this.initBody(x);
 		if (x.hiddens)
 			this._hiddens = new Hiddens({type: 'hiddens', nodes: x.hiddens}, this, -1);
-		this.fixed = [];
 		if (!ie7) {//@fixme: 暂不支持ie7
 			var xl = [], xr = [];
 			for (var i = 0, f, c = x.columns, l = c ? c.length : 0; i < l; i ++) {
@@ -12417,74 +12526,91 @@ Video = define.widget('Video', {
 		}
 	}
 }),
-
+/** `transfer` */
 Transfer = define.widget('Transfer', {
-	Const: function(x, p) {
+	Const: function(x) {
 		this.x = x;
-		var n = [{type: 'Vert', cls: 'w-transfer-left', width: '*', widthMinus: 2, heightMinus: 2, nodes: [x.suggest]},
+		var n = [{type: 'Vert', cls: 'w-transfer-no', width: '*', widthMinus: 2, heightMinus: 2},
 			{type: 'ButtonBar', cls: 'w-transfer-bbr', dir: 'v', align: 'center', nodes: [
-				{icon: '.f-i-angle-right', on:{click: 'this.closest("Transfer").select()'}}, {icon: '.f-i-angle-left'}]},
-			{type: 'Vert', cls: 'w-transfer-right', width: '*', widthMinus: 2, heightMinus: 2}];
-		x.nodes = n;
+				{icon: '.f-i-angle-right', status: 'disabled', on:{click: 'this.closest("Transfer").select()'}}, {icon: '.f-i-angle-left', status: 'disabled', on:{click: 'this.closest("Transfer").unselect()'}}]},
+			{type: 'Vert', cls: 'w-transfer-yes', width: '*', widthMinus: 2, heightMinus: 2}];
+		this._panels = n;
 		Horz.apply(this, arguments);
-		this.no  = this[0].descendant('Table,Tree');
-		this.yes = this[2].append(this.initTable('yes', '', this.initOptions(x.value, x.text)));
+		this.no  = this[0].append(this.initTable('no',  '', this.x.nodes));
+		this.yes = this[2].append(this.initTable('yes', '', this.initYesOptions(x.value)));
 		this.fixNo();
 	},
 	Extend: Horz,
 	Prototype: {
 		className: 'w-transfer',
-		initOptions: function(v, t) {
-			v = v && v.split(','), t = t && t.split(',');
-			for (var i = 0, a = [], b; i < v.length; i ++) {
-				b = this.param(v[i], T);
-				_all[b.wid].check();
-				a.push({value: v[i], text: t ? t[i] : b.text});
-			}
-			return a;
+		x_nodes: function() {
+			return this._panels;
 		},
-		store: function() {
-			if (this.combo) return this.combo;
-			if (this.x.bind) {
-				var c = this.x.bind.target ? this.find(this.x.bind.target) : this.no;
-				return c && (this.combo = new _comboHooks[c.type](c, this.x.bind));
+		initYesOptions: function(v) {
+			if (v = $.strTrim(v + '')) {
+				v = v.charAt(0) === '[' ? $.jsonParse(v) : v.split(',');
+				for (var i = 0, a = [], b, l = v.length; i < l; i ++) {
+					b = typeof v[i] === _STR ? this.param(v[i]) : v[i];
+					b && a.push(b);
+				}
+				return a;
 			}
 		},
-		// @a -> text|value|Leaf|TR, b -> isValue?
-		param: function(a, b) {
-			var s = this.store();
-			return s && s.getParam(a, b);
+		// @a -> value
+		param: function(a) {
+			for (var i = 0, b = this.x.nodes, l = b.length; i < l; i ++)
+				if (b[i].value == a) return b[i];
+		},
+		getSelectedRows: function() {
+			var b = this.yes.body;
 		},
 		val: function(a) {
 			if (a == N) {
-				//return this.$() ? this.ownerView.getPostData
+				for (var i = 0, b = this.yes.rows(), c = [], l = b.length; i < l; i ++)
+					c.push(b[i].x.data.value);
+				return c.join();
 			}
 		},
+		jsonVal: function() {
+			for (var i = 0, b = this.yes.rows(), c = [], l = b.length; i < l; i ++)
+				c.push(b[i].x.data);
+			return c.join();
+		},
 		fixNo: function() {
-			/*for (var i = 0, a = this.val(), l = a.length; i < l; i ++) {
-				this.no
-			}*/
+			for (var i = 0, a = this.val().split(','), l = a.length; i < l; i ++)
+				this.no.deleteRow({value: a[i]});
 		},
 		select: function() {
-			var a = this.store(), b = a.cab.getCheckedAll(), c = [];
+			var b = this.no.getCheckedAll(), c = [];
 			for (var i = 0, v; i < b.length; i ++) {
-				c.push(this.param(b[i].box.val(), T));
+				c.push(b[i].x.data);
 			}
 			this.yes.insertRow(c);
 			this.no.deleteRow(b);
 		},
+		unselect: function() {
+			var b = this.yes.getCheckedAll(), c = [];
+			for (var i = 0, v; i < b.length; i ++) {
+				c.push(b[i].x.data);
+			}
+			this.no.insertRow(c);
+			this.yes.deleteRow(b);
+		},
+		onCheck: function(a) {
+			this[1][a.x.name == 'no' ? 0: 1].disable(a.checkstate() == 0);
+		},
 		// @a -> name, b -> title, c -> nodes
 		initTable: function(a, b, c) {
 			return {
-			  	type: 'Table', columns: [
-			  	  {field: 'value', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '"}'},
+			  	type: 'Table', height: '*', cls: 'w-transfer-table-' + a, scroll: T, columns: [
+			  	  {field: 'value', width: 40, align: 'center', format: 'javascript:return {type: "TripleBox", name: "' + a + '", value: $value}'},
 			  	  {field: 'text', width: '*'}
 			    ],
 			    tHead: {
-			      nodes: [ {value: {type: 'TripleBox', name: a, checkAll: true}, text: b} ]
+			      nodes: [{value: {type: 'TripleBox', name: a, checkAll: T, on: {change: abbr(this) + '.onCheck(this)'}}, text: b}]
 			    },
-			    tBody: { nodes: c }
-			  };
+			    tBody: {nodes: c}
+			};
 		}
 	}
 });

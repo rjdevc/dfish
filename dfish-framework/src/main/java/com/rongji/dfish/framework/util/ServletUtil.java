@@ -588,7 +588,6 @@ public class ServletUtil {
         return download(request, response, resource, inline);
     }
 
-
     protected static final Map<String, String> MIME_MAP = new HashMap<>();
 
     /**

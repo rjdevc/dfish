@@ -17,7 +17,7 @@
 var
 A = [], O = {}, N = null, T = true, F = false, U,
 
-_path, _uiPath, _dftPath, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.0',
+_path, _uiPath, _dftPath, _lib, _cfg = {}, _aliasPath = {}, _aliasName = {}, _$ = win.$, _ver = '', _expando = 'dfish', version = '5.0.3',
 
 _STR = 'string', _OBJ = 'object', _NUM = 'number', _FUN = 'function', _PRO = 'prototype',
 
@@ -59,16 +59,16 @@ detectZoom = function() {
     var ratio = 0;
     if (win.devicePixelRatio !== U) {
         ratio = win.devicePixelRatio;
-  } else if (br.ie) {// ie
-        if (screen.deviceXDPI && screen.logicalXDPI) {
-            ratio = screen.deviceXDPI / screen.logicalXDPI;
-      }
-  } else if (win.outerWidth !== U && win.innerWidth !== U) {
-        ratio = win.outerWidth / win.innerWidth;
-  }
+  	} else if (br.ie) {// ie
+      	if (screen.deviceXDPI && screen.logicalXDPI) {
+      		ratio = screen.deviceXDPI / screen.logicalXDPI;
+    	}
+  	} else if (win.outerWidth !== U && win.innerWidth !== U) {
+    	ratio = win.outerWidth / win.innerWidth;
+  	}
     if (ratio) {
     	ratio = Math.round(ratio * 100);
-  }
+  	}
     return ratio;
 },
 // 浏览器信息
@@ -340,7 +340,14 @@ Define = function(uri, id) {
 	}
 	b.template = function(c, d) {
 		d == N && (d = c, c = N);
-		_moduleCache[c ? _mod_uri(uri, (_cfg.templateDir || '') + c) : uri] = d;
+		var t = {body: d, methods: {}};
+		_moduleCache[c ? _mod_uri(uri, (_cfg.templateDir || '') + c) : uri] = t;
+		return {
+			methods: function(e) {
+				_merge(t.methods, e);
+				return this;
+			}
+		};
 	}
 	b.preload = function(c, d) {
 		d == N && (d = c, c = N);
@@ -609,7 +616,7 @@ _idsAdd = $.idsAdd = function(s, n, p) {
 _idsRemove = $.idsRemove = function(s, n, p) {
 	if (s == N) return '';
 	if (!p) p = ',';
-	return (p + s + p).replace(p + n + p, p).slice(1, -1);
+	return (p + s + p).replace(new RegExp(p + n + '\\b', 'g'), '').slice(1, -1);
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAny = $.idsAny = function(s, n, p) {
@@ -2141,6 +2148,8 @@ var boot = {
 						t = 'path: ' + m.path + (d ? '\ndialog: ' + (d.x.id || '') : '') + '\nsrc: ' + (m.x.src || '');
 					if (m.x.template)
 						t += '\ntemplate: ' + m.x.template;
+					else if (d && d.x.template)
+						t += '\ntemplate: ' + d.x.template;
 					if (br.css3) {
 						Q(e.target).closest('[w-type="Section"]').each(function() {
 							var g = $.all[this.id], c = $.bcr(this);

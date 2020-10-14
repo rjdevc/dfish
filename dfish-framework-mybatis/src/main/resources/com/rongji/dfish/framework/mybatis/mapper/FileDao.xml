@@ -31,6 +31,7 @@
                 #{status}
             </foreach>
         </if>
+        ORDER BY t.FILE_ID
     </select>
 
     <insert id="save" parameterType="com.rongji.dfish.framework.plugin.file.entity.PubFileRecord">

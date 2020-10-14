@@ -12,11 +12,7 @@ import com.rongji.dfish.framework.plugin.file.service.FileService;
 import com.rongji.dfish.framework.service.impl.AbstractFrameworkService4Simple;
 
 import javax.annotation.Resource;
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.util.*;
 import java.util.Map.Entry;
 
@@ -111,9 +107,9 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
         fileRecord.setFileLink(LINK_FILE);
         fileRecord.setFileKey(fileId);
         fileRecord.setFileStatus(STATUS_NORMAL);
-        save(fileRecord);
 
         doSaveFile(input, fileRecord);
+        save(fileRecord);
 
         return parseUploadItem(fileRecord, true);
     }
@@ -123,7 +119,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @param inputStream 输入流
      * @param fileRecord 文件记录
      */
-    protected void doSaveFile(InputStream inputStream, PubFileRecord fileRecord) {
+    protected void doSaveFile(InputStream inputStream, PubFileRecord fileRecord) throws IOException {
         // 这边没异常,不管有没保存成功都会增加文件记录
         String fileUrl = fileRecord.getFileUrl();
         int splitIndex = fileUrl.lastIndexOf(getDirSeparator());
@@ -317,7 +313,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @return 文件记录列表
      */
     @Override
-    public List<PubFileRecord> getRecords(String fileLink, String fileKey) {
+    public List<PubFileRecord> listRecords(String fileLink, String fileKey) {
         if (Utils.isEmpty(fileLink) || Utils.isEmpty(fileKey)) {
             return Collections.emptyList();
         }
@@ -371,7 +367,7 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      */
     @Override
     public List<UploadItem> listUploadItems(String fileLink, String fileKey) {
-        List<PubFileRecord> fileRecords = getRecords(fileLink, fileKey);
+        List<PubFileRecord> fileRecords = listRecords(fileLink, fileKey);
         return parseUploadItems(fileRecords);
     }
 

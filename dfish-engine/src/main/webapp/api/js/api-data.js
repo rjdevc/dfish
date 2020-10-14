@@ -604,17 +604,6 @@ define( {
             var s = $.strUnescape( '&lt;a href=#&gt;链接&lt;/a&gt;' );
           }
       ] },
-      { name: '$.template(id, content)', remark: '定义模板。', common: true, param: [
-        { name: 'id', type: 'String', remark: '设置模板的ID。' },
-        { name: 'content', type: 'Object', remark: '模板内容。' }
-      ], example: [
-          function() {
-            $.template( 'index_view', {
-            	type: 'view',
-            	node: { type: 'Html', text: 'hello world' }
-            } );
-          }
-      ] },
       { name: '$.thumbnail(range, width, [opt])', remark: '把某个范围内的图片变成缩略图。', common: true, param: [
         { name: 'range', type: 'HtmlElement | Widget', remark: 'HTML元素或widget对象。' },
         { name: 'width', type: 'Number', remark: '图片最大宽度。' },
@@ -784,9 +773,8 @@ define( {
       ] }
     ],
     Methods: [
-      { name: 'define([id], [deps], factory)', remark: '定义一个模块。', param: [
+      { name: 'define([id], factory)', remark: '定义一个模块。', param: [
         { name: 'id', type: 'String', remark: '模块id。如果不写此参数，那么模块id默认为当前js文件的路径' },
-        { name: 'deps', type: 'Array', remark: '模块依赖' },
         { name: 'factory', type: 'Object', remark: '定义当前模块。可以是一个函数，也可以是一个对象或字符串。' }
       ], example: [
           function() {
@@ -1112,55 +1100,12 @@ define( {
   "@": {
   	title: '模板',
   	sort: false,
-  	remark: 'widget的template参数代表模板。<p>支持模板的widget优先实现顺序，以 view 为范例: <ol>' +
+  	remark: 'widget的template参数指向一个模板地址。<p>支持模板的widget优先实现顺序，以 view 为范例: <ol>' +
   		'<li>如果有node，就直接展示node。' + 
 	 	'<li>有src，没有template。这个src应当返回有node(s)节点的JSON。(兼容3.1)' +
 	 	'<li>有src，也有template，那么src应当返回JSON数据，用于template的内容填充。</ol></p>',
     Properties: [
-      { name: '@propName', remark: '模板中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。', example: [
-          function() {
-          	/// 一个简单的模板使用范例，在页面上显示hello world。可以把本范例另存为html文件进行测试。
-          	return''
-            '<!doctype html>'
-            '<html>'
-            '<head>'
-            '<meta charset=utf-8>'
-            '<title>DFish3.2</title>'
-            '<script src="dfish/dfish.js"></script>'
-            '<script>'
-            'dfish.init( {'
-            '  view: {'
-            '    id: "index",'
-            '    src: {'
-            '      data: { content: "hello world!" }'
-            '    },'
-            '    template: {'
-            '      node: { type: "Html", "@text": "$data.content" }'
-            '    }'
-            '  }'
-            '} );'
-            '</script>'
-            '</head>'
-            '<body style="margin:0;overflow:hidden;" scroll="no"></body>'
-            '</html>'
-          },
-          function() {
-          	/// 把上述范例中的 src 和 template 参数改为字符串格式。使用 $.template() 方法定义模块。
-          	return''
-            '<script>'
-            'dfish.init( {'
-            '  view: {'
-            '    id: "index",'
-            '    src: "index.sp?act=index",'
-            '    template: "index_view"'
-            '  }'
-            '} );'
-            '$.template( "index_view", {'
-            '    node: { type: "Html", "@text": "$data.content" }'
-            '} );'
-            '</script>'
-          }
-	  ] },
+      { name: '@propName', remark: '模板中的 widget 属性名称前面加 @ 符号，表示这是一个动态属性，对应的值是一个JS表达式，可以从数据源获取数据。' },
 	  { name: '@w-for', remark: '循环输出一组节点。expr 语句使用 in 语法，如 <b>$item in $data</b>，或 <b>$item,$index in $data</b>。$data 可以是 Array 或 Object 类型。', example: [
           function() {
           	/// 使用模板的树
@@ -1263,7 +1208,90 @@ define( {
             { type: "Html", "@text": "$this.data.content" }
           }
       ] }
-  ] },
+  ]},
+  "define.template": {
+  	title: 'Template',
+  	remark: '可用 <b>define.template()</b> 创建一个模板。模板方法里的 <b>this</b> 指向这个模板。',
+    Properties: [
+      { name: 'data', type: 'Object', remark: '数据对象。本对象可在模板方法内通过<b>this.data</b>获取。' },
+      { name: 'widget', type: 'Object', remark: '模板绑定的widget对象。本对象可在模板方法内通过<b>this.widget</b>获取。' }
+	],
+    Event: [
+      { name: 'event', type: 'Object', remark: '事件对象。模板方法被调用时，都可接收到一个event对象作为参数。', param: [
+      	{ name: 'widget', type: 'Object', remark: '事件的widget对象。' },
+      	{ name: 'detail', type: 'Object', remark: '事件的数据对象。' }
+      ] }
+	],
+    Methods: [
+      { name: 'define.template([path], tmpl)', remark: '创建模板。', common: true, param: [
+        { name: 'path', type: 'String', remark: '路径。本参数可不写。', optional: true },
+        { name: 'tmpl', type: 'Object', remark: 'JSON格式的模板内容。' }
+      ] },
+    ],
+	Examples: [
+	  { example: [
+          function() {
+          	//创建一个ButtonBar模板
+            define.template({
+              type: 'ButtonBar',
+              nodes: [
+                {text: 'hello', on: {click: 'show'}},
+                {text: 'world', on: {click: 'load'}}
+              ]
+            }).methods({
+              show: function(e) {
+                alert(e.widget.x.text); //显示&quot;hello&quot;
+                alert(this.widget.x.type); //显示&quot;ButtonBar&quot;
+              },
+              load: function(e) {
+                e.widget.cmd({
+                  type: 'Ajax',
+                  src: 'getData.sp',
+                  success: 'loadSuccess'
+                })
+              },
+              loadSuccess: function(e) {
+                console.log(e.detail.response) //显示从getData.sp获取到的数据
+              }
+            });
+          },
+          function() {
+	  	    // Table 的 format 调用模板方法
+            define.template({
+              type: 'View',
+              node: {
+                type: 'Table',
+                columns: [
+                  {field: 'A', width: '50', align: 'center'},
+                  {field: 'B', width: '*', format: 'formatTitle'}
+                ],
+                tHead: {
+                  nodes: [
+                    {A: 'ID', B: '标题'}
+                  ]
+                },
+                tBody: {
+                  nodes: [
+                    {A: '001', B: 'title 1'},
+                    {A: '002', B: 'title 2'},
+                    {A: '003', B: 'title 3'}
+                  ]
+                }
+              }
+            }).methods({
+              formatTitle: function(e) {
+              	var data = e.widget.x.data;
+                return '<div @click=showDetail>' + data.B + '</div>'
+              },
+              showDetail: function(e) {
+               	var data = e.widget.x.data;
+                alert(data.A) //点击显示A字段值
+              }
+            });
+          }          
+      ] }
+    ]  
+  },
   "AbsWidget": {
   	title: 'Widget基础类',
   	remark: '所有Widget都继承此类。',
@@ -1980,8 +2008,8 @@ define( {
               type: "Tabs",
               pub: { cls: "f-tab", height: 30 }, // 设置标签按钮的默认参数
               nodes: [
-                { type: "Tab", text: "首页", target: { type: "Html", text: "内容1" } }, // 这里的 type 属性定义可以省略
-                { type: "Tab", text: "文档", target: { type: "Html", text: "内容2" } }
+                { type: "Tab", text: "首页", target: { type: 'Html', text: '内容1' } }, // 这里的 type 属性定义可以省略
+                { type: "Tab", text: "文档", target: { type: 'Html', text: '内容2' } }
               ]
             }
           }
@@ -3592,6 +3620,7 @@ define( {
       { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
       { name: 'text', type: 'String', remark: 'html内容。支持 &lt;d:wg&gt; 标签。' },
+      { name: 'tip', type: 'Boolean | String | Tip', remark: '浮动显示的提示文本。' },
       { name: 'thumbWidth', type: 'Number | String', remark: '设置内容区域所有图片的最大宽度。点击图片可以预览大图。' }
     ],
     Methods: [
@@ -3620,7 +3649,8 @@ define( {
       { name: 'escape', type: 'Boolean', remark: '是否对html内容转义。默认值为true。' },
       { name: 'format', type: 'String', remark: '格式化文本内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'suffix', type: 'String', remark: '后缀。' },
-      { name: 'text', type: 'String', remark: '内容。' }
+      { name: 'text', type: 'String', remark: '内容。' },
+      { name: 'vAlign', type: 'String', remark: '垂直对齐。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>。默认值为middle。' }
     ],
     Classes: [
       { name: '.w-label', remark: '基础样式。' }
@@ -5273,7 +5303,6 @@ define( {
             { type: 'Table', combofield: { value: 'C0', text: 'C1' }, pub: { on: { click: '$.dialog(this).commander.complete(this)' } } };
           }
       ] },
-      { name: 'resetOptions()', remark: '重置选项。' },
       { name: 'text()', remark: '获取文本。' },
       { name: 'queryText()', remark: '获取正在输入的文本。' }
     ],
@@ -5429,7 +5458,12 @@ define( {
       { name: 'uploadLimit', type: 'Number', remark: '最多可上传数量。' },
       { name: 'post', type: 'UploadPost | String', remark: '上传配置对象。如果是字符串，将被视为是UploadPost的src。' },
       { name: 'valueButtons', type: 'Array', remark: '附件项的"更多"选项 button 数组。点击附件项的"更多"生成一个 menu。' },
-      { name: 'value', type: 'String | Array', remark: '值。' }
+      { name: 'value', type: 'String | Array', remark: '附件的值是一个数组，数组里每个单项都是一个JSON对象。该JSON对象参数如下:', param: [
+      	{ name: 'id', type: 'String', remark: '文件ID。' },
+      	{ name: 'name', type: 'String', remark: '文件名。' },
+      	{ name: 'thumbnail', type: 'String', optional: true, remark: '可选，文件缩略图地址。' },
+      	{ name: 'url', type: 'String', optional: true, remark: '可选，文件地址。' }
+      ] }
     ],
     Examples: [
       { example: [
@@ -5864,7 +5898,7 @@ define( {
   },
   "Dialog": {
   	remark: '打开一个对话框。dialog 既是命令，也是 widget。',
-  	extend: 'AbsWidget',
+  	extend: 'Section',
     Config: [
       { name: 'cache', type: 'Boolean', remark: '如果设为 true, 当前窗口调用 .close() 方法关闭后，窗口处于隐藏状态并不删除，再次打开时将恢复为上次打开时的状态。' },
       { name: 'cover', type: 'Boolean', remark: '如果设为 true, 页面和对话框之间将覆盖一层半透明蒙版。' },

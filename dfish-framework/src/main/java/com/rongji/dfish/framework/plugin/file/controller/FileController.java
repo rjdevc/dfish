@@ -198,7 +198,7 @@ public class FileController extends FrameworkController {
         JsonResponse jsonResponse = new JsonResponse();
         if (uploadItem == null) {
             // FIXME 这里做容错,但这里很可能不会出现这种情况
-            jsonResponse.setErrMsg("附件上传失败@" + System.currentTimeMillis());
+            jsonResponse.setErrorMessage("附件上传失败@" + System.currentTimeMillis());
         } else {
             PubFileRecord fileRecord = uploadItem.getFileRecord();
             // FIXME 这里先简单处理全部记录更新
@@ -208,7 +208,7 @@ public class FileController extends FrameworkController {
 
             uploadItem.setFileRecord(null);
             if (uploadItem.getError() != null) {
-                jsonResponse.setErrMsg(uploadItem.getError().getText());
+                jsonResponse.setErrorMessage(uploadItem.getError().getText());
             } else {
                 jsonResponse.setData(uploadItem);
             }

@@ -5,11 +5,12 @@ import com.rongji.dfish.ui.*;
 /**
  * 表单标签。
  */
-public class Label extends AbstractWidget<Label> implements HtmlContentHolder<Label>, Alignable<Label>, HasText<Label> {
+public class Label extends AbstractWidget<Label> implements HtmlContentHolder<Label>, Alignable<Label>, VAlignable<Label>, HasText<Label> {
 
     private static final long serialVersionUID = -1384522916094820984L;
 
     protected String align;
+    protected String vAlign;
     protected String text;
     protected Boolean escape;
     protected String format;
@@ -48,6 +49,17 @@ public class Label extends AbstractWidget<Label> implements HtmlContentHolder<La
     @Override
     public Label setAlign(String align) {
         this.align = align;
+        return this;
+    }
+
+    @Override
+    public String getVAlign() {
+        return vAlign;
+    }
+
+    @Override
+    public Label setVAlign(String vAlign) {
+        this.vAlign = vAlign;
         return this;
     }
 

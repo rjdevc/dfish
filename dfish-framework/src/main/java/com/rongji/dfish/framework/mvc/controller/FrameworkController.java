@@ -1,7 +1,7 @@
 package com.rongji.dfish.framework.mvc.controller;
 
 import com.rongji.dfish.base.Pagination;
-import com.rongji.dfish.base.exception.Marked;
+import com.rongji.dfish.base.exception.MarkedCause;
 import com.rongji.dfish.base.util.DateUtil;
 import com.rongji.dfish.base.util.JsonUtil;
 import com.rongji.dfish.base.util.LogUtil;
@@ -454,9 +454,10 @@ public class FrameworkController {
 
         Throwable cause = getCause(e);
 
-        if (cause instanceof Marked) {
-            jsonResponse.setErrCode(((Marked) cause).getCode());
-            jsonResponse.setErrMsg(cause.getMessage());
+        if (cause instanceof MarkedCause) {
+            MarkedCause markedCause = (MarkedCause) cause;
+            jsonResponse.setErrorCode(markedCause.getCode());
+            jsonResponse.setErrorMessage(markedCause.message());
         } else {
             String requestJson = "[UNKNOWN REQUEST CONTENT]";
             try {
@@ -464,21 +465,21 @@ public class FrameworkController {
             } catch (Throwable t) {
                 LogUtil.error("请求Json转换异常", t);
             }
-            String errMsg = null;
+            String errorMsg = null;
             if (cause instanceof IOException) {
                 // 中断请求的日志不输入,以免运行日志都是这样的无用日志
                 if (!"ClientAbortException".equals(cause.getClass().getSimpleName())) {
-                    errMsg = "IO异常@" + System.currentTimeMillis();
-                    LogUtil.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
+                    errorMsg = "IO异常@" + System.currentTimeMillis();
+                    LogUtil.error(requestJson + "\r\n" + errorMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
                 }
             } else if (cause instanceof SocketException) {
-                errMsg = "网络异常@" + System.currentTimeMillis();
-                LogUtil.error(requestJson + "\r\n" + errMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
+                errorMsg = "网络异常@" + System.currentTimeMillis();
+                LogUtil.error(requestJson + "\r\n" + errorMsg + "@" + e.getClass().getName() + "#" + e.getMessage());
             } else {
-                errMsg = "系统内部错误@" + System.currentTimeMillis();
-                LogUtil.error(requestJson + "\r\n" + errMsg, e);
+                errorMsg = "系统内部错误@" + System.currentTimeMillis();
+                LogUtil.error(requestJson + "\r\n" + errorMsg, e);
             }
-            jsonResponse.setErrMsg(errMsg);
+            jsonResponse.setErrorMessage(errorMsg);
         }
 
         return jsonResponse;
@@ -486,13 +487,13 @@ public class FrameworkController {
 
     protected Throwable getCause(Throwable e) {
         Throwable cause = e;
-        if (!(cause instanceof Marked)) {
+        if (!(cause instanceof MarkedCause)) {
             // 防止套路深,而往下寻找MarkedException
             while (cause.getCause() != null) {
                 if (cause == cause.getCause()) {
                     break;
                 }
-                if (cause.getCause() instanceof Marked) {
+                if (cause.getCause() instanceof MarkedCause) {
                     cause = cause.getCause();
                     break;
                 }

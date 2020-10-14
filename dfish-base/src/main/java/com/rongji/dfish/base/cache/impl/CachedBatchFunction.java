@@ -16,13 +16,13 @@ import java.util.concurrent.ExecutorService;
  * new BatchFunction&lt;String,Object&gt;(){
  * 	public Map&lt;String,Object&gt; apply(Set&lt;String&gt; input) {
  * 		return null; // 实际批量获取的代码。
- * 	}
+ *    }
  * });
  * Object o=m.apply("something");
  * Map&lt;String,Object&gt; map.=m.get( new HashSet&lt;String&gt;(Arrays.asList("str2","str3")));
  * </pre>
- *  调用的时候，即可生效。
- *  通常这个类是单例的。
+ * 调用的时候，即可生效。
+ * 通常这个类是单例的。
  *
  * @param <T> 输入参数类型
  * @param <R> 输出参数类型
@@ -35,6 +35,7 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
 
     /**
      * 缓存的数据放在这个core中
+     *
      * @return Map
      */
     protected Map<T, CacheItem<R>> getCore() {
@@ -43,6 +44,7 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
 
     /**
      * 缓存的数据放在这个Core当中
+     *
      * @param core Map
      */
     protected void setCore(Map<T, CacheItem<R>> core) {
@@ -58,18 +60,19 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
 
     /**
      * 缓存最大数量8192，最长时间300秒
+     *
      * @param function 批处理动作
      */
     public CachedBatchFunction(BatchFunction<T, R> function) {
-        this( function,8192, 300000L);
+        this(function, 8192, 300000L);
     }
 
     /**
      * 构造函数
      *
      * @param function 批处理动作
-     * @param maxSize 最大缓存数量
-     * @param alive   最大生存时间 -毫秒
+     * @param maxSize  最大缓存数量
+     * @param alive    最大生存时间 -毫秒
      */
     public CachedBatchFunction(BatchFunction<T, R> function, int maxSize, long alive) {
         this.maxSize = maxSize;
@@ -84,9 +87,13 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
         this.function = function;
     }
 
-    //正在加载的cache 防止本部分内容，在过期时，好几个线程同时加载。
+    /**
+     * 正在加载的cache 防止本部分内容，在过期时，好几个线程同时加载。
+     */
     private final Set<T> waiting = Collections.synchronizedSet(new HashSet<>());
-    //执行加载动作的加载器
+    /**
+     * 执行加载动作的加载器
+     */
     protected ExecutorService exec = ThreadUtil.getCachedThreadPool();
 
     @Override
@@ -114,8 +121,8 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
             }
         }
         if (doApplySet.size() > 0) {
-            Map<T, R> quickResult=doApply(doApplySet);
-            for(Map.Entry<T, R> entry:quickResult.entrySet()) {
+            Map<T, R> quickResult = doApply(doApplySet);
+            for (Map.Entry<T, R> entry : quickResult.entrySet()) {
                 result.put(entry.getKey(), entry.getValue());
             }
         }
@@ -147,7 +154,7 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
     }
 
     private void applyLazy(Set<T> set) {
-        if(set.isEmpty()){
+        if (set.isEmpty()) {
             return;
         }
         boolean add = false;
@@ -159,7 +166,7 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
         if (!add) {
             return;
         }
-        exec.execute(() ->{
+        exec.execute(() -> {
             try {
                 Thread.sleep(50L);
             } catch (InterruptedException e) {
@@ -170,7 +177,7 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
                 keys = new HashSet<>(waiting);
                 waiting.clear();
             }
-            if (keys.size()>0) {
+            if (keys.size() > 0) {
                 doApply(keys);
             }
         });
@@ -182,7 +189,7 @@ public class CachedBatchFunction<T, R> implements BatchFunction<T, R> {
     public void clearExpiredData() {
         // 2倍存活时间
         long limitBorn = System.currentTimeMillis() - alive << 1;
-        for (Iterator<Map.Entry<T, CacheItem<R>>> iter = core.entrySet().iterator(); iter.hasNext();) {
+        for (Iterator<Map.Entry<T, CacheItem<R>>> iter = core.entrySet().iterator(); iter.hasNext(); ) {
             Map.Entry<T, CacheItem<R>> entry = iter.next();
             CacheItem<R> item = entry.getValue();
             if (item == null || item.getBorn() < limitBorn) {

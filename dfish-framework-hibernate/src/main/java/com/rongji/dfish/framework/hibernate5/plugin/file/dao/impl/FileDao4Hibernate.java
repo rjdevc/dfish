@@ -104,6 +104,7 @@ public class FileDao4Hibernate extends FrameworkDao4Hibernate<PubFileRecord, Str
             hql.append(')');
             args.addAll(Arrays.asList(fileStatus));
         }
+        hql.append(" ORDER BY t.fileId");
         List<PubFileRecord> dataList = queryForList(hql.toString(), args.toArray());
         return dataList;
     }

@@ -957,7 +957,7 @@ public class StringUtil {
      * @param split
      * @return
      * @deprecated
-     * @see #jion(Object[], String)
+     * @see #join(Object[], String)
      */
     @Deprecated
     public static String toString(Collection coll, char split) {
@@ -986,7 +986,7 @@ public class StringUtil {
      * @param coll
      * @return
      * @deprecated
-     * @see #jion(Object[], String)
+     * @see #join(Object[], String)
      */
     @Deprecated
     public static String toString(Collection coll) {
@@ -999,7 +999,7 @@ public class StringUtil {
      * @param array
      * @return
      * @deprecated
-     * @see #jion(Object[], String)
+     * @see #join(Object[], String)
      */
     @Deprecated
     public static <T> String toString(T[] array) {
@@ -1016,7 +1016,7 @@ public class StringUtil {
      * @param split
      * @return
      * @deprecated
-     * @see #jion(Object[], String)
+     * @see #join(Object[], String)
      */
     @Deprecated
     public static <T> String toString(T[] array, char split) {
@@ -1127,8 +1127,8 @@ public class StringUtil {
      * @param strs 集合
      * @return
      */
-    public static String jion(Object[] strs){
-        return jion(Arrays.asList(strs),",");
+    public static String join(Object[] strs){
+        return join(Arrays.asList(strs),",");
     }
 
     /**
@@ -1137,8 +1137,8 @@ public class StringUtil {
      * @param split
      * @return
      */
-    public static String jion(Object[] strs,char split){
-        return jion(Arrays.asList(strs),new String(new char[]{split}));
+    public static String join(Object[] strs, char split){
+        return join(Arrays.asList(strs),new String(new char[]{split}));
     }
 
     /**
@@ -1147,8 +1147,8 @@ public class StringUtil {
      * @param split
      * @return
      */
-    public static String jion(Object[] strs,String split){
-        return jion(Arrays.asList(strs),split);
+    public static String join(Object[] strs, String split){
+        return join(Arrays.asList(strs),split);
     }
 
     /**
@@ -1156,18 +1156,8 @@ public class StringUtil {
      * @param strs
      * @return
      */
-    public static String jion(Collection strs){
-        return jion(strs,",");
-    }
-
-    /**
-     * 把一个集合转化成可显示的字符串
-     * @param strs
-     * @param split
-     * @return
-     */
-    public static String jion(Collection strs,char split){
-        return jion(strs,new String(new char[]{split}));
+    public static String join(Collection strs){
+        return join(strs,",");
     }
 
     /**
@@ -1176,7 +1166,17 @@ public class StringUtil {
      * @param split
      * @return
      */
-    public static String jion(Collection strs,String split){
+    public static String join(Collection strs, char split){
+        return join(strs,new String(new char[]{split}));
+    }
+
+    /**
+     * 把一个集合转化成可显示的字符串
+     * @param strs
+     * @param split
+     * @return
+     */
+    public static String join(Collection strs, String split){
         if (strs == null) {
             return null;
         }
