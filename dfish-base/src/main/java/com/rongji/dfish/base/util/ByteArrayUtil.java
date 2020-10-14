@@ -44,26 +44,26 @@ public class ByteArrayUtil {
 
     /**
      * 是否以 feature 开头
-     * @param sample 内容
+     * @param content 内容
      * @param feature  特征
      * @return boolean
      * @see java.lang.String#startsWith(String)
      */
-    public static boolean startsWith(byte[] sample, byte[] feature) {
-        return startsWith(sample,0,feature);
+    public static boolean startsWith(byte[] content, byte[] feature) {
+        return startsWith(content,0,feature);
     }
     /**
      * 在第offset字节后，是否以 feature 开头
-     * @param sample 内容
+     * @param content 内容
      * @param feature  特征
      * @param  offset 偏移量
      * @return boolean
      * @see java.lang.String#startsWith(String, int)
      */
-    public static boolean startsWith(byte[] sample,int offset, byte[] feature) {
-        int len = Math.min(sample.length-offset, feature.length);
+    public static boolean startsWith(byte[] content,int offset, byte[] feature) {
+        int len = Math.min(content.length-offset, feature.length);
         for (int i = 0; i < len; i++) {
-            if (sample[i+offset] != feature[i]) {
+            if (content[i+offset] != feature[i]) {
                 return false;
             }
         }
@@ -125,31 +125,33 @@ public class ByteArrayUtil {
      */
     public static String toHexString(byte[] src){
         if(src==null){
-            return "null";
+            return "";
         }
         StringBuilder sb=new StringBuilder(src.length<<1);
-        sb.append('[');
         for(byte b:src){
             sb.append(HEX_CHARS[(b&0xF0)>>4]);
             sb.append(HEX_CHARS[b&0xF]);
-            sb.append(' ');
         }
-        sb.append(']');
         return sb.toString();
     }
+
+    /**
+     * 转成16进制格式。
+     * @param src
+     * @param begin
+     * @param end
+     * @return
+     */
     public static String toHexString(byte[] src,int begin,int end){
         if(src==null|| src.length<begin||src.length<end){
-            return "null";
+            return "";
         }
         StringBuilder sb=new StringBuilder(src.length<<1);
-        sb.append('[');
         for(int i=begin;i<end;i++){
             byte b=src[i];
             sb.append(HEX_CHARS[(b&0xF0)>>4]);
             sb.append(HEX_CHARS[b&0xF]);
-            sb.append(' ');
         }
-        sb.append(']');
         return sb.toString();
     }
     private static final char[] HEX_CHARS={'0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F'};
