@@ -5538,6 +5538,14 @@ Progress = define.widget('Progress', {
 		this.cssText = 'height:auto;';
 	},
 	Extend: Section,
+	Listener: {
+		body: {
+			load: function() {
+				delete this._guide;
+				this._load();
+			}
+		}
+	},
 	Prototype: {
 		className: 'w-progress',
 		x_childtype: $.rt('ProgressItem'),
@@ -5569,7 +5577,7 @@ Progress = define.widget('Progress', {
 			this.reload(N, t);
 		},
 		getSrc: function() {
-			return this._guide ? this.formatStr(this._guide, this.x.args, T) : Section.prototype.getSrc.call(this);
+			return this._guide ? (typeof this._guide === _OBJ ? this._guide : this.formatStr(this._guide, this.x.args, T)) : Section.prototype.getSrc.call(this);
 		},
 		start: function(re) {
 			if (!this.x.src && !this.x.template)
@@ -5579,7 +5587,7 @@ Progress = define.widget('Progress', {
 				this.repaint();
 				this.layout && this.showLayout(re);
 			}
-			!this.layout && this.isDisplay() && this.load(N, function() {delete this._guide; this._load()});
+			!this.layout && this.isDisplay() && this.load();
 		},
 		_load: function() {
 			if (this._stopped)
@@ -11564,10 +11572,9 @@ ContentTable = define.widget('ContentTable', {
 			}
 			var c = this.colgroup, w = 0;
 			c[a]._hide = b;
-			if (!c[a]._ori_width) c[a]._ori_width = c[a].$().style.width;
 			for (var i = 0; i < c.length; i ++) {
 				if(!c[i]._hide) w += c[i].innerWidth();
-				c[i].$().style.width = c[i]._hide ? 0 : c[i]._ori_width;
+				c[i].$().runtimeStyle.width = c[i]._hide ? '0px' : '';
 			}
 			Q('._fix_thead > tr, tbody[type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', b);
 			this._fixed_width = w;
@@ -11836,7 +11843,7 @@ AbsTable = define.widget('AbsTable', {
 			}
 			_w_rsz_all.call(this);
 			for (var i = 0, w = 0, v, l = g[0].length; i < l; i ++) {
-				w += g[0][i].width();
+				w += _number(g[0][i].$().style.width);
 			}
 			for (var i = 0; i < g.length; i ++) {
 				!isNaN(w) && (g[i].parentNode.$().style.width = w + 'px');

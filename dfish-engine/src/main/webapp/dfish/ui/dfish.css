@@ -183,7 +183,7 @@
 .w-th-rm{position:absolute;top:0;right:0;padding:0 2px;border-left:1px solid #ddd;border-right:1px solid #ddd;visibility:hidden;cursor:pointer}
 .w-th:hover .w-th-rm{visibility:visible}
 .w-th-rm.z-drop{visibility:visible;background:rgba(255,255,255,.7)}
-.w-th-rm-dialog{padding:5px 15px}
+.w-th-rm-dialog.w-dialog{padding:5px 15px;border:1px solid #ddd}
 .w-thead:hover .w-th-sortwrap{visibility:visible}
 .w-tfoot.z-cover{position:absolute;bottom:0;background:#fff;box-shadow1:0 -1px 1px 0 rgba(0, 0, 0, 0.09)}
 .w-tfoot .w-td.z-face-line,.w-tfoot .w-td.z-face-cell{border-bottom-width:1px;border-top-width:0}
@@ -418,7 +418,7 @@
 .w-f-remark{float:right;padding-left:5px;height:32px;line-height:32px}
 
 .w-label{position:relative}
-.w-label ._lb{padding-right:6px}
+.w-label ._lb{padding-right:6px;padding-bottom:2px;}
 .w-label ._bg{position:absolute;top:0;left:0}
 .w-label.z-va-top{vertical-align:top}
 .w-label.z-va-top ._lb{padding-top:6px}
@@ -638,7 +638,7 @@
 .w-switch.z-checked.z-ds ._o{border-color:#a2d2ff}
 
 .w-formlabel .w-f-remark{height:auto;line-height:inherit}
-.w-formlabel .w-formlabel-text{margin-bottom:1px}
+.w-formlabel .w-formlabel-text{padding-bottom:1px}
 
 .w-album{white-space:normal;text-align:justify}
 .w-img{position:relative;text-align:center}
@@ -691,7 +691,6 @@
 .w-button em,.w-tab em,.w-menu-button em{font-style:normal;font-weight:normal;vertical-align:middle}
 .w-button img,.w-tab img,.w-menu-button img{vertical-align:middle}
 .w-button ._m .f-i,.w-tab ._m .f-i{margin-left:-6px;color:#888}
-.w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;line-height:1}
 .w-button.z-lock ._t,.w-button.z-lock ._ico,.w-tab.z-lock ._t,.w-tab.z-lock ._ico{opacity:.4}
 .w-button.z-lock ._c,.w-tab.z-lock ._c,.w-button.z-lock ._i,.w-tab.z-lock ._i{position:relative}
 .w-button.z-normal.z-hv,.w-button.z-more.z-hv{background:#f8f8f8}
@@ -711,7 +710,8 @@
 .w-button.z-dir-v,.w-tab.z-dir-v{border:0;height:auto}
 .w-button.z-dir-v ._c,.w-tab.z-dir-v ._c{padding-top:5px;padding-bottom:5px}
 .w-button.z-dir-v ._i,.w-tab.z-dir-v ._i{float:none}
-.f-ie .w-button ._ld,.f-ie .w-tab ._ld{background:url(g/loading-cir.gif) no-repeat 50% 50%}
+.w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;line-height:1}
+.f-ms .w-button ._ld,.f-ms .w-tab ._ld{background:url(g/loading-cir.gif) no-repeat 50% 50%}
 
 .w-button-split{vertical-align:middle;text-align:center}
 

@@ -1918,6 +1918,48 @@ function _compatDOM() {
 	if (!tmp.currentStyle) {
 		HTMLElement.prototype.__defineGetter__('currentStyle', function() {return this.ownerDocument.defaultView.getComputedStyle(this, N)});
 	}
+	if (!tmp.runtimeStyle) {
+		var rtsMap = new WeakMap();
+		HTMLElement.prototype.__defineGetter__('runtimeStyle', function(a) {
+			if (!rtsMap.get(this)) {
+				var y = this.style, s = {};
+				this.__defineGetter__('style', function() {
+					return new Proxy(s, {
+						get: function(that, prop) {
+							return y[prop];
+						},
+						set: function(that, prop, value) {
+							if (prop in t) {
+								that[prop] = value;
+							} else {
+								y[prop] = value;
+							}
+							return T;
+						}
+					});
+				});
+			    var t = {}, p = new Proxy(t, {
+			    	get: function(that, prop) {
+			    		return that[prop];
+			    	},
+			    	set: function(that, prop, value) {
+			    		if(value == '') {
+			    			if (prop in that) {
+			    				y[prop] = s[prop];
+			    				delete that[prop];
+			    			}
+			    		} else {
+			    			if (!(prop in s)) s[prop] = y[prop];
+			    			y[prop] = that[prop] = value;
+			    		}
+			    		return T;
+			    	}
+			    });
+				rtsMap.set(this, p);
+			}
+			return rtsMap.get(this);
+		});
+	}
 	if (window.Range && !Range.prototype.movePoint) {
 		if (Range.prototype.__defineGetter__) {
 			Range.prototype.__defineGetter__('text', function() {return this.toString()});
@@ -2461,7 +2503,7 @@ _merge($, {
 			var s = [], d = [];
 			if (!$(did)) {
 				!br.css3 && _classAdd(cvs, 'f-css2');
-				br.ms && _classAdd(cvs, 'f-ie');
+				br.ms && _classAdd(cvs, 'f-ms');
 				var k = location.protocol + '//' + location.host + _uiPath + 'g/';
 				_loadStyle('.f-pic-prev-cursor{cursor:url(' + k + 'pic_prev.cur),auto}.f-pic-next-cursor{cursor:url(' + k + 'pic_next.cur),auto}');
 				s.push(_uiPath + 'dfish.css');
