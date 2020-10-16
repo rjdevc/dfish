@@ -66,7 +66,7 @@
     </context:component-scan>
 
     <!-- 根据dao层实现修改配置,-mybatis代表使用mybatis,-hibernate代表使用hibernate -->
-    <import resource="applicationContext-dao-mybatis.xml"/>
+    <import resource="applicationContext-dao-hibernate.xml"/>
     <!-- 引入service配置 -->
     <import resource="applicationContext-service.xml"/>
     <!-- 引入mvc配置 -->

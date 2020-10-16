@@ -80,6 +80,18 @@
             <version>4.0.2-1.4.3</version>
             <scope>provided</scope>
         </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j</artifactId>
+            <version>2.13.3</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-core</artifactId>
+            <version>2.13.3</version>
+        </dependency>
         <!--end:视频获取某一帧的图片-->
 
     </dependencies>

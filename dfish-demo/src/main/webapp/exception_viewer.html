@@ -1,0 +1,25 @@
+<!doctype html>
+<html xmlns:d>
+<head>
+    <meta http-equiv="Content-Type" content="text/html" charset="utf-8">
+    <link rel="shortcut icon" href="./skin/img/favicon.ico">
+    <title>DFish Demo V5</title>
+
+    <script src="./dfish/dfish.js?ver=20191014"></script>
+    <script>
+        // 必须放在dfish.config前面调用,有通用配置先引入
+        dfish.use('skin/dfish.config.js'); // 这里的代码是$.config();可看官网提供的文件配置
+        // 再将个性化皮肤设置引入
+        dfish.use('skin/skin.config.js'); // 这里的代码是$.config();
+        // 初始化应用环境
+        dfish.init({
+            view : {
+                id: 'index',
+                template: 'pulgin/exception/list',
+                src:"exceptionViewer/list"
+            }
+        });
+    </script>
+</head>
+<body class="f-body" scroll="no"></body>
+</html>

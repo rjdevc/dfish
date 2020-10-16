@@ -28,6 +28,7 @@
         <property name="packagesToScan">
             <list>
                 <value>com.rongji.dfish.demo.entity</value>
+                <value>com.rongji.dfish.framework.plugin.*</value>
             </list>
         </property>
     </bean>
@@ -42,5 +43,7 @@
 <!--    &lt;!&ndash; 附件模块 &ndash;&gt;-->
 <!--    <bean id="fileDao" class="com.rongji.dfish.framework.hibernate5.plugin.file.dao.impl.FileDao4Hibernate">-->
 <!--    </bean>-->
+        <bean id="pubExceptionDao" class="com.rongji.dfish.framework.hibernate5.plugin.exception.dao.impl.PubExceptionDao4Hibernate"/>
+
 
 </beans>

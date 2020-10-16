@@ -25,6 +25,7 @@
             <tx:method name="delete*"/>
             <tx:method name="update*"/>
             <tx:method name="save*"/>
+            <tx:method name="create*"/>
             <tx:method name="*" read-only="true"/>
         </tx:attributes>
     </tx:advice>
@@ -42,6 +43,9 @@
     <!-- 附件模块 -->
     <bean id="fileService" class="com.rongji.dfish.framework.plugin.file.service.impl.FileServiceImpl"></bean>
     <bean id="fileHandleManager" class="com.rongji.dfish.framework.plugin.file.config.FileHandleManager"></bean>
+
+    <!--异常日志模块-->
+    <bean id="pubExceptionService" class="com.rongji.dfish.framework.plugin.exception.service.impl.PubExceptionServiceImpl"></bean>
     <!-- 滑动验证码图片生成 -->
     <bean id="jigsawGenerator" class="com.rongji.dfish.framework.plugin.code.PreparedJigsawGenerator"></bean>
 
