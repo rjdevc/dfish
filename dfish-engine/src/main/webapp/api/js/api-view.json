@@ -196,8 +196,8 @@
 		        { "id": "Html", "text": "Html", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Img", "text": "Img", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "PageBar", "text": "PageBar", "collapsedIcon": ".icon .icon-class" },
-		        { "id": "Progress", "text": "Progress", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
-		          { "id": "ProgressItem", "text": "ProgressItem", "collapsedIcon": ".icon .icon-class" }
+		        { "id": "ProgressLoader", "text": "ProgressLoader", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [
+		          { "id": "Progress", "text": "Progress", "collapsedIcon": ".icon .icon-class" }
 		        ] },
 		        { "id": "Split", "text": "Split", "collapsedIcon": ".icon .icon-class" },
 		        { "id": "Structure", "text": "Structure", "collapsedIcon": ".icon .icon-class", "expanded": false, "nodes": [

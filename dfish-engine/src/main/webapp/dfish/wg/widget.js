@@ -5528,7 +5528,7 @@ Loading = define.widget('Loading', {
 // 以 src 为 key 存储 progress 实例。相同 src 的实例进程将被合并。
 _progressCache = {},
 /*  `progress`  */
-Progress = define.widget('Progress', {
+ProgressLoader = define.widget('ProgressLoader', {
 	Const: function(x, p) {
 		x.guide && (this._guide = x.guide);
 		W.apply(this, arguments);
@@ -5547,8 +5547,8 @@ Progress = define.widget('Progress', {
 		}
 	},
 	Prototype: {
-		className: 'w-progress',
-		x_childtype: $.rt('ProgressItem'),
+		className: 'w-progress-loader',
+		x_childtype: $.rt('Progress'),
 		init_nodes: function() {
 			this.layout && this.reset();
 			Section.prototype.init_nodes.call(this);
@@ -5611,7 +5611,7 @@ Progress = define.widget('Progress', {
 		}
 	}
 }),
-ProgressItem = define.widget('ProgressItem', {
+Progress = define.widget('Progress', {
 	Const: function(x, p) {
 		W.apply(this, arguments);
 		!x.percent && (x.percent = 0);
@@ -5634,7 +5634,7 @@ ProgressItem = define.widget('ProgressItem', {
 	},
 	Prototype: {
 		rootType: 'Progress',
-		className: 'w-progress-item',
+		className: 'w-progress',
 		html_nodes: function() {
 			var p = this.x.percent, h = this.innerHeight();
 			return (this.x.text != N ? '<div class="_t f-fix">' + this.html_format() + '</div>' : '') +
@@ -11567,17 +11567,13 @@ ContentTable = define.widget('ContentTable', {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
 		hideCol: function(a, b) {
-			if (!this._fixed_width) {
-				this._fixed_width = this.innerWidth();
-			}
-			var c = this.colgroup, w = 0;
-			c[a]._hide = b;
+			var c = this.colgroup, d = (a - (c[0].x.fixedIndex || 0)), w = 0;
+			c[d] && (c[d]._hide = b);
 			for (var i = 0; i < c.length; i ++) {
 				if(!c[i]._hide) w += c[i].innerWidth();
 				c[i].$().runtimeStyle.width = c[i]._hide ? '0px' : '';
 			}
 			Q('._fix_thead > tr, tbody[type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', b);
-			this._fixed_width = w;
 			this.css('width', w);
 		},
 		fixWidth: function() {
@@ -11617,9 +11613,6 @@ THead = define.widget('THead', {
 		pubParent: $.rt(),
 		x_childtype: $.rt('TR'),
 		x_nodes: $.rt(),
-		scaleWidth: function(a) {
-			return a._fixed_width || _w_scale.width.apply(this, arguments);
-		},
 		// 表头固定在外部滚动面板的上方
 		fixOnTop: function() {
 			var a = getScroll(this.rootNode), b, f;
@@ -12263,6 +12256,10 @@ RightTable = define.widget('RightTable', {
 	Extend: LeftTable,
 	Prototype: {
 		className: 'w-righttable w-fixedtable',
+		fixSize: function() {
+			this.body.height((this.rootNode.head ? this.rootNode.body : this.rootNode).innerHeight());
+			this.css({top: this.$().parentNode.currentStyle.paddingTop, right: this.$().parentNode.currentStyle.paddingRight});
+		},
 		fixScroll: function() {
 			this.body.$().scrollTop = this.rootNode.scrollY();
 			this.addClass('z-cover', !this.rootNode.isScrollRight());

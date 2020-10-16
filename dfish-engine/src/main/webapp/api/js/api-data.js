@@ -3719,7 +3719,7 @@ define( {
       ] }
     ]
   },
-  "Progress": {
+  "ProgressLoader": {
   	remark: '进度条集合。',
   	extend: 'AbsWidget',
     Config: [
@@ -3734,7 +3734,7 @@ define( {
       { name: 'start()', remark: '继续 delay 参数的延迟执行。' }
     ],
     Classes: [
-      { name: '.w-progress', remark: '基础样式。' }
+      { name: '.w-progress-loader', remark: '基础样式。' }
     ],
 	Examples: [
 	  { example: [
@@ -3751,8 +3751,8 @@ define( {
       ] }
     ]
   },
-  "ProgressItem": {
-  	title: 'ProgressItem',
+  "Progress": {
+  	title: 'Progress',
   	remark: '进度条。',
   	extend: 'AbsWidget',
     Config: [
