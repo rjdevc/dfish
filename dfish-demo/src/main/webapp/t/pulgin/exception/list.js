@@ -1,6 +1,8 @@
 define.template({
-    type: 'View', node: {
-        type: 'Horizontal', scroll: true, nodes: [
+    type:'View',src:'exceptionViewer/list',
+
+    node: {
+        type: 'Horizontal', height:"*",scroll: true, nodes: [
             {
                 type: 'Vertical', scroll: true,width: '*', style: 'background:#F8F8F8;', nodes: [
                     {type:'Table',height:'*',face: 'line',
@@ -16,7 +18,8 @@ define.template({
                         ]},
                         tBody:{"@nodes":'$data'}
                     },
-                    {type:'PageBar',height:40,buttonCount :7,'@limit':'$head.limit','@offset':'$head.offset','@size':'$head.size' }
+                    {type:'PageBar',height:40,buttonCount :7,'@limit':'$header.limit','@offset':'$header.offset','@size':'$header.size',
+                        src:'exceptionViewer/list?offset=$0'}
                 ]
             }
         ]
