@@ -22,6 +22,13 @@ import java.util.Date;
 import java.util.List;
 
 
+/**
+ * AbstractExceptionViewerController 为异常查看器。
+ * 该异常查看器能够查看ExceptionManager记录下来的异常(压缩过)。
+ * 改异常常看器本身并不能直接使用。
+ * 必须扩展该查看器。 并实现 accpet方法。确定那些人可以查看异常。所以这个查看器本身也没有@Controller 的注解
+ * @see com.rongji.dfish.framework.plugin.exception.core.ExceptionManager
+ */
 public abstract class AbstractExceptionViewerController extends FrameworkController {
 
 	@Autowired

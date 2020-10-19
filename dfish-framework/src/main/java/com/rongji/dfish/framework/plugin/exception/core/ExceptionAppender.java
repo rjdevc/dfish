@@ -13,6 +13,11 @@ import org.apache.logging.log4j.core.layout.PatternLayout;
 
 import java.io.Serializable;
 
+/**
+ * 使用该Appender可以把Exception 的记录，转接到ExceptionManager中去。
+ * 这样异常信息将以压缩的方式记录到数据库中去。
+ * @see com.rongji.dfish.framework.plugin.exception.core.ExceptionManager
+ */
 @Plugin(name = "ExceptionAppender", category = "Core", elementType = "appender", printObject = true)
 public class ExceptionAppender extends AbstractAppender {
     private String fileName;

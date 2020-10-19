@@ -15,6 +15,30 @@ import java.util.*;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+/**
+ * ExceptionManager 能将异常信息，以压缩的方式放入到数据库中去。
+ * 使用该功能需要进行以下配置
+ * <p>A) 确保commons-logging 版本较新，能够唤起log4j2 而不是log4j 已知1.1.3版是可用的。如果不是的话，请参考ExceptionAppender自行想办法将log中的throwable转接到ExceptionManager</p>
+ * <p>B) log4j2.xml中appnders应该有&lt;ExceptionAppender name="ExceptionAppender" /&gt; 并且loggers中应该配置使用它。例如
+ * &lt;Logger name="com.rongji" level="DEBUG"&gt;&lt;AppenderRef ref="ExceptionAppender"/&gt;&lt;/Logger&gt;</p>
+ * <p>C) spring环境中应该有配置 &lt;bean id="pubExceptionService" class="com.rongji.dfish.framework.plugin.exception.service.impl.PubExceptionServiceImpl"/&gt;
+ * 以及&lt;bean id="pubExceptionDao" class="com.rongji.dfish.framework.hibernate5.plugin.exception.dao.impl.PubExceptionDao4Hibernate"/&gt;
+ * 如果工程不是hibernate的，请自行实现数据入库</p>
+ * <p>D) 如果工程是spring+hibernate的，检查确认spring环境中txAdvice，事务控制中create开头的方法不是只读的。&lt;tx:method name="create*"/&gt;并且
+ * sessionFactory中packagesToScan 应该包含entities路径 &lt;value&gt;com.rongji.dfish.framework.plugin.*&lt;/value&gt;</p>
+ * <p>E) 如果要使用默认的查看器，可以用扩展于AbstractExceptionViewerController 写一个Controller。指定谁能查看，如果accpet直接返回true则是所有人都能看。
+ * 该Controller 需要自行配置 @Controller和路径。界面端可以参考demo的exception_viewer.html和/t/plugin/exception下的JS</p>
+ *
+ * <p>至于压缩的原理则是利用JDK字节码自己的特性</p>。
+ * <p>我们的一个异常的堆栈不短。
+ * 但看堆栈的每一行，可以发现，其实都是 at 类名.方法名 (文件名 行号)
+ * 而 类名 方法名 文件名 如果做成常量。(参见JAVA 字节码中的UTF常量)。
+ * 那整个堆栈其实只要用几个数字表示。
+ * 并且如果同一个异常，多次爆发，其实堆栈都是一样的。异常堆栈本身只要记录一次。
+ * 而单独记录下异常发生的时间和当时的消息即可。</p>
+ * @see com.rongji.dfish.framework.plugin.exception.AbstractExceptionViewerController
+ * @sse com.rongji.dfish.framework.plugin.exception.core.ExceptionAppender
+ */
 public class ExceptionManager {
 	private static ExceptionManager instance;
 	private final static Executor SNGL_EXEC = Executors.newSingleThreadExecutor();
