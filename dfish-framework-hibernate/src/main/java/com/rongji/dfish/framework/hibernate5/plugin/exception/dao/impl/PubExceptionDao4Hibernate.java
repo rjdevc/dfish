@@ -47,10 +47,35 @@ public class PubExceptionDao4Hibernate  extends FrameworkDao4Hibernate<PubExcept
         DataBaseInfo db=SystemContext.getInstance().get(DataBaseInfo.class);
         switch (db.getDatabaseType()){
             case DataBaseInfo.DATABASE_ORACLE:
-                createTableSQL[0]="";
-                createTableSQL[1]="";
-                createTableSQL[2]="";
-                createTableSQL[3]="";
+                createTableSQL[0]="CREATE TABLE PUB_EXCEPTION_CONSTANT(" +
+                        "CON_ID NUMBER(9,0) NOT NULL," +
+                        "CON_NAME VARCHAR2(255) NOT NULL," +
+                        "PRIMARY KEY (CON_ID)" +
+                        ");CREATE INDEX IDX_P_CONST_01 ON PUB_EXCEPTION_CONSTANT(CON_NAME);";
+                createTableSQL[1]="CREATE TABLE PUB_EXCEPTION_STACK(" +
+                        "STACK_ID NUMBER(19,0) NOT NULL," +
+                        "TYPE_ID NUMBER(19,0) NOT NULL," +
+                        "STACK_ORDER NUMBER(9,0)," +
+                        "CLASS_NAME NUMBER(9,0)," +
+                        "METHOD_NAME NUMBER(9,0)," +
+                        "LINE_NUMBER NUMBER(9,0)," +
+                        "FILE_NAME NUMBER(9,0)," +
+                        "PRIMARY KEY (STACK_ID)" +
+                        ");CREATE INDEX IDX_P_STACK_01 ON PUB_EXCEPTION_STACK(TYPE_ID);";
+                createTableSQL[2]="CREATE TABLE PUB_EXCEPTION_TYPE(" +
+                        "TYPE_ID NUMBER(19,0) NOT NULL," +
+                        "CLASS_NAME NUMBER(9,0) NOT NULL," +
+                        "CAUSE_ID NUMBER(19,0)," +
+                        "PRIMARY KEY (TYPE_ID)" +
+                        ");CREATE INDEX IDX_P_TYPE_01 ON PUB_EXCEPTION_TYPE(CLASS_NAME);";
+                createTableSQL[3]="CREATE TABLE PUB_EXCEPTION_RECORD(" +
+                        "REC_ID CHAR(32) NOT NULL," +
+                        "TYPE_ID NUMBER(19,0) NOT NULL," +
+                        "EVENT_TIME NUMBER(19,0) NOT NULL," +
+                        "EXPT_MSG VARCHAR2(255)," +
+                        "EXPT_REPETITIONS NUMBER(19,0)," +
+                        "PRIMARY KEY (TYPE_ID)" +
+                        ");CREATE INDEX IDX_P_TYPE_01 ON PUB_EXCEPTION_TYPE(CLASS_NAME);";
             break;
             case DataBaseInfo.DATABASE_MYSQL:
                 createTableSQL[0]="CREATE TABLE PUB_EXCEPTION_CONSTANT(" +
