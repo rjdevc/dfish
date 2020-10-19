@@ -14,6 +14,9 @@ public class ResponseHeaderPrincipal implements ResponsePrincipal, Serializable 
     private String natureName;
     private String fullName;
 
+    public ResponseHeaderPrincipal() {
+    }
+
     /**
      * 构造函数
      *

@@ -50,7 +50,7 @@ define.template({
                     },
                     {
                         text: 'Loading',
-                        on: {click: 'this.cmd({type:"Loading",timeout:3000,node:{type:"Progress",nodes:[{text:"典型的场景就是进度条加载",percent:50}]}});'}
+                        on: {click: 'this.cmd({type:"Loading",timeout:3000,node:{type:"ProgressLoader",nodes:[{text:"典型的场景就是进度条加载",percent:50}]}});'}
                     },
                     {text: 'Menu', on: {click: 'this.cmd({type:"Menu",nodes:[{text:"按钮1"},{text:"按钮2"}]});'}},
                     {text: 'Tip', on: {click: 'this.cmd({type:"Tip",text:"这是Tip"});'}}

@@ -17,6 +17,9 @@ public class PubLob implements java.io.Serializable {
     @Id
     @Column(name = "LOB_ID")
     private String lobId;
+    /**
+     * FIXME byte[]在大数据的情况下一次性加载有性能问题,但目前这个问题不紧急,暂缓解决
+     */
     @Column(name = "LOB_DATA")
     private byte[] lobData;
     @Column(name = "OPER_TIME")

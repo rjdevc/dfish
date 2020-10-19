@@ -1,5 +1,6 @@
 package com.rongji.dfish.demo.controller;
 
+import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.mvc.controller.BaseUiController;
 import com.rongji.dfish.ui.layout.View;
 import com.rongji.dfish.ui.widget.Html;

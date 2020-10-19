@@ -9,7 +9,7 @@ import com.rongji.dfish.ui.HasText;
  * @author lamontYu
  * @since DFish5.0
  */
-public class ProgressItem extends AbstractWidget<ProgressItem> implements HasText<ProgressItem> {
+public class Progress extends AbstractWidget<Progress> implements HasText<Progress> {
 
     private Number percent;
     private String text;
@@ -17,11 +17,11 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
     private String format;
     private String range;
 
-    public ProgressItem(String id) {
+    public Progress(String id) {
         setId(id);
     }
 
-    public ProgressItem(String id, Number percent) {
+    public Progress(String id, Number percent) {
         setId(id);
         setPercent(percent);
     }
@@ -41,7 +41,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
      * @param percent Number
      * @return 本身，这样可以继续设置其他属性
      */
-    public ProgressItem setPercent(Number percent) {
+    public Progress setPercent(Number percent) {
         this.percent = percent;
         return this;
     }
@@ -63,7 +63,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public ProgressItem setText(String text) {
+    public Progress setText(String text) {
         this.text = text;
         return this;
     }
@@ -85,7 +85,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public ProgressItem setEscape(Boolean escape) {
+    public Progress setEscape(Boolean escape) {
         this.escape = escape;
         return this;
     }
@@ -96,7 +96,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
     }
 
     @Override
-    public ProgressItem setFormat(String format) {
+    public Progress setFormat(String format) {
         this.format = format;
         return this;
     }
@@ -116,7 +116,7 @@ public class ProgressItem extends AbstractWidget<ProgressItem> implements HasTex
      * @param range String
      * @return 本身，这样可以继续设置其他属性
      */
-    public ProgressItem setRange(String range) {
+    public Progress setRange(String range) {
         this.range = range;
         return this;
     }

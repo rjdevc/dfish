@@ -147,27 +147,29 @@ public class FileController extends FrameworkController {
     public UploadItem saveFile(HttpServletRequest request, String acceptTypes, String fileType, String scheme) {
         boolean accept = false;
         UploadItem uploadItem = null;
-        try {
-            MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
-            MultipartFile fileData = mRequest.getFile("Filedata");
+        if (request instanceof MultipartHttpServletRequest) {
+            try {
+                MultipartHttpServletRequest mRequest = (MultipartHttpServletRequest) request;
+                MultipartFile fileData = mRequest.getFile("Filedata");
 
-            String extName = FileUtil.getFileExtName(fileData.getOriginalFilename());
-            accept = FileUtil.accept(extName, acceptTypes);
-            if (accept) {
-                String loginUserId = FrameworkHelper.getLoginUser(request);
-                PubFileRecord fileRecord = new PubFileRecord();
-                fileRecord.setFileName(fileData.getOriginalFilename());
-                fileRecord.setFileSize(fileData.getSize());
-                fileRecord.setFileCreator(loginUserId);
-                fileRecord.setFileType(fileType);
-                fileRecord.setFileScheme(scheme);
-                uploadItem = fileService.saveFile(fileData.getInputStream(), fileRecord);
+                String extName = FileUtil.getFileExtName(fileData.getOriginalFilename());
+                accept = FileUtil.accept(extName, acceptTypes);
+                if (accept) {
+                    String loginUserId = FrameworkHelper.getLoginUser(request);
+                    PubFileRecord fileRecord = new PubFileRecord();
+                    fileRecord.setFileName(fileData.getOriginalFilename());
+                    fileRecord.setFileSize(fileData.getSize());
+                    fileRecord.setFileCreator(loginUserId);
+                    fileRecord.setFileType(fileType);
+                    fileRecord.setFileScheme(scheme);
+                    uploadItem = fileService.saveFile(fileData.getInputStream(), fileRecord);
+                }
+            } catch (Exception e) {
+                String error = "上传失败,系统异常@" + System.currentTimeMillis();
+                LogUtil.error(error, e);
+                uploadItem = new UploadItem();
+                uploadItem.setError(new UploadItem.Error(error));
             }
-        } catch (Exception e) {
-            String error = "上传失败,系统异常@" + System.currentTimeMillis();
-            LogUtil.error(error, e);
-            uploadItem = new UploadItem();
-            uploadItem.setError(new UploadItem.Error(error));
         }
 
         if (uploadItem == null) {
@@ -662,6 +664,19 @@ public class FileController extends FrameworkController {
 //        return false;
 //    }
 
+    /**
+     * 显示缩略图方法，该方法暂时保留，兼容旧版本数据
+     *
+     * @param response
+     * @throws Exception
+     * @see #inline(HttpServletRequest, HttpServletResponse, String)
+     */
+    @RequestMapping("/thumbnail")
+    @Deprecated
+    public void thumbnail(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        String fileId = request.getParameter("fileId");
+        inline(request, response, null, fileId);
+    }
     /**
      * 显示缩略图方法
      *

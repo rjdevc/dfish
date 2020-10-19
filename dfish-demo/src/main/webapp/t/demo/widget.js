@@ -202,7 +202,7 @@ define.template({
             {
                 text: 'Progress',
                 target: {
-                    type: 'Progress',
+                    type: 'ProgressLoader',
                     height: -1,
                     pub: {range: '25,50,75,100'},
                     nodes: [
