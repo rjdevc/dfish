@@ -3,14 +3,14 @@ package com.rongji.dfish.ui.widget;
 import com.rongji.dfish.ui.AbstractPubNodeContainer;
 import com.rongji.dfish.ui.HasText;
 import com.rongji.dfish.ui.LazyLoad;
-import com.rongji.dfish.ui.auxiliary.ProgressItem;
+import com.rongji.dfish.ui.auxiliary.Progress;
 
 /**
- * 进度条
+ * 进度条加载组件
  *
  * @author DFish team
  */
-public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, ProgressItem> implements HasText<Progress>, LazyLoad<Progress> {
+public class ProgressLoader extends AbstractPubNodeContainer<ProgressLoader, Progress, Progress> implements HasText<ProgressLoader>, LazyLoad<ProgressLoader> {
 
     private static final long serialVersionUID = -5027456322715352343L;
 
@@ -31,20 +31,20 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
      *
      * @param id String
      */
-    public Progress(String id) {
+    public ProgressLoader(String id) {
         super(id);
     }
 
     /**
      * 构造函数
      */
-    public Progress() {
+    public ProgressLoader() {
         super(null);
     }
 
     @Override
-    protected ProgressItem newPub() {
-        return new ProgressItem(null);
+    protected Progress newPub() {
+        return new Progress(null);
     }
 
     /**
@@ -62,7 +62,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
      * @param delay Long
      * @return 本身，这样可以继续设置其他属性
      */
-    public Progress setDelay(Long delay) {
+    public ProgressLoader setDelay(Long delay) {
         this.delay = delay;
         return this;
     }
@@ -133,7 +133,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public Progress setSrc(String src) {
+    public ProgressLoader setSrc(String src) {
         this.src = src;
         return this;
     }
@@ -151,7 +151,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
      * @param guide String
      * @return 本身，这样可以继续设置其他属性
      */
-    public Progress setGuide(String guide) {
+    public ProgressLoader setGuide(String guide) {
         this.guide = guide;
         return this;
     }
@@ -173,7 +173,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
      * @return 本身，这样可以继续设置其他属性
      */
     @Override
-    public Progress setText(String text) {
+    public ProgressLoader setText(String text) {
         this.text = text;
         return this;
     }
@@ -221,7 +221,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     }
 
     @Override
-    public Progress setFormat(String format) {
+    public ProgressLoader setFormat(String format) {
         this.format = format;
         return this;
     }
@@ -232,7 +232,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     }
 
     @Override
-    public Progress setComplete(String complete) {
+    public ProgressLoader setComplete(String complete) {
         this.complete = complete;
         return this;
     }
@@ -243,7 +243,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     }
 
     @Override
-    public Progress setError(String error) {
+    public ProgressLoader setError(String error) {
         this.error = error;
         return this;
     }
@@ -254,7 +254,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     }
 
     @Override
-    public Progress setSuccess(String success) {
+    public ProgressLoader setSuccess(String success) {
         this.success = success;
         return this;
     }
@@ -265,13 +265,13 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     }
 
     @Override
-    public Progress setFilter(String filter) {
+    public ProgressLoader setFilter(String filter) {
         this.filter = filter;
         return this;
     }
 
     @Override
-    public Progress setEscape(Boolean escape) {
+    public ProgressLoader setEscape(Boolean escape) {
         this.escape = escape;
         return this;
     }
@@ -282,7 +282,7 @@ public class Progress extends AbstractPubNodeContainer<Progress, ProgressItem, P
     }
 
     @Override
-    public Progress setSync(Boolean sync) {
+    public ProgressLoader setSync(Boolean sync) {
         this.sync = sync;
         return this;
     }

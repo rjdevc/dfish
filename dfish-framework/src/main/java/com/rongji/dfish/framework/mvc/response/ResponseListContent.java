@@ -18,6 +18,9 @@ public class ResponseListContent<E> implements Serializable {
     private List<E> content;
     private Pagination pagination;
 
+    public ResponseListContent() {
+    }
+
     public ResponseListContent(List<E> content) {
         this.content = content;
     }

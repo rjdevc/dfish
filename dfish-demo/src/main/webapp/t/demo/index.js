@@ -9,7 +9,7 @@ define.template({
         'loading': {
             type: 'Loading',
             node: {
-                type: 'Progress',
+                type: 'ProgressLoader',
                 guide: 'demo/loading',
                 template: 'g/progress/multiple',
                 success: 'if($response.data.finish){$.close(this);$.alert("完成了!",null,5000);}'

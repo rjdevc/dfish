@@ -13,6 +13,9 @@ public class ResponseError implements Serializable {
     private String code;
     private String message;
 
+    public ResponseError() {
+    }
+
     public ResponseError(String code) {
         this.code = code;
     }

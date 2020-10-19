@@ -77,7 +77,7 @@ define.template({
 // {
 //     type: 'View',
 //         node: {
-//     type: 'Progress',
+//     type: 'ProgressLoader',
 //         height: -1,
 //         // 多了range设置
 //         pub: {range: '25,50,75,100'},
