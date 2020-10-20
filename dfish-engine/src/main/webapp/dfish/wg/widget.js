@@ -2641,7 +2641,7 @@ Section = define.widget('Section', {
 				this.parent ? _setParent.call(this, this.parent) : _setView.call(this, this.ownerView);
 			}
 			if (!x.node && !x.nodes) {
-				var s = this.getSrc() || (this.x.template && !this.hasCssRes() && {});
+				var s = this.getSrc();// || (this.x.template && !this.hasCssRes() && {});
 				if (s && typeof s === _OBJ) {
 					this._loadEnd(s);
 				} else
@@ -3554,6 +3554,7 @@ Split = define.widget('Split', {
 			return (this.x.range || '').split(',')[this.x.hide === 'next' ? 1 : 0];
 		},
 		isExpanded: function() {
+			if (!this.major()) return;
 			if (!this.major().isDisplay())
 				return F;
 			var v = this.majorSize();
