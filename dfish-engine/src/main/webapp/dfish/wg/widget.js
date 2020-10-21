@@ -6076,33 +6076,45 @@ AbsForm = define.widget('AbsForm', {
 	Prototype: {
 		isFormWidget: T,
 		_warncls: '',
+		inputScale: $.rt('*'),
 		validHooks: F,
 		init_label: function() {
 			var a = this.x.label;
 			if (a && typeof a === _OBJ) {
-				var c = new Label(a, this, -1), w = c.attr('width');
+				var c = new Label(a, this, -1), w = c.attr('width'), s = this.inputScale();
 				if (w != N && w != 0)
 					this.label = c;
-				if (w == -1)
-					this.addEvent('ready', this.fixLabelWidth);
+				if ((w == -1 && isNaN(s)) || (isNaN(w) && s == -1)) {
+					this.addEvent('ready', _w_rsz_all);
+				}
 			}
 		},
-		fixLabelWidth: function() {
-			this.label.width(this.label.width() + 1);
-			this.trigger('resize');
-		},
-		validTip: function(x) {
-			return {type: 'Tip', face: 'warn', text: x.text};
-		},
-		form_minus:  function() {
-			return (this.label ? this.label.outerWidth() : 0);
+		scaleWidth: function(a, b) {
+			
+				var d, e, s = this.inputScale();
+				if (this.label) {
+					var w = this.label.attr('width');
+					if ((w == -1 && isNaN(s)) || (isNaN(w) && s == -1)) {
+						d = this.$() ? [w < 0 ? this.label.$().offsetWidth : w, s < 0 ? this.$('m').offsetWidth : s] : [w, s];
+					} else
+						d = [w, s];
+				} else 
+					d = [s];
+				e = $.scale(this.innerWidth(), d);
+
+			if (a == this.label)
+				return e[0];
+			var w = _proto.scaleWidth.call(this, a, b, e[e.length - 1]);
+			return w == N || w < 0 ? N : w - (a.attr('widthMinus') || 0);
 		},
 		formWidth: function() {
-			var w = this.innerWidth();
-			return w == N || w < 0 ? N : w - this.form_minus();
+			return AbsForm.prototype.scaleWidth.call(this, this, this.inputScale());
 		},
 		formHeight: function() {
 			return this.innerHeight();
+		},
+		validTip: function(x) {
+			return {type: 'Tip', face: 'warn', text: x.text};
 		},
 		hasBubble: function(a) {
 			return this.$('f').contains(a.isWidget ? a.$() : a);
@@ -6273,7 +6285,7 @@ AbsForm = define.widget('AbsForm', {
 			return ' id=' + this.id + 'm class="' + this.main_cls() + '"' + (s ? ' style="' + s + '"' : '');
 		},
 		main_cls: function() {
-			return 'w-f-main f-nv';
+			return 'w-f-main f-nv' + (this.inputScale() == -1 ? ' z-auto' : '');
 		},
 		form_prop: function() {
 			return ' id=' + this.id + 'f class="' + this.form_cls() + '"';
@@ -6404,18 +6416,38 @@ FormGroup = define.widget('FormGroup', {
 	},
 	Extend: [AbsForm, Horz],
 	Prototype: {
+		className: 'w-formgroup w-horz',
 		scaleWidth: function(a, b) {
-			return _w_scale.width.call(this, a, b, a == this.label ? U : this.formWidth());
+			return a == this.label ? AbsForm.prototype.scaleWidth.call(this, a, b) : _w_scale.width.call(this, a, b, this.formWidth());
 		},
 		prop_cls: function() {
 			var c = _proto.prop_cls.call(this);
-			return 'w-horz w-f w-formgroup f-nv' + (this.x.br ? ' z-br' : '') + (c ? ' ' + c: '');
+			return (this.x.br ? ' z-br' : '') + (c ? ' ' + c : '');
 		},
 		main_prop: function() {
 			return AbsForm.prototype.main_prop.call(this) + _html_on.call(this);
 		},
 		html_nodes: function() {
 			return Horz.prototype.html_nodes.call(this);
+		}
+	}
+}),
+/* `range` */
+Range = define.widget('Range', {
+	Const: function(x, p) {
+		AbsForm.apply(this, arguments);
+		this.begin = x.begin && this.add(x.begin);
+		this.to    = (x.begin && x.end) && this.add(typeof x.to === _OBJ ? x.to : {type: 'Html', cls: 'w-range-to', text: x.to || Loc.to, width: mbi ? 20 : 30, align: 'center'});
+		this.end   = x.end && this.add(x.end);
+		if (!x.vAlign && p && p.x.vAlign)
+			this.defaults({vAlign: p.x.vAlign});
+	},
+	Extend: FormGroup,
+	Prototype: {
+		className: 'w-range w-horz',
+		x_nodes: $.rt(),
+		isRequired: function() {
+			return (this.begin && this.begin.isRequired()) || (this.end && this.end.isRequired());
 		}
 	}
 }),
@@ -6442,35 +6474,6 @@ FormLabel = define.widget('FormLabel', {
 		},
 		html_nodes: function() {
 			return Html.prototype.html_nodes.call(this);
-		}
-	}
-}),
-/* `range` */
-Range = define.widget('Range', {
-	Const: function(x, p) {
-		AbsForm.apply(this, arguments);
-		this.begin = x.begin && this.add(x.begin);
-		this.to    = (x.begin && x.end) && this.add(typeof x.to === _OBJ ? x.to : {type: 'Html', cls: 'w-range-to', text: x.to || Loc.to, width: mbi ? 20 : 30, align: 'center'});
-		this.end   = x.end && this.add(x.end);
-		this.className = 'w-horz w-range f-nv';
-		if (!x.vAlign && p && p.x.vAlign)
-			this.defaults({vAlign: p.x.vAlign});
-	},
-	Extend: [AbsForm, Horz],
-	Default: {width: -1},
-	Prototype: {
-		x_nodes: $.rt(),
-		form_minus:  function() {
-			return this.label ? this.label.outerWidth() : 0;
-		},
-		main_prop: function() {
-			return AbsForm.prototype.main_prop.call(this) + _html_on.call(this);
-		},
-		scaleWidth: function(a, b) {
-			return _w_scale.width.call(this, a, b, a == this.label ? U : this.formWidth());
-		},
-		isRequired: function() {
-			return (this.begin && this.begin.isRequired()) || (this.end && this.end.isRequired());
 		}
 	}
 }),
@@ -6891,7 +6894,7 @@ CheckBox = define.widget('CheckBox', {
 			return (br.css3 ? '<label for=' + this.id + 't onclick=' + $.abbr + '.cancel()></label>' : '') +
 				(this.x.text ? '<span class="_tit f-oh ' + (this.x.br ? 'f-wdbr' : 'f-fix') + '" id=' + this.id + 's onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '');			
 		},
-		html: function() {
+		html_nodes: function() {
 			var p = this.parentNode, w = this.formWidth(), s = this.prop_cls(), y = '';
 			if (w) {
 				y += 'width:' + w + 'px;';
@@ -6900,11 +6903,14 @@ CheckBox = define.widget('CheckBox', {
 					y += 'max-width:' + w + 'px;';
 			}
 			this.x.style && (y += this.x.style);
-			return (this.label ? this.label.html() : '') + '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.br ? '' : ' f-fix') + '"' + this.prop_title() +
+			return '<' + this.tagName + ' id=' + this.id + ' class="' + s + (this.x.br ? '' : ' f-fix') + '"' + this.prop_title() +
 				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><i class=f-vi></i><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
 				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (p.x.name || this.x.name || '') + '"' : '') + 
 				_html_on.call(this) + '>' + this.html_text() + '</' + this.tagName + '>' +
 				(p.x.dir === 'v' && p[p.length - 1] != this ? '<br>' : '');
+		},
+		html: function() {
+			return (this.label ? this.label.html() : '') + this.html_nodes();
 		}
 	}
 }),
@@ -7001,7 +7007,6 @@ Switch = define.widget('Switch', {
 		CheckBox.apply(this, arguments);
 	},
 	Extend: CheckBox,
-	Default: {width: -1},
 	Listener: {
 		body: {
 			change: {
@@ -7016,8 +7021,12 @@ Switch = define.widget('Switch', {
 			}			
 		}
 	},
+	Default: {width: U},
 	Prototype: {
 		tagName: 'div',
+		inputScale: function() {
+			return this.x.width || -1;
+		},
 		click: function(a, e) {
 			if (br.css3) {
 				$.cancel(e);
@@ -7029,7 +7038,18 @@ Switch = define.widget('Switch', {
 		html_text: function() {
 			return '<label class="_l" for=' + this.id + 't onclick=' + evw + '.click(this,event)><em class=_o></em><i id=' + this.id + 'n class=_n>' + ((this.x.checked ? this.x.checkedText : this.x.uncheckedText) || '&nbsp;') + '</i></label>' +
 				(this.x.text ? '<span class=_tit onclick="' + evw + '.htmlFor(this,event)">' + this.html_format() + '</span>' : '');			
-		}		
+		},
+		html_nodes: function() {
+			var y = '';
+			this.x.style && (y += this.x.style);
+			return '<' + this.tagName + ' id=' + this.id + 'b class="w-switch-box' + (this.x.br ? '' : ' f-fix') + '"' + this.prop_title() +
+				(y ? ' style="' + y + '"' : '') + (this.x.id ? ' w-id="' + this.x.id + '"' : '') + '><i class=f-vi></i><input id=' + this.id + 't type=' + this.formType + ' name="' + this.input_name() + '" value="' +
+				$.strQuot(this.x.value || '') +	'" class=_t' + (this._modchk ? ' checked' : '') + (this.isDisabled() ? ' disabled' : '') + (this.formType === 'radio' ? ' w-name="' + (this.x.name || '') + '"' : '') + 
+				_html_on.call(this) + '>' + this.html_text() + '</' + this.tagName + '>';
+		},
+		html: function() {
+			return AbsForm.prototype.html.call(this);
+		}
 	}
 }),
 /* `radiogroup` */
@@ -7533,7 +7553,6 @@ DatePicker = define.widget('DatePicker', {
 		x.value = r;
 	},
 	Extend: Text,
-	Default: {width: -1},
 	Listener: {
 		body: {
 			click: {
@@ -7591,9 +7610,8 @@ DatePicker = define.widget('DatePicker', {
 				}
 			}
 		},
-		form_minus: function() {
-			var w = this.x.width;
-			return (w == N || w < 0 ? 0 : (this.label ? this.label.outerWidth() : 0));
+		inputScale: function() {
+			return this.x.width || -1;
 		},
 		$v: function() {return $(this.id + (this.x.multiple ? 'v' : 't'))},
 		val: function(a) {
@@ -7696,9 +7714,6 @@ DatePicker = define.widget('DatePicker', {
 			this.cal && this.cal.close();
 			this.list && this.list.close();
 		},
-		main_cls: function() {
-			return AbsInput.prototype.main_cls.call(this) + (this.innerWidth() ? '' : ' z-auto');
-		},
 		input_prop_value: function() {
 			var v = this.x.value;
 			return mbi ? v.replace(' ', 'T') : v;
@@ -7720,7 +7735,6 @@ Spinner = define.widget('Spinner', {
 		x.format && x.value && (x.value = $.numFormat(x.value, x.format.length, x.format.separator, x.format.rightward));
 	},
 	Extend: Text,
-	Default: {width: -1},
 	Listener: {
 		body: {
 			format: {
@@ -7767,6 +7781,9 @@ Spinner = define.widget('Spinner', {
 				}
 			}
 		},
+		inputScale: function() {
+			return this.x.width || -1;
+		},
 		val: function(a) {
 			Text.prototype.val.call(this, a);
 			a != N && this.x.format && this.trigger('format');
@@ -7799,9 +7816,6 @@ Spinner = define.widget('Spinner', {
 		input_prop_value: function() {
 			var v = $.strEscape(this.x.value == N ? '' : '' + this.x.value);
 			return v ? $.numDecimal(v, this.x.decimal) : '';
-		},
-		main_cls: function() {
-			return AbsInput.prototype.main_cls.call(this) + (this.innerWidth() ? '' : ' z-auto');
 		},
 		html_btn: function() {
 			return this.x.noButton ? '' : '<cite class="_b f-unsel"><em onclick=' + evw + '.step(1)><i class=f-vi></i><i class="f-i f-i-caret-up"></i></em><em onclick=' + evw + '.step(-1)><i class=f-vi></i><i class="f-i f-i-caret-down"></i></em></cite>';
