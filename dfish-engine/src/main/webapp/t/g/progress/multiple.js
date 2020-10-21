@@ -1,5 +1,5 @@
 define.template({
-    type: 'Progress',
+    type: 'ProgressLoader',
     '@src': '"progress/reload/"+$data.progressKey',
     '@delay': '$data.delay',
     template: 'g/progress/multiple',
