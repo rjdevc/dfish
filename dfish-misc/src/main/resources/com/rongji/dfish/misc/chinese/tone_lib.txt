@@ -58,11 +58,11 @@ ao3=ǎo
 ao4=ào
 ao5=ao
 
-o1=ōu
-o2=óu
-o3=ǒu
-o4=òu
-o5=ou
+ou1=ōu
+ou2=óu
+ou3=ǒu
+ou4=òu
+ou5=ou
 
 --ia不用处理和正常结果一致 同a
 --ie不用处理和正常结果一致
