@@ -458,7 +458,7 @@ public class ServletUtil {
                             from = Long.parseLong(fromStr.trim());
                         }
                     } catch (Exception e) {
-                        LogUtil.error("getting from value error", e);
+                        LogUtil.warn("getting from value error from range:"+ range );
                     }
                     try {
                         // range中可能有斜杠,这个格式判断不是标准的,可能需要调整
@@ -473,7 +473,7 @@ public class ServletUtil {
                             to = Long.parseLong(toStr.trim());
                         }
                     } catch (Exception e) {
-                        LogUtil.error("getting to value error", e);
+                        LogUtil.warn("getting to value error from range:"+ range);
                     }
                 }
             }
