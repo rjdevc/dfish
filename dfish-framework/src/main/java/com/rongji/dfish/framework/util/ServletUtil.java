@@ -26,10 +26,10 @@ public class ServletUtil {
     private static final SimpleDateFormat DF_GMT;
 
     static {
-        DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+        //    Fri, 09 Oct 2020 09:20:50 GMT
+        DF_GMT = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.ENGLISH);
         DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
-
 
     /**
      * 获取参数值
