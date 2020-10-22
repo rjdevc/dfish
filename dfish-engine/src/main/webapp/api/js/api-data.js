@@ -1328,7 +1328,6 @@ define( {
             }
           }
       ] },
-      { name: 'className', type: 'String', remark: '样式名。' },
       { name: 'formatNode', type: 'Widget', remark: '如果使用format并返回widget，那么可以使用formatNode来获取这个widget。', common: true },
       { name: 'id', type: 'String', remark: 'widget对象的ID。这个ID由引擎自动生成。', common: true },
       { name: 'isWidget', type: 'Boolean', remark: '是否是一个widget对象。所有widget的这个属性都为 true。可用来简单区分widget对象和JSON对象。', common: true },
@@ -3452,7 +3451,9 @@ define( {
       { name: 'load', remark: '经 src 加载子节点完毕时触发。' }
     ],
     Properties: [
-      { name: 'rootNode', type: 'Tree', remark: 'leaf所属的tree。' }
+      { name: 'rootNode', type: 'Tree', remark: 'leaf所属的tree。' },
+      { name: 'loaded', type: 'Boolean', remark: '是否已加载子节点。' },
+      { name: 'loading', type: 'Boolean', remark: '是否正在加载子节点。' }
     ],
     Methods: [
       { name: 'disable([bDisabled])', remark: '设置按钮状态为可用/禁用。', param: [

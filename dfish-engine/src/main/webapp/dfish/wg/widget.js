@@ -7592,7 +7592,7 @@ DatePicker = define.widget('DatePicker', {
 				if (this.x.multiple)
 					return;
 				if (v) {
-					var c = v.replace(/\b(\d)\b/g, '0$1'), d = $.dateParse(c, this.x.format), y = d.getFullYear(), m = cfg.max_year || 3000, n = cfg.min_year || 1000;
+					var c = v, d = $.dateParse(c, this.x.format), y = d.getFullYear(), m = cfg.max_year || 3000, n = cfg.min_year || 1000;
 					if (y > m || y < n)
 						return _form_err.call(this, b, 'time_exceed', [n, m]);
 					if (c != $.dateFormat(d, this.x.format)) {
@@ -7620,7 +7620,7 @@ DatePicker = define.widget('DatePicker', {
 					var v = this.$v().value.replace('T', ' ');
 					v = this.x.multiple ? v.split(',') : [v];
 					for (var i = 0, b, r = []; i < v.length; i ++) {
-						v[i] && r.push($.dateFormat(v[i], this.x.format));
+						v[i] && r.push(v[i]);
 					}
 					return r.join(',');
 				}
@@ -10165,9 +10165,11 @@ AbsLeaf = define.widget('AbsLeaf', {
 		toggle: function(a, b) {
 			var c = typeof a === _BOL ? a : !this.x.expanded, d = !!this.x.expanded;
 			this.x.expanded = c;
-			this.toggle_nodes(c);
-			if (this.isFolder() && this.getSrc() && a !== F && !this.loaded && !this.loading) 
+			if (this.isFolder() && this.getSrc() && a !== F && !this.loaded && !this.loading) {
 				this.request(b === T, typeof b === _FUN && b);
+			} else
+				typeof b === _FUN && b.call(this);
+			this.toggle_nodes(c);
 			if (this.$('r'))
 				this.caret(c, T);
 			if (this.loading) {
@@ -10301,7 +10303,7 @@ Leaf = define.widget('Leaf', {
 	Const: function(x, p) {
 		this.level = p.level + (p.x.rootInvisible ? 0 : 1);
 		W.apply(this, arguments);
-		this.loaded  = this.length ? T : F;
+		this.loaded  = this.length || !x.src ? T : F;
 		this.loading = F;
 		x.focus && x.focusable !== F && this.tabFocus();
 		x.badge && this.init_badge();
@@ -11038,7 +11040,7 @@ TableRow = define.widget('TableRow', {
 						g += this.prop_title((d && d[f.tip.field || f.field]) || '', f.format, h);
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') : '') +
-						(!ie7 && f.fixed ? ' f-form-hide' : '') + (f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
+						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
 						(this.type_thr && f.removable ? '<div class=w-th-rm><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
@@ -11091,7 +11093,7 @@ TD = define.widget('TD', {
 			var r = this.parentNode.parentNode, g = this.table, u = this.rootNode, q = r.pubParent(), c = this.col,
 			d = this.x.escape == N ? q.x.escape : this.x.escape, e = r.type_tr, s = '<td id=' + this.id, t = '', v;
 			this.className = 'w-td z-face-' + g._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (r.type_tr ? '' : ' w-th' + (r.type_thr && c.x.sort ? ' w-th-sort' : ''));
-			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + (!ie7 && c.x.fixed ? ' f-form-hide' : '') + '"';
+			s +=  ' class="' + this.prop_cls() + (c.x.cls ? ' ' + c.x.cls : '') + '"';
 			if (this.x.on || this.Const.Listener)
 				s += _html_on.call(this);
 			if (c.x.align || this.x.align)
@@ -11391,7 +11393,7 @@ ContentTBody = define.widget('ContentTBody', {
 				s.push(r[i].html(i));
 			return s.join('');
 		},
-		html: function() {return '<tbody id=' + this.id + ' type=' + this.type + '>' + this.html_nodes() + '</tbody>'}
+		html: function() {return '<tbody id=' + this.id + ' w-type=' + this.type + '>' + this.html_nodes() + '</tbody>'}
 	}
 });
 _parallel_methods(ContentTBody, 'prepend append before after');
@@ -11427,8 +11429,9 @@ ContentTHead = define.widget('ContentTHead', {
 						var f = m.eq(i).parent(), h = f.prop('cellIndex');
 						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
 							change: function() {
-								var f = !this.isChecked(), n = this.x.data.colIndex;
-								g.toggleColumn(n, f);
+								g.showColumn(this.x.data.colIndex, this.isChecked());
+								g.fixScroll();
+								g.trigger('resize');
 								this.parentNode.trigger('usable');
 							}
 						}});
@@ -11581,15 +11584,18 @@ ContentTable = define.widget('ContentTable', {
 	Prototype: {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
-		hideCol: function(a, b) {
+		show_col: function(a, b) {
 			var c = this.colgroup, d = (a - (c[0].x.fixedIndex || 0)), w = 0;
-			c[d] && (c[d]._hide = b);
+			c[d] && (c[d]._hide = !b);
 			for (var i = 0; i < c.length; i ++) {
 				if(!c[i]._hide) w += c[i].innerWidth();
 				c[i].$().runtimeStyle.width = c[i]._hide ? '0px' : '';
 			}
-			Q('._fix_thead > tr, tbody[type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', b);
+			Q('tbody[w-type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', !b);
 			this.css('width', w);
+		},
+		view_col: function(a, b) {
+			Q('tbody[w-type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('f-form-hide', !b);
 		},
 		fixWidth: function() {
 			for (var i = 0, c = this.table.getColGroup(), w = 0, l = c.length; i < l; i ++) w += c[i].width();
@@ -11851,7 +11857,7 @@ AbsTable = define.widget('AbsTable', {
 			}
 			_w_rsz_all.call(this);
 			for (var i = 0, w = 0, v, l = g[0].length; i < l; i ++) {
-				w += _number(g[0][i].$().style.width);
+				w += _number(g[0][i].$().runtimeStyle.width || g[0][i].$().style.width);
 			}
 			for (var i = 0; i < g.length; i ++) {
 				!isNaN(w) && (g[i].parentNode.$().style.width = w + 'px');
@@ -11948,11 +11954,11 @@ AbsTable = define.widget('AbsTable', {
 				this.insertColumn(a, b);
 			}
 		},
-		//@public 显示或隐藏一列 / @a -> colIndex, b -> hide?
-		toggleColumn: function(a, b) {
-			this.head && this.head.contentTable.hideCol(a, b);
-			this.body && this.body.contentTable.hideCol(a, b);
-			this.foot && this.foot.contentTable.hideCol(a, b);
+		//@public 显示或隐藏一列(设置宽度为0) / @a -> colIndex, b -> show?
+		showColumn: function(a, b) {
+			this.head && this.head.contentTable.show_col(a, b);
+			this.body && this.body.contentTable.show_col(a, b);
+			this.foot && this.foot.contentTable.show_col(a, b);
 		},
 		// 获取焦点行 / @a -> visible(是否可见)?
 		getFocus: function(a) {
@@ -12129,7 +12135,7 @@ AbsTable = define.widget('AbsTable', {
 		}
 	}
 });
-_parallel_methods(AbsTable, '_sortRow fixScroll toggleColumn');
+_parallel_methods(AbsTable, '_sortRow fixScroll showColumn');
 var
 /* `table` */
 Table = define.widget('Table', {
@@ -12262,7 +12268,8 @@ LeftTable = define.widget('LeftTable', {
 		},
 		fixScroll: function() {
 			this.body.$().scrollTop = this.rootNode.scrollY();
-			this.addClass('z-cover', this.rootNode.scrollX() > 0);
+			var b = this.rootNode.isScrollLeft();
+			this.addClass('z-cover', !b).addClass('f-form-hide', b);
 		}
 	}
 }),
@@ -12277,7 +12284,8 @@ RightTable = define.widget('RightTable', {
 		},
 		fixScroll: function() {
 			this.body.$().scrollTop = this.rootNode.scrollY();
-			this.addClass('z-cover', !this.rootNode.isScrollRight());
+			var b = this.rootNode.isScrollRight();
+			this.addClass('z-cover', !b).addClass('f-form-hide', b);
 		}
 	}
 }),

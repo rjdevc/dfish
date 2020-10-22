@@ -1493,6 +1493,7 @@ FileUpload = define.widget('FileUpload', {
 			for (var i = 0; i < l; i ++) {
 				if (b[i].loading || b[i].error) return b[i];
 			}
+			return this.uploadbar ? this.uploadbar[0] : this;
 		},
 		isLimit: function() {
 			return this.x.file_upload_limit > 0 && (this.valuebar || this._value).length >= this.x.file_upload_limit;
