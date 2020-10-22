@@ -299,7 +299,7 @@ Require = function(uri, id) {
 		typeof b === _STR && (b = [b]);
 		for (var i = 0, c = [], d = []; i < b.length; i ++)
 			b[i] = _mod_uri(uri, b[i], 'css');
-		_loadCss(b, N, f);
+		_loadCss(b, f);
 	};
 	// require.async(): 异步装载js
 	r.async = function(b, f) {
@@ -382,16 +382,16 @@ _loadJs = function(a, b, c) {
 		$.ajax({src: a[i], sync: c, success: g, cache: T, cdn: T});
 },
 _cssCache = {},
-// @a -> src, b -> id?, c -> fn?
+// @a -> src, b -> fn?, c -> id?
 _loadCss = function(a, b, c) {
 	typeof a === _STR && (a = [a]);
 	var d = doc.readyState === 'loading';
-	for (var i = 0, l = a.length, n = l, e, f; i < l; i ++) {
-		if (_cssCache[a[i]]) {
-			c && (--n === 0 && c());
+	for (var i = 0, l = a.length, n = l, e, f, u; i < l; i ++) {
+		if (!c && _cssCache[a[i]]) {
+			b && (--n === 0 && b());
 			continue;
 		}
-		var u = b ? b[i] : _uid();
+		u = c ? c[i] : _uid();
 		f = _ajax_url(a[i], T) + _ver;
 		if (d) {
 			var s = '<link rel=stylesheet href="' + f + '" id="' + u + '">';
@@ -401,19 +401,18 @@ _loadCss = function(a, b, c) {
 			e = doc.createElement('link');
 			e.rel  = 'stylesheet';
 			e.href = f;
-			b && ($.remove(b[i]));
 			e.id = u;
 			_tags('head')[0].appendChild(e);
 		}
 		_cssCache[a[i]] = u;
-		if (c) {
+		if (b) {
 			if ((br.chm && br.chm < 19) || br.safari) {// 版本低于19的chrome浏览器，link的onload事件不会触发。借用img的error事件来执行callback
 			    var img = doc.createElement('img');
-		        img.onerror = function() {--n === 0 && c()};
+		        img.onerror = function() {--n === 0 && b()};
 		        img.src = f;
-		  } else {
-		    	e.onload = e.onerror = function() {--n === 0 && c()};
-		  }
+		  	} else {
+		    	e.onload = e.onerror = function() {--n === 0 && b()};
+		  	}
 		}
 	}
 },
@@ -2532,7 +2531,7 @@ _merge($, {
 				g && x.theme && !$(tid) && (s.push(_path + g + '/' + x.theme + '/' + x.theme + '.css'), d.push(tid));
 				g && x.theme && x.color && !$(cid) && (s.push(_path + g + '/' + x.theme + '/' + x.color + '/' + x.color + '.css'), d.push(cid));
 			}
-			_loadCss(s, d, f);
+			_loadCss(s, f, d);
 		}
 	})(),
 	// @a -> preview src
