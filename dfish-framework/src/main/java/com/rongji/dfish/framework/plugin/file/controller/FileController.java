@@ -218,118 +218,6 @@ public class FileController extends FrameworkController {
         return jsonResponse;
     }
 
-//    /**
-//     * 上传附件
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping("/upload/file")
-//    @ResponseBody
-//    public JsonResponse uploadFile(HttpServletRequest request) {
-//        return uploadFile(request,null);
-//    }
-
-//    /**
-//     * 上传附件
-//     *
-//     * @param request
-//     * @return
-//     */
-//
-//    public JsonResponse uploadFile(HttpServletRequest request,String filTypes) {
-//        String scheme = request.getParameter("scheme");
-//        FileHandleScheme handlingScheme = fileHandleManager.getScheme(scheme);
-//        // 其实这里根据不同业务模块的判断限制意义不大,根据全局的设置即可
-//        String acceptTypes = handlingScheme != null && Utils.notEmpty(handlingScheme.getHandleTypes()) ? handlingScheme.getHandleTypes() : fileService.getFileTypes();
-//        UploadItem uploadItem = saveFile(request, acceptTypes);
-//        return new JsonResponse<>(uploadItem);
-//    }
-
-//    /**
-//     * 上传图片
-//     *
-//     * @param request
-//     * @return
-//     */
-//    @RequestMapping("/upload/image")
-//    @ResponseBody
-//    public JsonResponse uploadImage(HttpServletRequest request) throws Exception {
-//        final JsonResponse jsonResponse = uploadFile(request);
-//        UploadItem uploadItem = (UploadItem) jsonResponse.getData();
-//        if (uploadItem == null || Utils.isEmpty(uploadItem.getId())) {
-//            // 这样异常结果返回可能导致前端显示异常
-//            return jsonResponse;
-//        }
-//
-//        String scheme = request.getParameter("scheme");
-//        ImageHandleScheme handleScheme = fileHandleManager.getScheme(scheme);
-//        if (handleScheme == null || Utils.isEmpty(handleScheme.getHandleConfigs())) {
-//            // 无需进行图片压缩
-//            return jsonResponse;
-//        }
-//        String fileId = fileService.decrypt(uploadItem.getId());
-//        PubFileRecord fileRecord = fileService.get(fileId);
-//        if (fileRecord == null) {
-//            String errorMsg = "生成缩略图出现异常@" + System.currentTimeMillis();
-//            LogUtil.warn(errorMsg + ":原记录文件存储记录丢失[" + fileId + "]");
-//            return jsonResponse.setErrMsg(errorMsg);
-//        }
-//
-//        File imageFile = fileService.getFile(fileRecord);
-//        if (imageFile == null || !imageFile.exists()) {
-//            String errorMsg = "生成缩略图出现异常@" + System.currentTimeMillis();
-//            LogUtil.warn(errorMsg + ":原图丢失[" + fileId + "]");
-//            return jsonResponse.setErrMsg(errorMsg);
-//        }
-//        ImageProcessorGroup imageProcessorGroup = ImageProcessorGroup.of(imageFile).setDest(imageFile.getParentFile().getAbsolutePath())
-//                .setAliasPattern("{FILE_NAME}_{ALIAS}.{EXTENSION}");
-//
-//        // FIXME 默认图片和需要标记点图片放在位置不合理时,导致部分图片未能按标记点图片处理
-//        if (handleScheme.isHandleZoomDefault()) {
-//            imageProcessorGroup.process(-1, -1, ImageProcessConfig.WAY_ZOOM, ALIAS_DEFAULT, false);
-//        }
-//        for (ImageHandleConfig handleConfig : handleScheme.getHandleConfigs()) {
-//            if (handleConfig.getWatermark() != null) {
-//                fixWatermark(handleConfig.getWatermark());
-//            }
-//            imageProcessorGroup.process(handleConfig);
-//        }
-//        imageProcessorGroup.execute();
-//
-//        return jsonResponse;
-//    }
-//
-//    private static final String ALIAS_DEFAULT = "DEFAULT";
-//
-//    private void fixWatermark(ImageWatermarkConfig watermark) {
-//        if (Utils.notEmpty(watermark.getImagePath())) {
-//            // FIXME 根据水印名称可能做缓存处理
-//            String servletPath = SystemContext.getInstance().get(ServletInfo.class).getServletRealPath();
-//            watermark.setImageFile(new File(servletPath + watermark.getImagePath()));
-//        }
-//    }
-
-//    /**
-//     * 上传媒体类文件
-//     *
-//     * @param request 请求
-//     * @return 上传的附件信息
-//     */
-//    @RequestMapping("/uploadVideo")
-//    @ResponseBody
-//    public Object uploadVideo(HttpServletRequest request) {
-//        final JsonResponse<UploadItem> uploadItem = uploadFile(request, fileService.getFileTypes(FileService.CONFIG_TYPE_VIDEO, "*.mp4;"));
-//        if (uploadItem == null || Utils.isEmpty(uploadItem.getData().getId())) {
-//            // 这样异常结果返回可能导致前端显示异常
-//            return uploadItem;
-//        }
-//        // 抓取视频帧作为封面缩略图
-//        grabVideoFramer(uploadItem.getData());
-//
-//        return uploadItem;
-//    }
-
     /**
      * 第三方插件附件上传
      *
@@ -363,10 +251,11 @@ public class FileController extends FrameworkController {
         if (Utils.isEmpty(fileId)) {
             fileId = request.getParameter("fileId");
         }
-        String rawFileId = fileService.decrypt(fileId);
-        PubFileRecord fileRecord = fileService.get(rawFileId);
+        String decFileId = fileService.decrypt(fileId);
+        PubFileRecord fileRecord = fileService.get(decFileId);
         if (fileRecord == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            LogUtil.warn("the record is not found.[decryptId:" + decFileId + ",encryptId:" + fileId + "]");
             return;
         }
         boolean inline = "1".equals(request.getParameter("inline"));
@@ -418,152 +307,6 @@ public class FileController extends FrameworkController {
         return MIME_MAP.get(extName);
     }
 
-//    private static class DownloadParam {
-//        boolean inline;
-//        String fileName;
-//        String extension;
-//        long fileSize;
-//        long lastModified;
-//        String alias;
-//        String encryptedFileId;
-//
-//
-//        public String getExtension() {
-//            return extension;
-//        }
-//
-//        public void setExtension(String extension) {
-//            this.extension = extension;
-//        }
-//
-//        public DownloadParam() {
-//        }
-//
-//        public DownloadParam(String fileName, long fileSize, long lastModified) {
-//            this.fileName = fileName;
-//            this.fileSize = fileSize;
-//            this.lastModified = lastModified;
-//        }
-//
-//        public DownloadParam(String fileName, long fileSize, long lastModified, String alias, boolean inline) {
-//            this.fileName = fileName;
-//            this.fileSize = fileSize;
-//            this.lastModified = lastModified;
-//            this.alias = alias;
-//            this.inline = inline;
-//        }
-//
-//        public boolean isInline() {
-//            return inline;
-//        }
-//
-//        public DownloadParam setInline(boolean inline) {
-//            this.inline = inline;
-//            return this;
-//        }
-//
-//        public String getFileName() {
-//            return fileName;
-//        }
-//
-//        public DownloadParam setFileName(String fileName) {
-//            this.fileName = fileName;
-//            return this;
-//        }
-//
-//        public long getFileSize() {
-//            return fileSize;
-//        }
-//
-//        public DownloadParam setFileSize(long fileSize) {
-//            this.fileSize = fileSize;
-//            return this;
-//        }
-//
-//        public long getLastModified() {
-//            return lastModified;
-//        }
-//
-//        public DownloadParam setLastModified(long lastModified) {
-//            this.lastModified = lastModified;
-//            return this;
-//        }
-//
-//        public String getAlias() {
-//            return alias;
-//        }
-//
-//        public DownloadParam setAlias(String alias) {
-//            this.alias = alias;
-//            return this;
-//        }
-//
-//        public String getEncryptedFileId() {
-//            return encryptedFileId;
-//        }
-//
-//        public DownloadParam setEncryptedFileId(String encryptedFileId) {
-//            this.encryptedFileId = encryptedFileId;
-//            return this;
-//        }
-//    }
-
-//    /**
-//     * 下载附件数据方法
-//     * @param response
-//     * @param input
-//     * @param downloadParam
-//     * @return
-//     * @throws Exception
-//     */
-//    private boolean downloadFileData(HttpServletResponse response, InputStream input, DownloadParam downloadParam) throws Exception {
-//        if (input == null) {
-//            response.sendError(HttpServletResponse.SC_NOT_FOUND);
-//            return false;
-//        }
-//        String encoding = "UTF-8";
-//        try {
-//            response.setHeader("Accept-Ranges", "bytes");
-//            response.setHeader("Accept-Charset", encoding);
-//            String contentType = null;
-//
-//            String disposition;
-//            if (downloadParam.isInline()) {
-//                String extName = FileUtil.getFileExtName(downloadParam.getFileName());
-//                if (Utils.notEmpty(extName)) {
-//                    contentType = getMimeType(extName);
-//                }
-//                disposition = "inline; filename=" + (Utils.notEmpty(downloadParam.getEncryptedFileId()) ? (downloadParam.getEncryptedFileId() + extName) : URLEncoder.encode(downloadParam.getFileName(), encoding));
-//            } else {
-//                disposition = "attachment; filename=" + URLEncoder.encode(downloadParam.getFileName(), encoding);
-//            }
-//            if (Utils.isEmpty(contentType)) {
-//                contentType = "application/octet-stream";
-//            }
-//
-//            response.setHeader("Content-type", contentType);
-//            response.setHeader("Content-Disposition", disposition);
-//            response.setHeader("Content-Length", String.valueOf(downloadParam.getFileSize()));
-//            if (downloadParam.getLastModified() > 0L) {
-//                synchronized (DF_GMT) {
-//                    response.setHeader("Last-Modified", DF_GMT.format(downloadParam.getLastModified()));
-//                }
-//                response.setHeader("ETag", getEtag(downloadParam));
-//            }
-//            response.setStatus(HttpServletResponse.SC_OK);
-//            ServletUtil.downLoadData(response, input);
-//            return true;
-//        } catch (Exception e) {
-//            String error = "下载附件异常@" + System.currentTimeMillis();
-//            LogUtil.error(error, e);
-//            response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
-//            return false;
-//        } finally {
-//            if (input != null) {
-//                input.close();
-//            }
-//        }
-//    }
 
     /**
      * 附件下载
@@ -573,30 +316,10 @@ public class FileController extends FrameworkController {
      * @throws Exception
      */
     private DownloadStatus downloadFileData(HttpServletRequest request, HttpServletResponse response, PubFileRecord fileRecord, DownloadParam downloadParam) throws Exception {
-        if (fileRecord == null) {
-            LogUtil.warn("下载的附件不存在");
-            return null;
-        }
         try {
-//            long fileSize;
-//            if (input != null) {
-//                fileSize = fileService.getFileSize(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
-//            } else { // 当别名附件不存在时,使用原附件
-//                input = fileService.getFileInputStream(fileRecord);
-//                fileSize = fileService.getFileSize(fileRecord);
-//            }
-//            downloadFileData(response, input, downloadParam);
             DownloadResource resource = new DownloadResource(
                     downloadParam.getFileName(), downloadParam.getFileSize(), downloadParam.getLastModified(),
-                    () -> {
-                        try {
-                            return fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension());
-                        } catch (Exception e) {
-                            LogUtil.error("文件下载,获取文件流异常", e);
-                        }
-                        return null;
-                    });
-
+                    () -> fileService.getFileInputStream(fileRecord, downloadParam.getAlias(), downloadParam.getExtension()));
             return ServletUtil.download(request, response, resource, downloadParam.isInline());
         } catch (Exception e) {
             if (!"ClientAbortException".equals(e.getClass().getSimpleName())) {
@@ -629,41 +352,6 @@ public class FileController extends FrameworkController {
         return downloadParam;
     }
 
-//    /**
-//     * 判断扩展名是否支持
-//     *
-//     * @param fileExtension 拓展名(不管有没.都支持;即doc和.doc)
-//     * @param acceptTypes   可接受的类型;格式如:*.doc;*.png;*.jpg;
-//     * @return
-//     */
-//    static boolean accept(String fileExtension, String acceptTypes) {
-//        if (acceptTypes == null || acceptTypes.equals("")) {
-//            return true;
-//        }
-//        if (Utils.isEmpty(fileExtension)) {
-//            return false;
-//        }
-//        String[] accepts = acceptTypes.split("[,;]");
-//        // 类型是否含.
-//        int extDot = fileExtension.lastIndexOf(".");
-//        // 统一去掉.
-//        String realFileExtension = (extDot >= 0) ? fileExtension.substring(extDot + 1) : fileExtension;
-//        for (String s : accepts) {
-//            if (Utils.isEmpty(s)) {
-//                continue;
-//            }
-//            int dotIndex = s.lastIndexOf(".");
-//            if (dotIndex < 0) {
-//                continue;
-//            }
-//            String acc = s.substring(dotIndex + 1);
-//            if (acc.equalsIgnoreCase(realFileExtension)) {
-//                return true;
-//            }
-//        }
-//        return false;
-//    }
-
     /**
      * 显示缩略图方法，该方法暂时保留，兼容旧版本数据
      *
@@ -677,6 +365,7 @@ public class FileController extends FrameworkController {
         String fileId = request.getParameter("fileId");
         inline(request, response, null, fileId);
     }
+
     /**
      * 显示缩略图方法
      *
@@ -704,6 +393,7 @@ public class FileController extends FrameworkController {
 
         if (fileRecord == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            LogUtil.warn("the record is not found.[decryptId:" + decFileId + ",encryptId:" + fileId + "]");
             return;
         }
         // 获取附件别名
@@ -713,44 +403,7 @@ public class FileController extends FrameworkController {
         // 目前文件下载统一默认都是原件下载
         downloadParam.setInline(true).setEncryptedFileId(fileId);
 
-       downloadFileData(request, response, fileRecord, downloadParam);
-//        boolean success = false;
-//        if (ds != null) {
-//            long checkPoint = ds.getResourceLength() * 3 / 4;
-//            success = ds.getRangeBegin() <= checkPoint && ds.getRangeBegin() + ds.getCompleteLength() >= checkPoint;
-//        }
-        // 下载不成功,用默认图片代替
-//        if (!success) {
-//            ImageHandleScheme handlingScheme = fileHandleManager.getScheme(fileRecord.getFileType(), scheme);
-//            String defaultIcon = null;
-//            if (handlingScheme != null) {
-//                if (Utils.notEmpty(handlingScheme.getDefaultIcon())) {
-//                    defaultIcon = handlingScheme.getDefaultIcon();
-//                }
-//            }
-//            defaultIcon = Utils.isEmpty(defaultIcon) ? "default.png" : defaultIcon;
-//            if (Utils.notEmpty(realAlias)) {
-//                int lastDot = defaultIcon.lastIndexOf(".");
-//                if (lastDot >= 0) {
-//                    defaultIcon = defaultIcon.substring(0, lastDot) + "_" + realAlias + defaultIcon.substring(lastDot);
-//                } else {
-//                    defaultIcon += "_" + realAlias;
-//                }
-//            }
-//
-//            // 这里可能考虑重定向到具体文件目录去
-//            File defaultImageFile = new File(SystemContext.getInstance().get(ServletInfo.class).getServletRealPath() + defaultImageFolder + defaultIcon);
-//            if (defaultImageFile.exists()) {
-////                downloadParam.setFileName(defaultImageFile.getName()).setFileSize(defaultImageFile.length()).setLastModified(defaultImageFile.lastModified()).setEncryptedFileId(null);
-//
-//                ServletUtil.download(request, response, defaultImageFile, true);
-//                return;
-//            } else {
-//                String error = "附件不存在@" + System.currentTimeMillis();
-//                LogUtil.warn(error + "[" + fileId + "->" + decFileId + "]");
-//                response.sendError(HttpServletResponse.SC_NOT_FOUND, error);
-//            }
-//        }
+        downloadFileData(request, response, fileRecord, downloadParam);
     }
 
     private String getFileAlias(String alias, String fileType, String scheme) {
@@ -807,25 +460,6 @@ public class FileController extends FrameworkController {
             } else {
                 response = handleScheme.getPreviewResponse(fileId, alias, fileExtension);
             }
-
-//            boolean isImage = fileService.accept(fileExtension, fileService.getFileTypes(FileService.CONFIG_TYPE_IMAGE, "*.jpg;"));
-//
-//            if (isImage) {
-//                // 图片形式使用框架的预览方式
-////                previewJs = "$.previewImage('file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
-////                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileType + "');";
-//                response.setWay(PreviewResponse.WAY_PREVIEW_IMAGE);
-//                response.setUrl("file/thumbnail/" + (Utils.isEmpty(scheme) ? FILE_SCHEME_AUTO : scheme) + "/" +
-//                        (Utils.isEmpty(alias) ? FILE_ALIAS_AUTO : alias) + "/" + enFileId + "." + fileExtension);
-//            } else {
-//                String mimeType = getMimeType(fileExtension);
-//                String fileParamUrl = "file/download?fileId=" + enFileId + "&scheme=" + scheme + "&alias=" + alias;
-//                if (Utils.notEmpty(mimeType)) {
-//                    fileParamUrl += "&inline=1";
-//                    response.setWay(PreviewResponse.WAY_PREVIEW_INLINE);
-//                }
-//                response.setUrl(fileParamUrl);
-//            }
             return new JsonResponse<>(response);
         } else {
             String error = "附件获取异常@" + System.currentTimeMillis();

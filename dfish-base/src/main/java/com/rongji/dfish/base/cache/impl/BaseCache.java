@@ -170,6 +170,7 @@ public class BaseCache<K, V> extends CachedBatchFunction<K, V> implements Cache<
      * @param value 缓存值
      * @return 是否包含
      */
+    @Override
     public boolean containsValue(V value) {
         Collection<CacheItem<V>> col = core.values();
         for (CacheItem<V> item : col) {
@@ -200,6 +201,7 @@ public class BaseCache<K, V> extends CachedBatchFunction<K, V> implements Cache<
      * value集合
      * @return value集合
      */
+    @Override
     public Collection<V> values() {
 //        Collection<CacheItem<V>> col = core.values();
 //        ArrayList<V> result = new ArrayList<>();

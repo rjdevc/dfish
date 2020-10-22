@@ -58,19 +58,6 @@ public interface Cache<K, V> {
 	 */
 	V remove(K key);
 	/**
-	 * 判定是否包含本关键字
-	 * @param key K
-	 * @return boolean
-	 */
-	boolean containsKey(K key);
-	
-//	/**
-//	 * 判断是否包含本值
-//	 * @param value V
-//	 * @return boolean
-//	 */
-//	boolean containsValue(V value);
-	/**
 	 * 如果这个缓存支持size的话，应该返回这个缓存现在已经缓存了多少对键值对。
 	 * 如果不支持的话，返回-1
 	 * @return int
@@ -100,12 +87,30 @@ public interface Cache<K, V> {
 	 * @return Set&lt;K&gt;
 	 */
 	Set<K> keySet();
-//	/**
-//	 * 值的集合
-//	 * @return Collection&lt;V&gt;
-//	 */
-//	Collection<V> values();
-	
+	/**
+	 * 判定是否包含本关键字
+	 * @param key K
+	 * @return boolean
+	 */
+	default boolean containsKey(K key) {
+		return keySet().contains(key);
+	}
+
+	/**
+	 * 值集合(只查询已存在的值)
+	 * @return Collection&lt;V&gt;
+	 */
+	Collection<V> values();
+
+	/**
+	 * 判断是否包含本值(只查询已存在的值)
+	 * @param value V
+	 * @return boolean
+	 */
+	default boolean containsValue(V value) {
+		return values().contains(value);
+	}
+
 	/**
 	 * 缓存最大数量
 	 * @return int

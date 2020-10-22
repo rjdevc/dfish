@@ -180,13 +180,20 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
      * @throws Exception 文件流相关异常
      */
     @Override
-    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias, String extension) throws Exception {
-        if (fileRecord == null || FileServiceImpl.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
-            return null;
+    public InputStream getFileInputStream(PubFileRecord fileRecord, String alias, String extension) throws IOException {
+        if (fileRecord == null) {
+            throw new IllegalArgumentException("fileRecord is null");
+        }
+        if (FileServiceImpl.STATUS_DELETE.equals(fileRecord.getFileStatus())) {
+            throw new IllegalArgumentException("the record[" + fileRecord.getFileId() + "] is signed deleted.");
         }
         File file = getFile(fileRecord, alias, extension);
-        if (file == null || !file.exists() || file.length() <= 0) {
-            return null;
+        if (file == null) {
+            // fileRecord
+            throw new FileNotFoundException("not fount the file of the record[" + fileRecord.getFileId() + "]");
+        }
+        if (!file.exists()) {
+            throw new FileNotFoundException(file.getAbsolutePath());
         }
         return new FileInputStream(file);
     }
