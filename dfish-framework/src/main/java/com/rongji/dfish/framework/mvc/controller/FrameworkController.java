@@ -30,36 +30,32 @@ import java.util.*;
  * @since 5.0
  */
 public class FrameworkController {
-    /**
-     * 允许用户自定义分页数设置
-     */
-    protected boolean customizedLimit;
-    protected int progressKeyLength = 128;
 
     /**
      * 允许用户自定义分页数设置
      *
      * @return boolean 是否允许自定义分页数设置
      */
-    public boolean isCustomizedLimit() {
-        return customizedLimit;
+    protected boolean isCustomizedLimit() {
+        return false;
     }
 
     /**
-     * 允许用户自定义分页数设置
+     * 允许用户自定义分页数最大设置
      *
-     * @param customizedLimit 是否允许自定义分页数设置
+     * @return int
      */
-    public void setCustomizedLimit(boolean customizedLimit) {
-        this.customizedLimit = customizedLimit;
+    protected int getMaxCustomizedLimit() {
+        return 1024;
     }
 
+    /**
+     * 流程key的长度
+     *
+     * @return int
+     */
     public int getProgressKeyLength() {
-        return progressKeyLength;
-    }
-
-    public void setProgressKeyLength(int progressKeyLength) {
-        this.progressKeyLength = progressKeyLength;
+        return 128;
     }
 
     /**
@@ -352,6 +348,9 @@ public class FrameworkController {
             String limitStr = request.getParameter("limit");
             if (Utils.notEmpty(limitStr)) {
                 limit = Integer.parseInt(limitStr);
+                if (limit > getMaxCustomizedLimit()) {
+                    throw new IllegalArgumentException("limit can not greater than " + getMaxCustomizedLimit());
+                }
             }
             if (limit <= 0) {
                 limit = getPaginationLimit();
@@ -409,13 +408,14 @@ public class FrameworkController {
         }
         String progressKey = sessionId + "#" + linkedData;
         // 名称太长时强制截取字符,这里给的相对比较安全的数字
+        int progressKeyLength = getProgressKeyLength();
         if (progressKey.length() > progressKeyLength) {
             final String callDataId = linkedData;
             final int leftLength = progressKeyLength - sessionId.length() - 1;
             LogUtil.lazyWarn(getClass(), () -> {
                 try {
 //                    StackTraceElement callStack = Thread.currentThread().getStackTrace()[2];
-                    String call = "进度条编号过长[" + callDataId + "]最大支持长度为[" + leftLength + "]";
+                    String call = "进度条编号限制长度为" + progressKeyLength + ",数据[" + callDataId + "]最大支持长度为" + leftLength + ".您也可以重写getProgressKeyLength()方法来调整进度条编号长度设置";
                     return call;
                 } catch (Throwable e) {
                     LogUtil.error("获取进度条编号-调用堆栈异常", e);

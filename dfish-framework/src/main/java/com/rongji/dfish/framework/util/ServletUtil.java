@@ -531,8 +531,7 @@ public class ServletUtil {
         }
         if (is == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            errorMessage = Utils.isEmpty(errorMessage) ? "DownloadResource " + downloadResource.getName() + " does not exists." : errorMessage;
-            LogUtil.error(errorMessage);
+            LogUtil.error("DownloadResource " + downloadResource.getName() + " does not exists.[" + errorMessage + "]");
             return status;
         }
 
