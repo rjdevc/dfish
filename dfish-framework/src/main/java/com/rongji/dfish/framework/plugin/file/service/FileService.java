@@ -10,6 +10,7 @@ import com.rongji.dfish.framework.plugin.file.entity.PubFileRecord;
 import com.rongji.dfish.framework.service.FrameworkService;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -285,7 +286,15 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
         return getFileInputStream(fileRecord,alias,null);
     }
 
-    InputStream getFileInputStream(PubFileRecord fileRecord, String alias,String extension) throws Exception;
+    /**
+     * 根据文件记录获取文件流
+     * @param fileRecord
+     * @param alias
+     * @param extension
+     * @return
+     * @throws IOException
+     */
+    InputStream getFileInputStream(PubFileRecord fileRecord, String alias,String extension) throws IOException;
 
     /**
      * 根据文件记录获取文件

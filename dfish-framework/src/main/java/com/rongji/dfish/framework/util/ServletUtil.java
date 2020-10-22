@@ -1,9 +1,9 @@
 package com.rongji.dfish.framework.util;
 
-import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.StringUtil;
+import com.rongji.dfish.base.util.Utils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -26,10 +26,10 @@ public class ServletUtil {
     private static final SimpleDateFormat DF_GMT;
 
     static {
-        DF_GMT = new SimpleDateFormat("EEE MMM dd yyyy hh:mm:ss z", Locale.ENGLISH);
+        //    Fri, 09 Oct 2020 09:20:50 GMT
+        DF_GMT = new SimpleDateFormat("EEE, dd MMM yyyy hh:mm:ss z", Locale.ENGLISH);
         DF_GMT.setTimeZone(TimeZone.getTimeZone("GMT"));
     }
-
 
     /**
      * 获取参数值
@@ -423,17 +423,14 @@ public class ServletUtil {
         status.setResourceLength(downloadResource.getLength());
         status.setRangeBegin(0);
         status.setRangeEnd(downloadResource.getLength() - 1);
-        try {
-            long headerValue = request.getDateHeader("If-Modified-Since");
-            if (headerValue != -1) {
-                if ((request.getHeader("If-None-Match") == null) && (downloadResource.getLastModified() < headerValue + 1000L)) {
-                    response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
-                    response.setHeader("ETag", getEtag(downloadResource));
-                    status.setCached(true);
-                    return status;
-                }
+        long headerValue = request.getDateHeader("If-Modified-Since");
+        if (headerValue != -1) {
+            if ((request.getHeader("If-None-Match") == null) && (downloadResource.getLastModified() < headerValue + 1000L)) {
+                response.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
+                response.setHeader("ETag", getEtag(downloadResource));
+                status.setCached(true);
+                return status;
             }
-        } catch (IllegalArgumentException illegalArgument) {
         }
 
         // 计算 需要下载数据的范围
@@ -461,7 +458,7 @@ public class ServletUtil {
                             from = Long.parseLong(fromStr.trim());
                         }
                     } catch (Exception e) {
-                        LogUtil.error("FileUtil.downLoadFile:getting from value error", e);
+                        LogUtil.warn("getting from value error from range:"+ range );
                     }
                     try {
                         // range中可能有斜杠,这个格式判断不是标准的,可能需要调整
@@ -476,7 +473,7 @@ public class ServletUtil {
                             to = Long.parseLong(toStr.trim());
                         }
                     } catch (Exception e) {
-                        LogUtil.error("FileUtil.downLoadFile:getting to value error", e);
+                        LogUtil.warn("getting to value error from range:"+ range);
                     }
                 }
             }
@@ -524,12 +521,18 @@ public class ServletUtil {
         BufferedInputStream bis = null;
         BufferedOutputStream bos = null;
         InputStream is = null;
-        if (downloadResource.getInputStreamProvider() != null) {
-            is = downloadResource.getInputStreamProvider().open();
+        String errorMessage = null;
+        try {
+            if (downloadResource.getInputStreamProvider() != null) {
+                is = downloadResource.getInputStreamProvider().open();
+            }
+        } catch(FileNotFoundException | IllegalArgumentException e) {
+            errorMessage = e.getMessage();
         }
         if (is == null) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
-            LogUtil.error("DownloadResource " + downloadResource.getName() + " does not exists", new IllegalArgumentException(downloadResource.getName()));
+            errorMessage = Utils.isEmpty(errorMessage) ? "DownloadResource " + downloadResource.getName() + " does not exists." : errorMessage;
+            LogUtil.error(errorMessage);
             return status;
         }
 
@@ -584,7 +587,11 @@ public class ServletUtil {
     }
 
     public static DownloadStatus download(HttpServletRequest request, HttpServletResponse response, File file, boolean inline) throws IOException {
-        DownloadResource resource = new DownloadResource(file.getName(), file.length(), file.lastModified(), () -> new FileInputStream(file));
+        if (file == null) {
+            throw new IllegalArgumentException("file is null");
+        }
+        DownloadResource resource = new DownloadResource(file.getName(), file.length(), file.lastModified(),
+                () -> new FileInputStream(file));
         return download(request, response, resource, inline);
     }
 
