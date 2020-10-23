@@ -7022,6 +7022,7 @@ Switch = define.widget('Switch', {
 	},
 	Default: {width: -1, height: -1},
 	Prototype: {
+		rootType: N,
 		tagName: 'div',
 		inputScale: function() {
 			return this.x.width || -1;
@@ -11084,7 +11085,6 @@ TD = define.widget('TD', {
 	Prototype: {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
-		scaleHeight: $.rt(),
 		// @implement
 		x_childtype: function(t) {
 			return _td_wg[t] ? 'Table' + t : t;
@@ -11331,7 +11331,7 @@ TCell = define.widget('TCell', {
 			w -= c.x.widthMinus != N ? c.x.widthMinus : c.x.style ? _size_fix(N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style).widthMinus : d * 2;
 			return w;
 		},
-		scaleHeight: $.rt(),
+		scaleHeight: $.rt(N),
 		html: $.rt('')
 	}
 }),
@@ -12300,7 +12300,7 @@ Form = define.widget('Form', {
 			j == 0 && rows.push(tr);
 			var e = n[i], h = rows.length - 1,
 				td = typeof e === _STR ? {text: e} : e.type && e.type !== 'TD' ? {node: e} : e;
-			$.extend(td, x.pub, d && d.pub);
+			$.extend(td, {height: -1}, x.pub, d && d.pub);
 			!td.colSpan && (td.colSpan = -1);
 			td.colSpan < 0 && (td.colSpan = cols + 1 + td.colSpan);
 			(td.colSpan > cols) && (td.colSpan = cols);
@@ -12334,7 +12334,7 @@ Form = define.widget('Form', {
 		delete y.nodes;
 		if (x.pub) {
 			y.tBody.pub = {};
-			x.pub.height && (y.tBody.pub.height = x.pub.height);
+			if (x.pub.height) y.tBody.pub.height = x.pub.height;
 		}
 		Table.call(this, y, p);
 	},
