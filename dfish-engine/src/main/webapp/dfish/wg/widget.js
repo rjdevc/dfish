@@ -8817,7 +8817,7 @@ ComboBox = define.widget('ComboBox', {
 				o.width = w;
 			}
 			$.extendDeep(d, o);
-			d.data = $.extend(d.data || {}, r);
+			d.data = $.extend(r, d.data || {});
 			var self = this;
 			return this.add(d, -1).addEvent('close', function() {
 				!self.$().contains(document.activeElement) && self.focus(F);

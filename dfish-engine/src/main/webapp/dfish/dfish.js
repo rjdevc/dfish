@@ -2536,7 +2536,7 @@ _merge($, {
 	})(),
 	// @a -> preview src
 	previewVideo: function(a) {
-		$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview z-video', cover: T, pophide: T,
+		$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview z-video', cover: T, autoHide: T,
 			width: 'javascript:return Math.max(200, $.width() - 100)', height: 'javascript:return Math.max(200, $.height() - 100)',
 			node: {type: 'Video', width: '*', height: '*', style: 'margin:0 20px', widthMinus: 40, src: a, afterContent: '<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}
 		});
@@ -2546,22 +2546,28 @@ _merge($, {
 		if (br.app) {
 			plus.nativeUI.previewImage(_map(_arrMake(a), function() {return _urlComplete(this)}), b);
 		} else {
-			if (_isArray(a))
-				a = a[(b && b.current) || 0];
-			a = _urlComplete(a);
-			$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', cover: T, autoHide: T,
-				width: 'javascript:return $.br.mobile ? $.width() - 36 : Math.max(200, $.width() - 100)', height: 'javascript:return $.br.mobile ? $.height() - 36 : Math.max(200, $.height() - 100)',
-				node: {type: 'Html', align: 'center', text: '<img class=_img src=' + a + ' data-rotate=0 data-maxwidth=' + (w - 30) + ' data-maxheight=' + (h - 80) + ' style="max-width:' + (w - 80) + 'px;max-height:' + (h - 80) + 'px">' +
-					'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-left"></i> ' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)><i class="f-i f-i-rotate-right"></i> ' + $.loc.rotate_right + '</a></div>' +
-					'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'}});
+			var w = Math.max(200, $.width() - 100), h = Math.max(200, $.height() - 100);
+			$.vm().cmd({type: 'Dialog', ownproperty: T, cls: 'f-dialog-preview', cover: T, autoHide: T, data: {rotate: 0},
+				width: 'javascript:return Math.max(200, $.width() - 100)', height: 'javascript:return Math.max(200, $.height() - 100)',
+				node: {type: 'Html', align: 'center', vAlign: 'middle', text: '<img class=_img src=' + a + '>' +
+					(b ? '<a class=_origin target=_blank href=' + b + '>' + $.loc.preview_orginal_image + '</a>' : '') +
+					'<div class=_rotate><a class=_l onclick=$.previewImageRotate(this)>' + $.loc.rotate_left + '</a><span class=_s>|</span><a class=_r onclick=$.previewImageRotate(this)>' + $.loc.rotate_right + '</a></div>' +
+					'<em class="f-i _dlg_x" onclick=' + $.abbr + '.close(this)></em>'},
+				on: {ready: '$.previewImageRotate(this)', resize: '$.previewImageRotate(this)'}
+			});
 		}
 	},
 	// @a -> preview src
 	previewImageRotate: function(a) {
-		var g = Q('._img', $.dialog(a).$()), w = g.data('maxwidth'), h = g.data('maxheight'),
-		r = (a.className == '_r' ? 90 : -90) + g.data('rotate'), t = (r / 90) % 2;
-		g.css({transform: 'rotate(' + r + 'deg)', maxWidth: t ? h : w, maxHeight: t ? w : h});
-		g.data('rotate', r);
+		var d = $.dialog(a), r = d.data('rotate'), w = d.innerWidth() - 30, h = d.innerHeight() - 80;
+		if (a.className == '_r') {
+			r += 90;
+		} else if (a.className == '_l') {
+			r -= 90;
+		}
+		var t = (r / 90) % 2;
+		Q('._img', d.$()).css({transform: 'rotate(' + r + 'deg)', maxWidth: t ? h : w, maxHeight: t ? w : h});
+		d.data('rotate', r);
 	},
 	/* !把range内的图片变成缩略图
 	 * @range: htmlElement
