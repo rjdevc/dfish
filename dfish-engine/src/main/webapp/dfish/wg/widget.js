@@ -6090,7 +6090,6 @@ AbsForm = define.widget('AbsForm', {
 			}
 		},
 		scaleWidth: function(a, b) {
-			
 				var d, e, s = this.inputScale();
 				if (this.label) {
 					var w = this.label.attr('width');
@@ -7021,7 +7020,7 @@ Switch = define.widget('Switch', {
 			}			
 		}
 	},
-	Default: {width: U},
+	Default: {width: -1, height: -1},
 	Prototype: {
 		tagName: 'div',
 		inputScale: function() {
@@ -11085,6 +11084,7 @@ TD = define.widget('TD', {
 	Prototype: {
 		rootType: 'Table,Form',
 		pubParent: $.rt(),
+		scaleHeight: $.rt(),
 		// @implement
 		x_childtype: function(t) {
 			return _td_wg[t] ? 'Table' + t : t;
@@ -11331,7 +11331,7 @@ TCell = define.widget('TCell', {
 			w -= c.x.widthMinus != N ? c.x.widthMinus : c.x.style ? _size_fix(N, 'padding:0 ' + d + 'px 0 ' + d + 'px;' + c.x.style).widthMinus : d * 2;
 			return w;
 		},
-		scaleHeight: $.rt(N),
+		scaleHeight: $.rt(),
 		html: $.rt('')
 	}
 }),
