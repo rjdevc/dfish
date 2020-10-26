@@ -4,6 +4,7 @@ import com.rongji.dfish.base.util.LogUtil;
 
 import java.io.*;
 import java.util.zip.GZIPInputStream;
+import java.util.zip.ZipException;
 
 /**
  * 读取RJD格式的回调。可以取得文件路径，和文件的内容，并当做文本处理
@@ -19,12 +20,16 @@ public interface RJDStringCallback extends RJDCallback {
             while((read=is.read(buff))>=0){
                 baos.write(buff,0,read);
             }
-            GZIPInputStream zis= new GZIPInputStream(new ByteArrayInputStream(baos.toByteArray()));
-            baos.reset();
-            while((read=zis.read(buff))>=0){
-                baos.write(buff,0,read);
+            try {
+                GZIPInputStream zis = new GZIPInputStream(new ByteArrayInputStream(baos.toByteArray()));
+                baos.reset();
+                while((read=zis.read(buff))>=0){
+                    baos.write(buff,0,read);
+                }
+                execute(path,new String(baos.toByteArray(),ENCODING));
+            }catch (ZipException ex){
+                throw new RuntimeException("SM4 decrypt fail");
             }
-            execute(path,new String(baos.toByteArray(),ENCODING));
         } catch (IOException e) {
             LogUtil.error(null,e);
         }
