@@ -13,12 +13,24 @@ import org.springframework.web.client.RestTemplate;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class HttpUtil {
 
     /**
+     * http 访问某个地址 返回具体内容.
+     * 建议在 spring 中根据已有的包配置
+     * <bean calss="org.springframework.http.client.OkHttp3ClientHttpRequestFactory">
+     *     <property name="readTimeout" value="5000"/>
+     *     <property name="connectTimeout" value="5000"/>
+     * </bean>
+     * 或者
+     * <bean calss="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+     *     <property name="readTimeout" value="5000"/>
+     *     <property name="connectTimeout" value="5000"/>
+     * </bean>
      * @param url
      * @param params
      * @return
@@ -42,6 +54,22 @@ public class HttpUtil {
         return response.getBody();
     }
 
+    /**
+     * http 访问某个地址 返回具体内容.
+     * 建议在 spring 中根据已有的包配置
+     * <bean calss="org.springframework.http.client.OkHttp3ClientHttpRequestFactory">
+     *     <property name="readTimeout" value="5000"/>
+     *     <property name="connectTimeout" value="5000"/>
+     * </bean>
+     * 或者
+     * <bean calss="org.springframework.http.client.HttpComponentsClientHttpRequestFactory">
+     *     <property name="readTimeout" value="5000"/>
+     *     <property name="connectTimeout" value="5000"/>
+     * </bean>
+     * @param url
+     * @return
+     * @throws Exception
+     */
     public static String execute(String url) throws Exception {
         return execute(url, null);
     }
@@ -69,12 +97,12 @@ public class HttpUtil {
 
 
 //    public static void main(String[] args ) throws Exception {
-//        String s=doGet("https://www.baidu.com");
+//        String s=execute("https://www.baidu.com");
 //        System.out.println(s);
 //
 //        Map<String,String> m=new HashMap<>();
 //        m.put("name","Trump");
-//        String s2=doPost("http://127.0.0.1:8080/hello.jsp",m);
+//        String s2=execute("http://127.0.0.1:8080/hello.jsp",m);
 //        System.out.println(s2);
 //    }
 
