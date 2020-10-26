@@ -56,7 +56,7 @@ public class ProgressData implements Serializable, Cloneable {
      */
     private Serializable complete;
     /**
-     *
+     * 进度条异常
      */
     private Error error;
 
@@ -293,8 +293,8 @@ public class ProgressData implements Serializable, Cloneable {
      * @param errorMsg 错误信息
      * @return 本身，这样可以继续设置属性
      */
-    public ProgressData setErrorMsg(String errorMsg) {
-        error().setMsg(errorMsg);
+    public ProgressData setErrorMessage(String errorMsg) {
+        error().setMessage(errorMsg);
         return this;
     }
 
@@ -315,8 +315,40 @@ public class ProgressData implements Serializable, Cloneable {
     static class Error implements Serializable {
         private static final long serialVersionUID = 4655326902090143895L;
 
+        private String message;
         private String code;
-        private String msg;
+
+        public Error() {
+        }
+
+        public Error(String message) {
+            this.message = message;
+        }
+
+        public Error(String message, String code) {
+            this.message = message;
+            this.code = code;
+        }
+
+        /**
+         * 错误信息
+         *
+         * @return 错误信息
+         */
+        public String getMessage() {
+            return message;
+        }
+
+        /**
+         * 错误信息
+         *
+         * @param message 错误信息
+         * @return 本身，这样可以继续设置属性
+         */
+        public Error setMessage(String message) {
+            this.message = message;
+            return this;
+        }
 
         /**
          * 错误代码
@@ -338,30 +370,11 @@ public class ProgressData implements Serializable, Cloneable {
             return this;
         }
 
-        /**
-         * 错误信息
-         *
-         * @return 错误信息
-         */
-        public String getMsg() {
-            return msg;
-        }
-
-        /**
-         * 错误信息
-         *
-         * @param msg 错误信息
-         * @return 本身，这样可以继续设置属性
-         */
-        public Error setMsg(String msg) {
-            this.msg = msg;
-            return this;
-        }
-
     }
 
     @Override
     protected Object clone() throws CloneNotSupportedException {
         return super.clone();
     }
+
 }

@@ -204,4 +204,16 @@ public class Pagination implements Serializable {
         return page;
     }
 
+    /**
+     * 计算总分页数
+     * @return int
+     */
+    public int calculatePageCount() {
+        if (this.getLimit() <= 0) {
+            throw new UnsupportedOperationException("limit must greater than zero.");
+        }
+        int pageCount = (this.getSize() + this.getLimit() - 1) / this.getLimit();
+        return pageCount;
+    }
+
 }

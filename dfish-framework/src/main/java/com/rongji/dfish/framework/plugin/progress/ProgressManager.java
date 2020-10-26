@@ -406,7 +406,7 @@ public class ProgressManager {
                         if (currentProgress != null) {
                             // 进度条运行异常,异常信息展示
                             currentProgress.setErrorCode(errorCode);
-                            currentProgress.setErrorMsg(errorMsg);
+                            currentProgress.setErrorMessage(errorMsg);
                             // 异常数据提示需要放到缓存中
                             setProgressData(currentProgress);
                         }
@@ -704,6 +704,31 @@ public class ProgressManager {
         ProgressData progressData = getProgressData(progressKey);
         if (progressData != null) {
             progressData.setComplete(complete);
+        }
+        return this;
+    }
+
+    /**
+     * 设置异常信息
+     *
+     * @param progressKey 进度条编号
+     * @param message    异常信息
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public ProgressManager setError(String progressKey, String message) {
+       return setError(progressKey, new ProgressData.Error(message));
+    }
+    /**
+     * 设置异常信息
+     *
+     * @param progressKey 进度条编号
+     * @param error    异常信息
+     * @return 本身，这样可以继续设置其他属性
+     */
+    public ProgressManager setError(String progressKey, ProgressData.Error error) {
+        ProgressData progressData = getProgressData(progressKey);
+        if (progressData != null) {
+            progressData.setError(error);
         }
         return this;
     }
