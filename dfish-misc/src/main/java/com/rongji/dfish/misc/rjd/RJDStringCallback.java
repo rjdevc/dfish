@@ -20,6 +20,7 @@ public interface RJDStringCallback extends RJDCallback {
             while((read=is.read(buff))>=0){
                 baos.write(buff,0,read);
             }
+            //IS 不能关闭
             try {
                 GZIPInputStream zis = new GZIPInputStream(new ByteArrayInputStream(baos.toByteArray()));
                 baos.reset();
@@ -27,6 +28,7 @@ public interface RJDStringCallback extends RJDCallback {
                     baos.write(buff,0,read);
                 }
                 execute(path,new String(baos.toByteArray(),ENCODING));
+                zis.close();
             }catch (ZipException ex){
                 throw new RuntimeException("SM4 decrypt fail");
             }

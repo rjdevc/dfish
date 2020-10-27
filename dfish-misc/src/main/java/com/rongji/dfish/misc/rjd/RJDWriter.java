@@ -1,11 +1,8 @@
 package com.rongji.dfish.misc.rjd;
 
-import com.rongji.dfish.base.crypto.stream.SM4ECBInputStream;
 import com.rongji.dfish.base.crypto.stream.SM4ECBOutputStream;
-import com.rongji.dfish.base.util.LogUtil;
 
 import java.io.*;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -48,6 +45,8 @@ public class RJDWriter {
             sm4os.write(buff,0,read);
         }
         sm4os.flush();
+        // sm4os 不能关闭，否则会连带zos关闭
+        is.close();
         zos.closeEntry();
     }
 
