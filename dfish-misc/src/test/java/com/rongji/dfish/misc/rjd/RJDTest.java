@@ -21,11 +21,37 @@ public class RJDTest {
         rjdw.close();
 
 
-        RJDReader rjdr = new RJDReader(new FileInputStream("d:/myfile.rjd"), "ThisIsPassword");
-        rjdr.readStringEntries((path,  str) -> {
-                System.out.println("=== file " + path + " ===");
-                System.out.println(str);
-        });
 
+        //一般文件，用InputStream返回
+        RJDCallback fileCallback=(path,  inputStream) -> {
+            System.out.println("=== file " + path + " ===");
+            //FIXME 自行读取 InputStream
+            System.out.println(inputStream);
+        };
+        //文本文件可以直接返回String
+        RJDStringCallback stringFileCallback=(path,  str) -> {
+            System.out.println("=== file " + path + " ===");
+            System.out.println(str);
+        };
+
+        RJDReader rjdr2 = new RJDReader(new FileInputStream("d:/myfile.rjd"), "ThisIsPassword");
+        rjdr2.registerCallback("*D02*",fileCallback);
+        rjdr2.registerCallback("*.json",stringFileCallback);
+        rjdr2.doRead();
+
+        //如果全部都用一种方式读取，可以简化为以下写法。
+//        RJDReader rjdr = new RJDReader(new FileInputStream("d:/myfile.rjd"), "ThisIsPassword");
+//        rjdr.readStringEntries((path,  str) -> {
+//                System.out.println("=== file " + path + " ===");
+//                System.out.println(str);
+//        });
+
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*.json"));
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*"));
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*D01*"));
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*/data/*.json"));
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*.js"));
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*D02*"));
+        System.out.println( RJDReader.match("myfolder/data/D01.json","*data/*.js"));
     }
 }
