@@ -55,4 +55,54 @@ public class HexInputStream extends AbstractPresentInputStream {
     @Override
     protected void doChunk(){}
 
+    /**
+     * 判断改字符串是否是HEX格式
+     * @param key String
+     * @return boolean
+     */
+    public static boolean isHex(String key) {
+        if(key.length()%2==1){
+            return false;
+        }
+        char[] chs=key.toCharArray();
+        for(char c:chs){
+//            if(c<'0'||(c>'9'&& c<'A')||(c>'F'&& c<'a')||c>'f'){
+//                return false;
+//            }
+            if(c<'A'){
+                if(c>'9'){
+                    return false;
+                }
+                if(c<'0'){
+                    return false;
+                }
+            }else if(c<'a'){
+                if(c>'F'){
+                    return false;
+                }
+            }else{
+                if(c>'f'){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+     * 将HEX格式的字符串转为 byte[]
+     * @param key
+     * @return
+     */
+    public static byte[] parseHex(String key){
+        byte[] bytes=new byte[key.length()/2];
+        char[] chs=key.toCharArray();
+        for(int i=0;i<chs.length;i+=2){
+            int hi=HEX_DE[chs[i]];
+            int low=HEX_DE[chs[i+1]];
+            bytes[i/2]=(byte)((hi<<4)|low);
+        }
+        return bytes;
+    }
+
 }

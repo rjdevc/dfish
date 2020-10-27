@@ -42,6 +42,6 @@ public interface RJDStringCallback extends RJDCallback {
      * @param path 文件的路径
      * @param str 文件的内容
      */
-    public abstract void execute(String path,String str);
+    void execute(String path,String str);
 
 }

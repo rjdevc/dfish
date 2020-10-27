@@ -146,7 +146,7 @@ public class ByteArrayUtil {
         if(src==null|| src.length<begin||src.length<end){
             return "";
         }
-        StringBuilder sb=new StringBuilder(src.length<<1);
+        StringBuilder sb=new StringBuilder((end-begin)<<1);
         for(int i=begin;i<end;i++){
             byte b=src[i];
             sb.append(HEX_CHARS[(b&0xF0)>>4]);

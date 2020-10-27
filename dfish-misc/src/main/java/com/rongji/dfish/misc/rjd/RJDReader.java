@@ -6,8 +6,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -18,8 +16,8 @@ import java.util.zip.ZipInputStream;
 public class RJDReader {
     private ZipInputStream zis;
     private String password;
-    LinkedHashMap<String,RJDCallback> callbacks;
-    RJDCallback defaultCallback;
+    private LinkedHashMap<String,RJDCallback> callbacks;
+    private RJDCallback defaultCallback;
 
     /**
      * 新建一个读取器
@@ -82,7 +80,7 @@ public class RJDReader {
      * @throws IOException
      */
     public void doRead()throws IOException {
-        ZipEntry ze= null;
+        ZipEntry ze;
         while((ze=zis.getNextEntry())!=null) {
             String url = ze.getName();
             RJDCallback callback=null;
@@ -105,7 +103,14 @@ public class RJDReader {
         zis.close();
     }
 
-
+    /**
+     * 判定字符串是否符合模式。 这里的模式 是可用*代替任何字符表示方式。
+     * 比如 *.json  或 *data/*.json
+     * 如果字符串符合这个格式，则返回true
+     * @param str 字符串
+     * @param pattern 模式
+     * @return boolean
+     */
     public static boolean match(String str, String pattern) {
         int len = str.length();
         int index = 0;

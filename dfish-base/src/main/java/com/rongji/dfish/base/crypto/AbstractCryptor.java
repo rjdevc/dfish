@@ -145,8 +145,8 @@ public abstract class AbstractCryptor implements Cryptor{
      * @return byte[]
      */
     protected static byte[] getKeyBytes(String key,int minLen,int maxLen,String algorithm){
-        if(isHex(key)&& key.length()/2>=minLen&&key.length()/2>=maxLen){
-            return parseHex(key);
+        if(HexInputStream.isHex(key)&& key.length()/2>=minLen&&key.length()/2>=maxLen){
+            return HexInputStream.parseHex(key);
         }else {
             try {
                 byte[] toBytes=key.getBytes("UTF-8");
@@ -160,36 +160,7 @@ public abstract class AbstractCryptor implements Cryptor{
         }
     }
 
-    private static boolean isHex(String key) {
-        if(key.length()%2==1){
-            return false;
-        }
-        char[] chs=key.toCharArray();
-        for(char c:chs){
-            if(c<'0'||(c>'9'&& c<'A')||(c>'F'&& c<'a')||c>'f'){
-                return false;
-            }
-        }
-        return true;
-    }
-    private static byte[] parseHex(String key){
-        byte[] bytes=new byte[key.length()/2];
-        char[] chs=key.toCharArray();
-        for(int i=0;i<chs.length;i+=2){
-            int hi=HEX_DE[chs[i]];
-            int low=HEX_DE[chs[i+1]];
-            bytes[i/2]=(byte)((hi<<4)|low);
-        }
-        return bytes;
-    }
-    private static final byte[] HEX_DE = { // 用于加速解密的cache
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, // 48
-            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, //64
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
-            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
+
 
     /**
      * 运行加密或解密的流动作

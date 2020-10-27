@@ -194,7 +194,8 @@ public class CryptorBuilder {
         return ALGORITHM_MD5.equals(algorithm)||
                 ALGORITHM_SHA1.equals(algorithm)||
                 ALGORITHM_SHA256.equals(algorithm)||
-                ALGORITHM_SHA512.equals(algorithm) ;
+                ALGORITHM_SHA512.equals(algorithm)||
+                ALGORITHM_SM3.equals(algorithm);
     }
 
     public CryptorBuilder param(Object param) {

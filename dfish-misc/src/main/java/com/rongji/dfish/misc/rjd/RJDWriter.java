@@ -1,5 +1,6 @@
 package com.rongji.dfish.misc.rjd;
 
+import com.rongji.dfish.base.crypto.stream.HexInputStream;
 import com.rongji.dfish.base.crypto.stream.SM4ECBOutputStream;
 
 import java.io.*;
@@ -56,8 +57,8 @@ public class RJDWriter {
         }
         //如果password 是16进制的，先转成byte[]
         byte[] key;
-        if(isHex(password)){
-            key=parseHex(password);
+        if(HexInputStream.isHex(password)){
+            key=HexInputStream.parseHex(password);
         }else{
             try {
                 key=password.getBytes(ENCODING);
@@ -82,36 +83,7 @@ public class RJDWriter {
         return key;
     }
 
-    private static boolean isHex(String key) {
-        if(key.length()%2==1){
-            return false;
-        }
-        char[] chs=key.toCharArray();
-        for(char c:chs){
-            if(c<'0'||(c>'9'&& c<'A')||(c>'F'&& c<'a')||c>'f'){
-                return false;
-            }
-        }
-        return true;
-    }
-    private static byte[] parseHex(String key){
-        byte[] bytes=new byte[key.length()/2];
-        char[] chs=key.toCharArray();
-        for(int i=0;i<chs.length;i+=2){
-            int hi=HEX_DE[chs[i]];
-            int low=HEX_DE[chs[i+1]];
-            bytes[i/2]=(byte)((hi<<4)|low);
-        }
-        return bytes;
-    }
-    private static final byte[] HEX_DE = { // 用于加速解密的cache
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 0
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 16
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 32
-            0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 0, 0, 0, 0, 0, 0, // 48
-            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0, //64
-            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // 80
-            0, 10, 11, 12, 13, 14, 15, 0, 0, 0, 0, 0, 0, 0, 0, 0}; // 96
+
 
     /**
      * 写入一个文件
@@ -124,7 +96,6 @@ public class RJDWriter {
         GZIPOutputStream gzos=new GZIPOutputStream(baos);
         gzos.write(str.getBytes(ENCODING));
         gzos.close();
-//        System.out.println("baos.toByteArray().length="+baos.toByteArray().length);
         write(path, new ByteArrayInputStream(baos.toByteArray()));
     }
 
