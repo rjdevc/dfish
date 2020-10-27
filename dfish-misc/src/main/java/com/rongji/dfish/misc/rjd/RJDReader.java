@@ -4,6 +4,10 @@ import com.rongji.dfish.base.crypto.stream.SM4ECBInputStream;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
@@ -14,6 +18,8 @@ import java.util.zip.ZipInputStream;
 public class RJDReader {
     private ZipInputStream zis;
     private String password;
+    LinkedHashMap<String,RJDCallback> callbacks;
+    RJDCallback defaultCallback;
 
     /**
      * 新建一个读取器
@@ -24,6 +30,7 @@ public class RJDReader {
     public RJDReader(InputStream is, String password)throws IOException {
         zis=new ZipInputStream(is);
         this.password=password;
+        callbacks=new LinkedHashMap<>();
     }
 
     /**
@@ -41,14 +48,86 @@ public class RJDReader {
      * @throws IOException
      */
     public void readEntries(RJDCallback callback)throws IOException {
+        this.registerDefaultCallback(callback);
+        doRead();
+    }
+
+    /**
+     * 注册url符合这个pattern的用指定的callback来处理
+     * 如果某个url可以满足多个pattern 以第一个注册的pattern为准
+     * 如果pattern为* 则相当于registerDefaultCallback
+     * defaultCallback 只有在没有任何匹配上的时候才被调用。
+     * @param pattern 可以使用*为通配符
+     * @param callback 回调
+     */
+    public void registerCallback(String pattern, RJDCallback callback) {
+        if("*".equals(pattern)){
+            registerDefaultCallback(callback);
+        }else{
+            callbacks.put(pattern,callback);
+        }
+    }
+
+    /**
+     * 注册默认的callback
+     * defaultCallback 只有在没有任何匹配上的时候才被调用。
+     * @param callback 回调
+     */
+    public void registerDefaultCallback(RJDCallback callback) {
+        defaultCallback=callback;
+    }
+
+    /**
+     * 开始读取内容
+     * @throws IOException
+     */
+    public void doRead()throws IOException {
         ZipEntry ze= null;
         while((ze=zis.getNextEntry())!=null) {
-            String name = ze.getName();
-            SM4ECBInputStream sm4is=new SM4ECBInputStream(zis,RJDWriter.getKey(password));
-            callback.execute(name, sm4is);
+            String url = ze.getName();
+            RJDCallback callback=null;
+            for(Map.Entry<String,RJDCallback> entry:callbacks.entrySet()){
+                String pattern=entry.getKey();
+                if(match(url,pattern)){
+                    callback=entry.getValue();
+                    break;
+                }
+            }
+            if(callback==null){
+                callback=defaultCallback;
+            }
+            if(callback!=null) {
+                SM4ECBInputStream sm4is=new SM4ECBInputStream(zis,RJDWriter.getKey(password));
+                callback.execute(url, sm4is);
+            }
             zis.closeEntry();
         }
         zis.close();
+    }
+
+
+    public static boolean match(String str, String pattern) {
+        int len = str.length();
+        int index = 0;
+        char ch;
+        for (int patIdx = 0, patLen = pattern.length(); patIdx < patLen; patIdx++) {
+            ch = pattern.charAt(patIdx);
+            if (ch == '*') {
+                // 通配符星号*表示可以匹配任意多个字符
+                while (index < len) {
+                    if (match(str.substring(index),pattern.substring(patIdx + 1))) {
+                        return true;
+                    }
+                    index++;
+                }
+            } else {
+                if (index >= len || ch != str.charAt(index)) {
+                    return false;
+                }
+                index++;
+            }
+        }
+        return index == len;
     }
 
 }
