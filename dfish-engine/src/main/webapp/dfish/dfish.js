@@ -849,6 +849,32 @@ _dateValid = $.dateValid = function(a, b) {
 	var d = _dateParse(a, b), y = d.getFullYear();
 	return y >= (_cfg.min_year || (_cfg.min_year = 1000)) && y <= (_cfg.max_year || (_cfg.max_year = 3000)) && a == _dateFormat(d, b);
 },
+_dateDiff = $.dateDiff = function(a, b, c) {
+	b == N && (b = new Date);
+	if (typeof a === _STR) a = _dateParse(a);
+	if (typeof b === _STR) b = _dateParse(b);
+	if (a >= b) return 0;
+	switch(c) {
+		case 'y':
+			var e = b.getFullYear() - a.getFullYear(), f = _dateAdd(a, c, e);
+			if (f > b) e --;
+			return e;
+		case 'M':
+			var y = _dateDiff(a, b, 'y'), z = _dateAdd(a, 'y', y),
+				e = z.getFullYear() < b.getFullYear() ? b.getMonth() + 11 - z.getMonth() : b.getMonth() - z.getMonth(),
+				f = _dateAdd(a, c, e);
+			if (f > b) e --;
+			return e + y * 12;
+		case 'H':
+			return Math.floor((b - a) / (60*60*1000));
+		case 'm':
+			return Math.floor((b - a) / (60*1000));
+		case 's':
+			return Math.floor((b - a) / 1000);
+		default: // 'd' 日期类型为默认
+			return Math.floor((b - a) / _date_D);
+	}
+},
 // url 编码
 _urlEncode = $.urlEncode = function(a) {return a == N ? '' : encodeURIComponent(a)},
 // url 解码

@@ -55,6 +55,7 @@
 		          { "id": "$.dateAdd", "text": "$.dateAdd", "datasrc": "$" },
 		          { "id": "$.dateFormat", "text": "$.dateFormat", "datasrc": "$" },
 		          { "id": "$.dateParse", "text": "$.dateParse", "datasrc": "$" },
+		          { "id": "$.dateDiff", "text": "$.dateDiff", "datasrc": "$" },
 		          { "id": "$.dialog", "text": "$.dialog", "datasrc": "$" },
 		          { "id": "$.download", "text": "$.download", "datasrc": "$" },
 		          { "id": "$.draggable", "text": "$.draggable", "datasrc": "$" },
