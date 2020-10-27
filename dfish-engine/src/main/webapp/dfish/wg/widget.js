@@ -242,7 +242,7 @@ _f_val = function(a, b, r) {
 	} else
 		r.push(d + '=' + $.urlEncode(v));
 },
-_addHidden = function(a) {
+_addHiddens = function(a) {
 	var d = this._hiddens || this.add({type: 'Hiddens'}, -1);
 	d.append(a);
 	!d.domready && this.domready && d.render();
@@ -2622,7 +2622,7 @@ Section = define.widget('Section', {
 				this.isLoaded() ? setTimeout($.proxy(this, 'this.trigger("load")')) : this.start(F);
 			},
 			display: function() {
-				this.start();
+				this.domready && this.start();
 			}
 		}
 	},
@@ -2751,7 +2751,7 @@ Layout = define.widget('Layout', {
 	Const: function(x, p) {
 		this.rootNode = p;
 		p.x.bind && (this.bind = p.x.bind);
-		p.x.hiddens && _addHidden.call(this, p.x.hiddens);
+		p.x.hiddens && _addHiddens.call(this, p.x.hiddens);
 		W.apply(this, arguments);
 	},
 	Prototype: {
@@ -2916,7 +2916,7 @@ View = define.widget('View', {
 			}
 		},
 		addHidden: function(a, b) {
-			this.layout && _addHidden.call(this.layout, {name: a, value: b});
+			this.layout && _addHiddens.call(this.layout, {name: a, value: b});
 		},
 		// 表单验证。如果检测到错误，将返回一个包含错误信息的数组 /@ n -> validate name, g -> range
 		getValidError: function(n, g) {
@@ -3050,8 +3050,7 @@ Horz = define.widget('Horz', {
 		Scroll.apply(this, arguments);
 		x.split && _initSplit.call(this);
 		this.attr('align') && (this.property = ' align=' + this.attr('align'));
-		if (x.hiddens)
-			this._hiddens = this.add({type: 'Hiddens', nodes: x.hiddens}, -1);
+		x.hiddens && _addHiddens.call(this, x.hiddens);
 		if (_w_lay.width.call(this))
 			this.addEvent('resize', _w_mix.width).addEvent('ready', _w_mix.width);
 	},
@@ -3100,10 +3099,9 @@ Vert = define.widget('Vert', {
 		Scroll.apply(this, arguments);
 		x.split && _initSplit.call(this);
 		this.attr('align') && (this.property = ' align=' + this.attr('align'));
+		x.hiddens && _addHiddens.call(this, x.hiddens);
 		if (_w_lay.height.call(this))
 			this.addEvent('resize', _w_mix.height).addEvent('ready', _w_mix.height);
-		if (x.hiddens)
-			this._hiddens = this.add({type: 'Hiddens', nodes: x.hiddens}, -1);
 	},
 	Extend: [Scroll, VertScale],
 	Listener: {
@@ -8715,7 +8713,7 @@ ComboBox = define.widget('ComboBox', {
 		_init_load: function() {
 			this.loading = F;
 			$.classRemove(this, 'z-loading');
-			this.init();
+			this.domready && this.init();
 		},
 		init: function(v) {
 			if (!this.$())
@@ -10561,8 +10559,6 @@ Leaf = define.widget('Leaf', {
 Tree = define.widget('Tree', {
 	Const: function(x, p) {
 		W.apply(this, arguments);
-		if (x.hiddens)
-			this._hiddens = this.add({type: 'hiddens', nodes: x.hiddens}, -1);
 		this.loaded  = this.length ? T : F;
 		this.loading = F;
 	},
@@ -10617,7 +10613,7 @@ Tree = define.widget('Tree', {
 		html_nodes: function() {
 			var s = _proto.html_nodes.call(this);
 			$.classAdd(this, 'z-empty', !s);
-			return '<div id=' + this.id + 'c class=w-tree-gut>' + s + '</div>' + (this._hiddens ? this._hiddens.html() : '')
+			return '<div id=' + this.id + 'c class=w-tree-gut>' + s + '</div>';
 		}
 	}
 }),
@@ -12147,8 +12143,6 @@ Table = define.widget('Table', {
 		W.apply(this, arguments);
 		x.scroll == N && (x.scroll = T);
 		this.initBody(x);
-		if (x.hiddens)
-			this._hiddens = this.add({type: 'Hiddens', nodes: x.hiddens}, -1);
 		if (!ie7) {//@fixme: 暂不支持ie7
 			var xl = [], xr = [];
 			for (var i = 0, f, c = x.columns, l = c ? c.length : 0; i < l; i ++) {
@@ -12163,6 +12157,7 @@ Table = define.widget('Table', {
 				this.fixed.push(this.right);
 			}
 		}
+		x.hiddens && _addHiddens.call(this, x.hiddens);
 		x.width === -1 && $.classAdd(this, 'z-auto');
 		$.classAdd(this, this.head ? 'z-head' : 'z-nohead');
 		!this.getEchoRows().length && $.classAdd(this, 'z-empty');
