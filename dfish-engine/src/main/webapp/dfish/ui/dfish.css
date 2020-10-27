@@ -624,7 +624,6 @@
 .w-checkboxgroup.z-err .w-checkbox ._t + label,.w-radiogroup.z-err .w-radio ._t + label{border-color:#f00}
 /*  CSS3 checkbox  -->   */
 
-.w-switch{}
 .w-switch ._t{display:none}
 .w-switch ._l{display:inline-block;position:relative;height:22px;background:#c0c0c0;background:rgba(0,0,0,0.25);border:1px solid #c1caca;border-radius:20px;color:#fff;vertical-align:middle;cursor:pointer;-webkit-appearance:none;}
 .w-switch ._o{position:absolute;top:1px;left:1px;background:#fff;padding:10px;border-radius:20px;box-shadow:0 2px 4px 0 rgba(0,35,11,0.2);transition:all .12s cubic-bezier(.78, .14, .15, .86);*font-size:0;}
@@ -639,6 +638,8 @@
 
 .w-formlabel .w-f-remark{height:auto;line-height:inherit}
 .w-formlabel .w-formlabel-text{padding-bottom:1px}
+
+.w-hiddens{display:none}
 
 .w-album{white-space:normal;text-align:justify}
 .w-img{position:relative;text-align:center}

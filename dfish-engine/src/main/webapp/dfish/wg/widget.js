@@ -242,6 +242,12 @@ _f_val = function(a, b, r) {
 	} else
 		r.push(d + '=' + $.urlEncode(v));
 },
+_addHidden = function(a) {
+	var d = this._hiddens || this.add({type: 'Hiddens'}, -1);
+	d.append(a);
+	!d.domready && this.domready && d.render();
+	this._hiddens = d;
+},
 // @a -> widget|el, b -> top?, c -> left?, d -> frame focus?
 _scrollIntoView = function(a, b, c, d) {
 	if (a && (!a.isWidget || a.$())) {
@@ -256,7 +262,7 @@ _scrollFocus = function(a) {
 		if (!n.isDisplay()) {
 			if (n._toggleCommander) {
 				n._toggleCommander.toggle(T);
-			} else if (n.type_collapselist) {
+			} else if (n.type === 'CollapseList') {
 				n.prev().focus();
 			} else if (n.parentNode && n.parentNode.type_frame) {
 				if (n.parentNode.getFocus() != n) {
@@ -528,7 +534,10 @@ Template = $.createClass({
 			try {
 				return _proto.formatJS.call(g, 'return ' + a, y, this.data);
 			} catch(ex) {
-				if (a && a.indexOf('(') > -1) window.console && console.error(ex.stack || ex);
+				if (window.console) {
+					if (a && a.indexOf('(') > -1) console.error(a, ex.stack || ex);
+					else if (cfg.debug) console.warn(a, ex);
+				}
 			}
 		},
 		switcher: function(s, r, g, y) {
@@ -1277,8 +1286,12 @@ W = define('Widget', function() {
 		},
 		// 递归所有子节点触发事件
 		triggerAllReady: function() {
-			//this.triggerAll('domready');
-			this.triggerAll('ready');
+			this.domready = T;
+			this.trigger('ready');
+			for (var i = 0, l = this.length; i < l; i ++)
+				this[i].triggerAllReady();
+			for (i in this.discNodes)
+				!this.discNodes[i].isDialogWidget && this.discNodes[i].triggerAllReady();
 		},
 		// 设置事件  /@a -> event type, b -> fn
 		setOn: function(a, b) {
@@ -1290,21 +1303,6 @@ W = define('Widget', function() {
 				}
 			}
 			return this;
-		},
-		at: function() {
-			var a, b;
-			if (a = this.x.at && _atCache[this.x.at]) {
-				if (b = a.children) {// [{before: '', at: ''}]
-					var r = b.data;
-				}
-				this.attr(a.props); 
-			}
-			if (a = this.x.on && this.x.on.at && _atCache[this.x.on.at]) {
-				for (var k in a.props)
-					this.setOn(k, a.x[k]);
-			}
-			for (var i = 0; i < this.length; i ++)
-				this[i].at();
 		},
 		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({name: value})?, c -> data?, d -> callback?
 		formatJS: function(a, b, c, d, x) {
@@ -1329,7 +1327,6 @@ W = define('Widget', function() {
 				h.dfish_format_fields = f;
 			}
 			for (var i = 0, e, f = h.dfish_format_fields, l = f.length, v; i < l; i ++) {
-				//v = c ? c[f[i]] : (e = x.data && x.data[f[i]]) !== U ? e : x[f[i]];
 				if (c) {
 					v = c[f[i]];
 				} else {
@@ -1950,7 +1947,7 @@ $.each('prepend append before after'.split(' '), function(v, j) {
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
 		for (; k < l; k ++)
 			r.push(p.add(a[k], d || j < 2 ? i + k : -1));
-		if (this.$()) {
+		if (this.domready && this.$()) {
 			if (b) {
 				for (k = 0; k < l; k ++)
 					this.insertHTML(a[k], v);
@@ -2598,6 +2595,9 @@ AbsSection = define.widget('AbsSection', {
 			if (!tar) {
 				this.empty();
 				this.layout = N;
+				if ((this.x.src || this.x.template) && this.owner_x) {
+					delete this.owner_x.node;
+				}
 			}
 		}
 		
@@ -2619,11 +2619,10 @@ Section = define.widget('Section', {
 	Listener: {
 		body: {
 			ready: function() {
-				this.domready = T;
 				this.isLoaded() ? setTimeout($.proxy(this, 'this.trigger("load")')) : this.start(F);
 			},
 			display: function() {
-				this.domready && this.start();
+				this.start();
 			}
 		}
 	},
@@ -2752,15 +2751,15 @@ Layout = define.widget('Layout', {
 	Const: function(x, p) {
 		this.rootNode = p;
 		p.x.bind && (this.bind = p.x.bind);
+		p.x.hiddens && _addHidden.call(this, p.x.hiddens);
 		W.apply(this, arguments);
 	},
 	Prototype: {
 		x_childtype: function(t) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype(t) : t;
 		},
-		// @a -> name, b -> value
-		addHidden: function(a, b) {
-			return this.add({type: 'Hidden', name: a, value: b}, -1).render();
+		html_nodes: function() {
+			return _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : '');
 		}
 	}
 }),
@@ -2843,9 +2842,7 @@ View = define.widget('View', {
 			if (b === U) {
 				return d && (d.groupVal ? d.groupVal() : d.val());
 			} else {
-				if (!d && this.layout)
-					d = this.layout.addHidden(a, b);
-				d && d.val(b);
+				d ? d.val(b) : this.addHidden(a, b);
 				return this;
 			}
 		},
@@ -2917,6 +2914,9 @@ View = define.widget('View', {
 			for (var i = 0, q = this.getFormList(a), l = q.length, c; i < l; i ++) {
 				(c = _getWidgetById(q[i].id)) && c.reset && c.reset(b);
 			}
+		},
+		addHidden: function(a, b) {
+			this.layout && _addHidden.call(this.layout, {name: a, value: b});
 		},
 		// 表单验证。如果检测到错误，将返回一个包含错误信息的数组 /@ n -> validate name, g -> range
 		getValidError: function(n, g) {
@@ -5595,9 +5595,11 @@ ProgressLoader = define.widget('ProgressLoader', {
 				return;
 			var self = this;
 			clearTimeout(this._timer);
-			this._timer = setTimeout(function() {
-				self.load(N, function() {this._load()});
-			}, this.x.delay);
+			if (this.x.delay != N) {
+				this._timer = setTimeout(function() {
+					self.load(N, function() {this._load()});
+				}, this.x.delay);
+			}
 		},
 		isHead: function() {
 			return _progressCache[this.getSrc()][0] === this;
@@ -5889,7 +5891,6 @@ CollapseButton = define.widget('CollapseButton', {
 CollapseList = define.widget('CollapseList', {
 	Extend: Vertical,
 	Prototype: {
-		type_collapselist: T,
 		className: 'w-vertical w-collapselist'
 	}
 }),
@@ -8681,7 +8682,6 @@ ComboBox = define.widget('ComboBox', {
 		}
 	},
 	Prototype: {
-		domready: F,
 		_query_text: '',
 		x_node: $.rt(),
 		x_childtype: $.rt('ComboBoxOption'),		
@@ -8708,7 +8708,6 @@ ComboBox = define.widget('ComboBox', {
 			c && c.layout && this._init_load();
 		},
 		_init_ready: function() {
-			this.domready = T;
 			var c = this.more.getContentView();
 			!(c && c.layout) && this.more.preload($.proxy(this, this._init_load));
 			!this.loading && this.init();
@@ -8716,7 +8715,7 @@ ComboBox = define.widget('ComboBox', {
 		_init_load: function() {
 			this.loading = F;
 			$.classRemove(this, 'z-loading');
-			this.domready && this.init();
+			this.init();
 		},
 		init: function(v) {
 			if (!this.$())
@@ -10303,7 +10302,7 @@ Leaf = define.widget('Leaf', {
 	Const: function(x, p) {
 		this.level = p.level + (p.x.rootInvisible ? 0 : 1);
 		W.apply(this, arguments);
-		this.loaded  = this.length || !x.src ? T : F;
+		this.loaded  = this.length || x.folder === F || !x.src ? T : F;
 		this.loading = F;
 		x.focus && x.focusable !== F && this.tabFocus();
 		x.badge && this.init_badge();
@@ -10622,11 +10621,12 @@ Tree = define.widget('Tree', {
 		}
 	}
 }),
+/* `Hiddens` */
 Hiddens = define.widget('Hiddens', {
-	Default: {width: 0, height: 0},
 	Prototype: {
+		className: 'w-hiddens',
 		x_childtype: $.rt('Hidden'),
-		html: _proto.html_nodes
+		prop_style: $.rt('')
 	}
 }),
 // `tablecombo` 表格搜索过滤器
@@ -12148,7 +12148,7 @@ Table = define.widget('Table', {
 		x.scroll == N && (x.scroll = T);
 		this.initBody(x);
 		if (x.hiddens)
-			this._hiddens = new Hiddens({type: 'hiddens', nodes: x.hiddens}, this, -1);
+			this._hiddens = this.add({type: 'Hiddens', nodes: x.hiddens}, -1);
 		if (!ie7) {//@fixme: 暂不支持ie7
 			var xl = [], xr = [];
 			for (var i = 0, f, c = x.columns, l = c ? c.length : 0; i < l; i ++) {
