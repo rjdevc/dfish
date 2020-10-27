@@ -248,6 +248,9 @@ _addHiddens = function(a) {
 	!d.domready && this.domready && d.render();
 	this._hiddens = d;
 },
+_addHidden = function(a, b) {
+	_addHiddens.call(this, typeof a === _STR ? {name: a, value: b} : a);
+},
 // @a -> widget|el, b -> top?, c -> left?, d -> frame focus?
 _scrollIntoView = function(a, b, c, d) {
 	if (a && (!a.isWidget || a.$())) {
@@ -2916,7 +2919,7 @@ View = define.widget('View', {
 			}
 		},
 		addHidden: function(a, b) {
-			this.layout && _addHiddens.call(this.layout, {name: a, value: b});
+			this.layout && _addHidden.call(this.layout, a, b);
 		},
 		// 表单验证。如果检测到错误，将返回一个包含错误信息的数组 /@ n -> validate name, g -> range
 		getValidError: function(n, g) {
@@ -3069,6 +3072,7 @@ Horz = define.widget('Horz', {
 		scaleWidth: function() {
 			return (this.x.br ? _proto.scaleWidth : _w_scale.width).apply(this, arguments);
 		},
+		addHidden: _addHidden,
 		html_nodes: function() {
 			var v = this.attr('vAlign');
 			v && (this.childCls += ' f-va-' + v);
@@ -3112,6 +3116,7 @@ Vert = define.widget('Vert', {
 	Prototype: {
 		className: 'w-vert',
 		childCls: 'f-sub-vert',
+		addHidden: _addHidden,
 		scaleHeight: _w_scale.height,
 		html_nodes: Horz.prototype.html_nodes
 	}
@@ -3128,6 +3133,10 @@ _isFastSwipe = function(a) {
 },
 /* `Frame`  子元素被约束为：高度宽度占满，只有一个可见  */
 Frame = define.widget('Frame', {
+	Const: function(x, p) {
+		W.apply(this, arguments);
+		x.hiddens && _addHiddens.call(this, x.hiddens);
+	},
 	Listener: {
 		body: {
 			ready: function() {
@@ -3142,6 +3151,7 @@ Frame = define.widget('Frame', {
 	Prototype: {
 		type_frame: T,
 		className: 'w-frame',
+		addHidden: _addHidden,
 		listenSwipe: function() {
 			var b = this.$(), c, d, f, ix, iy, fx, px, py, ts, sc, wd, tm, dir, self = this;
 	    	b.addEventListener('touchstart', function(e) {
@@ -3227,7 +3237,7 @@ Frame = define.widget('Frame', {
 			return n;
 		},
 		html_nodes: function() {
-			return _proto.html_nodes.call(this);
+			return _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : '');
 		}
 	}
 }),
@@ -4818,6 +4828,7 @@ FieldSet = define.widget('FieldSet', {
 				this.className += (this.box.isDisabled() ? ' z-ds' : '') + (this.box.isChecked() ? ' z-checked' : '');
 			}
 		},
+		addHidden: View.prototype.addHidden,
 		html: function() {
 			return this.html_before() + '<fieldset' + this.html_prop() + '><legend class=w-fieldset-legend>' + (this.box ? this.box.html() : '') + '<span class="_t f-va">' + (this.x.legend || '') + '</span><i class=f-vi></i></legend>' + this.html_prepend() + this.layout.html() + this.html_append() + '</fieldset>' + this.html_after();
 		}

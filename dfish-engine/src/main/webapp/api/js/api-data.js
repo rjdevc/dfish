@@ -234,13 +234,24 @@ define( {
             var v = $.data( 'myname' );  // 读取数据
           }
       ] },
-      { name: '$.dateAdd(date, type, value)', remark: '日期增减', common: true, param: [
+      { name: '$.dateAdd(date, part, value)', remark: '日期增减。', common: true, param: [
         { name: 'date', type: 'Date', remark: '日期对象' },
-        { name: 'type', type: 'String', remark: '要增加的日期类型，可选值：<b>y</b>(年) <b>M</b>(月) <b>d</b>(日) <b>H</b>(时) <b>m</b>(分) <b>s</b>(秒)' }
+        { name: 'part', type: 'String', remark: '要增加的日期类型，可选值：<b>y</b>(年) <b>M</b>(月) <b>d</b>(日) <b>H</b>(时) <b>m</b>(分) <b>s</b>(秒)' },
+        { name: 'value', type: 'Number', remark: '要增减的数值。' }
       ], example: [
           function() {
           	// 给当下的时间加一天
-            var tomorrow = $.dateAdd( new Date(), 'd', 1 );
+            var tomorrow = $.dateAdd(new Date(), 'd', 1);
+          }
+      ] },
+      { name: '$.dateDiff(startDate, [endDate], [part])', remark: '获取两个日期之间相差的值。', common: true, param: [
+        { name: 'startDate', type: 'String | Date', remark: '起始日期。' },
+        { name: 'endDate', type: 'String | Date', optional: true, remark: '结束日期。默认值为当前时间。' },
+        { name: 'part', type: 'String', optional: true, remark: '相差值的类型，可选值：<b>y</b>(年) <b>M</b>(月) <b>d</b>(日) <b>H</b>(时) <b>m</b>(分) <b>s</b>(秒)。默认值为"d"。' }
+      ], example: [
+          function() {
+          	// 计算日期相差多少天
+            var df = $.dateDiff('2020-10-01', '2020-10-08', 'd'); // 返回值为 7
           }
       ] },
       { name: '$.dateFormat(date, format)', remark: '把日期对象格式化成字串', common: true, param: [
@@ -1451,9 +1462,9 @@ define( {
       ], example: [
           function() {
           	// 以下三条语句等效
-            var p1 = wg.closest( 'Vert' );
-            var p2 = wg.closest( { type: 'Vert' } );
-            var p3 = wg.closest( function() { return this.type == 'Vert' } );
+            var p1 = wg.closest('Vertical');
+            var p2 = wg.closest({type: 'Vertical'});
+            var p3 = wg.closest(function(node){return node.type == 'Vertical'});
           }
       ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
@@ -1995,6 +2006,12 @@ define( {
       { name: 'buttonBar', type: 'ButtonBar', remark: '按钮栏对象。' },
       { name: 'frame', type: 'Frame', remark: 'Frame对象。' }
     ],
+    Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] }
+    ],
     Classes: [
       { name: '.w-tabs', remark: '基础样式。' }
     ],
@@ -2042,7 +2059,14 @@ define( {
     ],
     Config: [
       { name: 'focusMultiple', type: 'Boolean', remark: '设置为true，允许多个按钮聚焦，以及子面板展开。默认值为false。' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' }
+    ],
+    Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] }
     ],
     Classes: [
       { name: '.w-collapse', remark: '基础样式。' }
@@ -2087,7 +2111,14 @@ define( {
         { name: 'checked', type: 'Booelan', remark: '是否默认选中。', optional: true },
         { name: 'target',  type: 'String | Widget', remark: '绑定 widget 或 widgetID，同步 disabled 属性。', optional: true }
       ] },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
+    ],
+    Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] }
     ],
     Classes: [
       { name: '.w-fieldset', remark: '基础样式。' }
@@ -2115,9 +2146,14 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'dft', type: 'String', remark: '默认显示 widget 的 ID。' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' }
     ],
     Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] },
       { name: 'getFocus()', remark: '获取当前显示的 widget。' },
       { name: 'focus(id)', remark: '显示某个子元素。', param: [
         { name: 'id', type: 'String | widget', remark: 'widget ID 或对象。' }
@@ -2611,6 +2647,10 @@ define( {
       { name: 'tFoot', type: 'TFoot', remark: '表头。' }
     ],
     Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] },
       { name: 'filter([data])', remark: '只显示符合条件的行。', param: [
         { name: 'data', type: 'Object | Number | Function', remark: '用来过滤的字段对象，或行的序列号，或函数。', optional: true }
       ], example: [
@@ -2811,15 +2851,20 @@ define( {
   	remark: '12列栅栏表单布局。',
   	extend: 'AbsWidget',
     Config: [
+      { name: 'br', type: 'Boolean', remark: '内容是否换行。默认值为true' },
+      { name: 'cols', type: 'Number', remark: '列数。默认值为12。' },
       { name: 'escape', type: 'Boolean', remark: 'html内容转义。' },
       { name: 'face', type: 'String', remark: '表格行的样式。可选值: <b>line</b>(默认值，横线), <b>dot</b>(虚线), <b>cell</b>(横线和竖线), <b>none</b>(无样式)。' },
-      { name: 'br', type: 'Boolean', remark: '内容是否换行。默认值为true' },
-      { name: 'pub', type: 'Object', remark: '为每一个单元格设置默认属性' },
-      { name: 'cols', type: 'Number', remark: '列数。默认值为12。' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。' },
+      { name: 'pub', type: 'Object', remark: '为每一个单元格设置默认属性' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' }
     ],
     Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] },
       { name: 'isScrollBottom()', remark: '滚动条是否滚动到了底部。' }
     ],
 	Examples: [
@@ -2878,6 +2923,10 @@ define( {
     Properties: [
     ],
     Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。', optional: true }
+      ] },
       { name: 'scrollTo(elem, [y], [x], [speed])', remark: '滚动到指定元素的位置。', param: [
         { name: 'elem',  type: 'HTMLElement | Widget', remark: '要滚动到的html元素或widget。' },
         { name: 'y',     type: 'String | Number', remark: '元素滚动到可见区域的的垂直位置。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>，或数字。', optional: true },
@@ -3090,10 +3139,15 @@ define( {
       { name: 'complete', type: 'String | Function', remark: '在得到服务器的响应后调用的函数(不论成功失败都会执行)。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'error', type: 'String | Function', remark: '在获取服务器的响应数据失败后调用的函数。支持一个变量，<b>$ajax</b>(Ajax实例)' },
       { name: 'filter', type: 'String | Function', remark: '在获取服务器的响应数据后调用的函数。本语句应当 return 一个命令JSON。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'success', type: 'String | Function', remark: '在成功获取服务器的响应数据并执行返回的命令之后调用的函数。如果设置了本参数，引擎将不会执行后台返回的命令，由业务自行处理。支持两个变量，<b>$response</b>(服务器返回的JSON对象), <b>$ajax</b>(Ajax实例)' },
       { name: 'sync', type: 'Boolean', remark: '加载src是否同步模式。' }
     ],
     Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] },
       { name: 'reload([src], [template], [target], [fn])', remark: '重新装载。', param: [
         { name: 'src', type: 'String | Object', remark: '数据源的URL地址或者JSON对象。', optional: true },
         { name: 'template', type: 'String | Object', remark: '模板地址，或模板内容。', optional: true },
@@ -3152,7 +3206,8 @@ define( {
     Config: [
       { name: 'base', type: 'String', remark: '给当前view里的所有ajax请求指定一个默认地址。' },
       { name: 'id', type: 'String', remark: 'View 设置 id 后将产生一个 path。并可通过 VM( path ) 方法获取view。' },
-      { name: 'commands', type: 'Object', remark: '命令集。' }
+      { name: 'commands', type: 'Object', remark: '命令集。' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' }
     ],
     Properties: [
       { name: 'path', type: 'String', remark: '路径。' },
@@ -3160,6 +3215,10 @@ define( {
       { name: 'loaded', type: 'Boolean', remark: '是否装载完毕。' }
     ],
     Methods: [
+      { name: 'addHidden(name, value)', remark: '增加一个hidden表单。', param: [
+        { name: 'name', type: 'String', remark: '表单名。' },
+        { name: 'value', type: 'String', remark: '表单值。' }
+      ] },
       { name: 'find(id)', remark: '根据 id 查找 widget。', param: [
         { name: 'id', type: 'String', remark: 'widget ID。' }
       ] },
@@ -3247,7 +3306,6 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'focusMultiple', type: 'Boolean', remark: '是否可多选。' },
-      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'nodes', type: 'Array', remark: '子节点集合。Album的子节点类型为"Img"' },
       { name: 'pub', type: 'Object', remark: '子节点的默认配置项。' },
       { name: 'scroll', type: 'Boolean', remark: '是否有滚动条。' },
@@ -3358,7 +3416,6 @@ define( {
   	extend: 'AbsWidget',
     Config: [
       { name: 'ellipsis', type: 'Boolean', remark: '设置为true，树节点文本超出可视范围部分以省略号显示。' },
-      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
       { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
         { name: 'key', type: 'String', remark: '关键词。' },
         { name: 'keyCls', type: 'String', remark: '关键词样式名。' },
