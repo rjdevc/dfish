@@ -1950,7 +1950,7 @@ $.each('prepend append before after'.split(' '), function(v, j) {
 			p = j > 1 ? this.parentNode : this, l = a.length, k = 0, s = p.type_horz ? 'width' : 'height', r = [];
 		for (; k < l; k ++)
 			r.push(p.add(a[k], d || j < 2 ? i + k : -1));
-		if (this.domready && this.$()) {
+		if (this.$()) {
 			if (b) {
 				for (k = 0; k < l; k ++)
 					this.insertHTML(a[k], v);
@@ -9012,7 +9012,7 @@ ComboBox = define.widget('ComboBox', {
 					if (!d) {
 						var x = this.x.drop;
 						mbi && (x = $.extend({}, x, {width: $.width() - 40, maxHeight: $.height - 40, snap: {indent: 0, target: N, position: N}, cover: T}));
-						d = this.dropper = this.createPop(x);
+						d = this.dropper = this.createPop(x, {value: this.val(), text: this.text()});
 					}
 					d.show();
 				}
@@ -9578,7 +9578,7 @@ LinkBox = define.widget('LinkBox', {
 				if (!this.dropper) {
 					var x = this.x.drop;
 					mbi && (x = $.extend({}, x, {width: $.width() - 40, maxHeight: $.height - 40, snap: {indent: 0, target: N, position: N}, cover: T}));
-					this.dropper = this.createPop(x);
+					this.dropper = this.createPop(x, {value: this.val(), text: this.text()});
 				}
 				this.dropper.show();
 			}
@@ -9755,7 +9755,7 @@ PickBox = define.widget('PickBox', {
 				this.addClass('z-loading');
 				var self = this;
 				this.text(Loc.loading);
-				(this.dropper = this.createPop(this.x.drop)).preload(function() {
+				(this.dropper = this.createPop(this.x.drop, {value: this.val()})).preload(function() {
 					var r = self.param(v, T);
 					r ? self.val(r.value, r.text) : self.text('');
 					self.loading = F;
