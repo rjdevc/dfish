@@ -3685,7 +3685,7 @@ ButtonBar = define.widget('ButtonBar', {
 			return t || 'Button';
 		},
 		scaleWidth: function(a, b) {
-			if (this.x.dir === 'v')
+			if (this.x.dir === 'v' || this.x.br)
 				return _proto.scaleWidth.apply(this, arguments);
 			return _w_scale.width.apply(this, arguments); //a, b, this.innerWidth() - (this.length - 1) * (this.x.space || 0));
 		},
