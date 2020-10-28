@@ -82,6 +82,22 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
         return (T) this;
     }
 
+    /**
+     * 修正endTime的时间,主要用于日期查询,结束时间天数要加1
+     * @param field
+     * @param amount
+     * @return
+     */
+    public T addEndTime(int field, int amount) {
+        if (this.endTime != null) {
+            Calendar cal = Calendar.getInstance();
+            cal.setTime(endTime);
+            cal.add(field, amount);
+            this.endTime = cal.getTime();
+        }
+        return (T) this;
+    }
+
     protected static Map<Class, Map<String, FieldMethods>> paramMethods = new HashMap<>();
 
     @Override
