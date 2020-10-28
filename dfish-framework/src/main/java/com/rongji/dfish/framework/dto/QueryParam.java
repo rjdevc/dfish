@@ -144,9 +144,9 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
         } else if (fieldType == String[].class) {
             // 字符串数组
             strArray = (String[]) value;
-        } else if (fieldType == List.class) {
+        } else if (Collection.class.isAssignableFrom(fieldType)) {
             // 字符串集合
-            List cast = (List) value;
+            Collection cast = (Collection) value;
             strArray = new String[cast.size()];
             if (Utils.notEmpty(cast)) {
                 int i = 0;
@@ -303,8 +303,16 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                         } else if (paramType == String[].class) {
                             // String数组,逗号分隔开
                             value = paramValue.split(",");
-                        } else if (paramType == List.class) {
-                            // String数组,逗号分隔开
+                        } else if (paramType == Set.class) {
+                            String[] values = paramValue.split(",");
+                            // 只能当做是Set<String>
+                            Set<String> set = new HashSet<>(values.length);
+                            for (String v : values) {
+                                set.add(v);
+                            }
+                            value = set;
+                        } else if (Collection.class.isAssignableFrom(paramType)) {
+                            // 只能当做是List<String>
                             value = Arrays.asList(paramValue.split(","));
                         } else if (paramType == Date.class) {
                             // 日期
