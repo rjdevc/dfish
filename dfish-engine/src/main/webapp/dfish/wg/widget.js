@@ -3686,8 +3686,8 @@ ButtonBar = define.widget('ButtonBar', {
 		},
 		scaleWidth: function(a, b) {
 			if (this.x.dir === 'v')
-				return _proto.scaleWidth.call(this, a, b);
-			return _w_scale.width.call(this, a, b, this.innerWidth() - (this.length - 1) * (this.x.space || 0));
+				return _proto.scaleWidth.apply(this, arguments);
+			return _w_scale.width.apply(this, arguments); //a, b, this.innerWidth() - (this.length - 1) * (this.x.space || 0));
 		},
 		// @a -> name
 		getFocus: function(a) {

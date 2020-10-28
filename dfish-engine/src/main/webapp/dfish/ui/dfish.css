@@ -664,7 +664,7 @@
 .w-buttonbar.z-br,.w-tabbar.z-br{overflow:visible}
 .w-buttonbar.z-dirh,.w-tabbar.z-dirh{white-space:nowrap;word-break:keep-all}
 .w-buttonbar.z-dirh.z-br,.w-tabbar.z-dirh.z-br{white-space:normal;word-break:break-all}
-.w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block}
+.w-buttonbar.z-dirv .w-button,.w-tabbar.z-dirv .w-tab{display:block;float:left;clear:both;}
 .w-buttonbar.z-autosize,.w-tabbar.z-autosize{overflow:visible}
 .w-buttonbar-line,.w-tabbar-line{display:none;position:absolute;background:#ddd}
 .w-buttonbar-line,.w-tabbar.z-position-top .w-tabbar-line{right:0;left:0;bottom:0;height:1px}
