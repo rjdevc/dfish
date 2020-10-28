@@ -250,7 +250,7 @@ define( {
         { name: 'part', type: 'String', optional: true, remark: '相差值的类型，可选值：<b>y</b>(年) <b>M</b>(月) <b>d</b>(日) <b>H</b>(时) <b>m</b>(分) <b>s</b>(秒)。默认值为"d"。' }
       ], example: [
           function() {
-          	// 计算日期相差多少天
+          	// 计算两个日期相差多少天
             var df = $.dateDiff('2020-10-01', '2020-10-08', 'd'); // 返回值为 7
           }
       ] },
