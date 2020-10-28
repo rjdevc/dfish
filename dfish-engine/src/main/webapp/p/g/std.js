@@ -1,3 +1,7 @@
+/**
+ * 基本对话框
+ * @author lamontYu
+ */
 define.preload({
     type: 'Dialog',
     node: {
@@ -34,16 +38,24 @@ define.preload({
                             vAlign: 'middle',
                             pub: {height: 40, width: 40},
                             nodes: [
-                                { type: 'DialogMaxButton' },
+                                {type: 'DialogMaxButton'},
                                 {
-                                	type: 'DialogCloseButton',
-                                	on: {click: 'this.cmd("close")'}
+                                    type: 'DialogCloseButton',
+                                    on: {click: 'this.cmd("close")'}
                                 }
                             ]
                         }
                     ]
-                }, {
-                    type: 'Vertical', id: 'dlg_trunk bd-main bd-notop', widthMinus: 2, heightMinus: 1, width: '*', height: '*', nodes: [
+                },
+                {
+                    type: 'Vertical',
+                    id: 'dlg_trunk',
+                    cls: 'dlg-trunk bd-main bd-notop',
+                    widthMinus: 2,
+                    heightMinus: 1,
+                    width: '*',
+                    height: '*',
+                    nodes: [
                         {
                             type: 'Vertical', height: '*', nodes: [
                                 {type: 'PreloadBody', id: 'dlg_body', height: '*'}

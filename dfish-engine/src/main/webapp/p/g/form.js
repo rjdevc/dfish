@@ -1,3 +1,7 @@
+/**
+ * 表单
+ * @author lamontYu
+ */
 define.preload({
     type: 'Dialog', node: {
         type: 'View',
@@ -39,10 +43,10 @@ define.preload({
                             vAlign: 'middle',
                             pub: {height: 40, width: 40},
                             nodes: [
-                                { type: 'DialogMaxButton' },
+                                {type: 'DialogMaxButton'},
                                 {
-                                	type: 'DialogCloseButton',
-                                	on: {click: 'this.cmd("close")'}
+                                    type: 'DialogCloseButton',
+                                    on: {click: 'this.cmd("close")'}
                                 }
                             ]
                         }

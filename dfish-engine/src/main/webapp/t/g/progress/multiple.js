@@ -1,7 +1,7 @@
 define.template({
     type: 'ProgressLoader',
-    '@src': '"progress/reload/"+$data.progressKey',
-    '@delay': '$data.delay',
+    '@src': '"progress/reload/"+($progressKey||$data.progressKey)',
+    '@delay': '$delay||$data.delay',
     template: 'g/progress/multiple',
     success: 'if($response.data.finish){$.alert("进度完成",5,5000);}',
     complete: 'if($response.error||$response.data.finish){$.close(this);}',

@@ -1,3 +1,7 @@
+/**
+ * 纯内容框(无标题,按钮栏等)
+ * @author lamontYu
+ */
 define.preload({
     type: 'Dialog', node: {
         type: 'View',

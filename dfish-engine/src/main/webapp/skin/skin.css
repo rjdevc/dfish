@@ -343,19 +343,19 @@ img {
 
 /**图片**/
 /**进度条**/
-.w-progress .w-progress-item.z-0 ._up {
+.w-progress-loader .w-progress.z-0 ._up {
     background-color: #fff000;
 }
 
-.w-progress .w-progress-item.z-25 ._up {
+.w-progress-loader .w-progress.z-25 ._up {
     background-color: #ffb527;
 }
 
-.w-progress .w-progress-item.z-50 ._up {
+.w-progress-loader .w-progress.z-50 ._up {
     background-color: #fc942d;
 }
 
-.w-progress .w-progress-item.z-75 ._up {
+.w-progress-loader .w-progress.z-75 ._up {
     background-color: #72b636;
 }
 

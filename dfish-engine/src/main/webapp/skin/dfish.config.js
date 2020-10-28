@@ -23,7 +23,7 @@ dfish.config({
     // 每个 widget 类都可以定义默认属性，以 widget type 作为 key
     defaultOptions: {
         'Alert': {preload: 'g/alert'},
-        'Alert.x-alert-info': {position: 'br', timeout: 3000},
+        'Alert.x-alert-info': {icon: '.f-i-check-circle', position: 'br', timeout: 3000},
         'Alert.x-alert-warn': {icon: '.f-i-warning'},
         'Confirm': {preload: 'g/alert'},
         'Dialog': {preload: 'g/std', width: 680, height: 410},
@@ -88,7 +88,7 @@ dfish.config({
             minFileSize: '1B',
             maxFileSize: '10M',
             data: {'scheme': 'DEFAULT'},
-            post: {type: 'UploadPost',  src: 'file/upload/file?scheme=$scheme', template: 'g/upload/post'},
+            post: {type: 'UploadPost', src: 'file/upload/file?scheme=$scheme', template: 'g/upload/post'},
             download: 'file/download/${id}.${extension}',
             fileTypes: '*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;',
             uploadButtons: [{type: 'UploadButton', text: '选择文件', icon: '.f-i-upload'}]
@@ -144,10 +144,10 @@ dfish.config({
         if (hasError) {
             // 这里不返回代表框架不进行任何处理,如果是false,按照框架的错误提示,response代表正常
             return app.response.error(response);
-        // } else if (response.data === undefined) {
-        //     // 有点业务,这里注释了,在项目中补充
-        //     // 不允许data是空的,这么做解决大部分页面的容错问题
-        //     response.data = {};
+            // } else if (response.data === undefined) {
+            //     // 有点业务,这里注释了,在项目中补充
+            //     // 不允许data是空的,这么做解决大部分页面的容错问题
+            //     response.data = {};
         }
         return response;
     },

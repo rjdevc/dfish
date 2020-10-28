@@ -212,6 +212,9 @@ public class Pagination implements Serializable {
         if (this.getLimit() <= 0) {
             throw new UnsupportedOperationException("limit must greater than zero.");
         }
+        if (this.getSize() == null) {
+            return 0;
+        }
         int pageCount = (this.getSize() + this.getLimit() - 1) / this.getLimit();
         return pageCount;
     }
