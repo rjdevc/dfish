@@ -3,6 +3,7 @@ package com.rongji.dfish.framework.plugin.progress;
 import com.rongji.dfish.base.cache.Cache;
 import com.rongji.dfish.base.cache.impl.MemoryCache;
 import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.exception.MarkedCause;
 import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
@@ -23,7 +24,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ProgressManager {
     private Cache<String, ProgressData> progressCache = new MemoryCache<>();
-    private Cryptor cryptor;
+    private CryptorBuilder cryptorBuilder;
 
     /**
      * 进度条缓存
@@ -44,21 +45,19 @@ public class ProgressManager {
     }
 
     /**
-     * 加解密工具
-     *
-     * @return 加解密工具
+     * 加密构建器
+     * @return CryptorBuilder
      */
-    public Cryptor getCryptor() {
-        return cryptor;
+    public CryptorBuilder getCryptorBuilder() {
+        return cryptorBuilder;
     }
 
     /**
-     * 加解密工具
-     *
-     * @param cryptor 加解密工具
+     * 加密构建器
+     * @param cryptorBuilder CryptorBuilder
      */
-    public void setCryptor(Cryptor cryptor) {
-        this.cryptor = cryptor;
+    public void setCryptorBuilder(CryptorBuilder cryptorBuilder) {
+        this.cryptorBuilder = cryptorBuilder;
     }
 
     /**
@@ -735,16 +734,16 @@ public class ProgressManager {
 
     private boolean getDefaultCryptor = false;
 
-    private Cryptor cryptor() {
-        if (this.cryptor == null && !getDefaultCryptor) {
+    private CryptorBuilder cryptorBuilder() {
+        if (this.cryptorBuilder == null && !getDefaultCryptor) {
             try {
-                this.cryptor = new CryptorBuilderFactoryBean().getObject().build();
+                this.cryptorBuilder = new CryptorBuilderFactoryBean().getObject();
             } catch (Exception e) {
                 LogUtil.error(getClass(), "default cryptor can not be created.", e);
             }
             getDefaultCryptor = true;
         }
-        return this.cryptor;
+        return this.cryptorBuilder;
     }
 
     /**
@@ -755,9 +754,9 @@ public class ProgressManager {
      */
     public String encrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
-            Cryptor cryptor = cryptor();
+            CryptorBuilder builder = cryptorBuilder();
             // 若加密器为空,将以明文形式展示进度编号
-            return cryptor != null ? cryptor.encrypt(progressKey) : progressKey;
+            return builder != null ? builder.build().encrypt(progressKey) : progressKey;
         }
         return progressKey;
     }
@@ -770,9 +769,9 @@ public class ProgressManager {
      */
     public String decrypt(String progressKey) {
         if (Utils.notEmpty(progressKey)) {
-            Cryptor cryptor = cryptor();
+            CryptorBuilder builder = cryptorBuilder();
             // 若加密器为空,将以明文形式展示进度编号
-            return cryptor != null ? cryptor.decrypt(progressKey) : progressKey;
+            return builder != null ? builder.build().decrypt(progressKey) : progressKey;
         }
         return progressKey;
     }

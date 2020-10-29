@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.service.impl;
 
 import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.framework.service.FrameworkService;
 
 import javax.annotation.Resource;
@@ -13,22 +14,18 @@ import java.lang.reflect.ParameterizedType;
  * @since DFish5.0
  */
 public abstract class AbstractFrameworkService<V, P, ID extends Serializable> implements FrameworkService<V, P, ID> {
-    @Resource(name = "cryptor")
-    protected Cryptor cryptor;
+    @Resource(name = "cryptorBuilder")
+    protected CryptorBuilder cryptorBuilder;
     protected Class<P> poClass;
     protected Class<V> voClass;
 
     @Override
-    public Cryptor getCryptor() {
-        return cryptor;
+    public CryptorBuilder getCryptorBuilder() {
+        return cryptorBuilder;
     }
 
-    /**
-     * 加密器
-     * @param cryptor 加密器
-     */
-    public void setCryptor(Cryptor cryptor) {
-        this.cryptor = cryptor;
+    public void setCryptorBuilder(CryptorBuilder cryptorBuilder) {
+        this.cryptorBuilder = cryptorBuilder;
     }
 
     @Override

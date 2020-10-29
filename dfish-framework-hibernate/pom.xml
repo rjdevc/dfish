@@ -6,7 +6,7 @@
     <parent>
         <groupId>com.rongji.dfish</groupId>
         <artifactId>dfish</artifactId>
-        <version>5.0.4.11-SNAPSHOT</version>
+        <version>5.0.4.12-SNAPSHOT</version>
     </parent>
 
     <artifactId>dfish-framework-hibernate</artifactId>
