@@ -1755,11 +1755,8 @@ Ajax = _createClass({
 				e = (e ? e + '&' : '') + _strFrom(a, '?');
 				u = _strTo(a, '?');
 			}
-			//if (x.base || (!_ajax_httpmode(u) && _path))
-			//	u = _urlLoc(x.base || _path, u);
 			if (!br.app && x.cdn && _cfg.ver)
 				u = _urlParam(u, {_v: _cfg.ver});
-				    
 			(l = _ajax_xhr(x)).open(e ? 'POST' : 'GET', u, !x.sync);
 			this.request = l;
 			if (x.beforeSend && _fnapply(x.beforeSend, c, '$ajax', [self]) === F)
@@ -1794,11 +1791,10 @@ Ajax = _createClass({
 						self.response = m;
 						if (!r && x.filter) {
 							var t = _fnapply(x.filter, c, '$response,$ajax', [m, self]);
-							if (t) {
-								self.response = t;
-							} else {
+							self.response = t;
+							if (!t) {
 								r = 'filter';
-								if (t === U) f = F;
+								if (t == N) f = F;
 							}
 						}
 					} else

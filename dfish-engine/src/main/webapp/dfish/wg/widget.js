@@ -2421,6 +2421,15 @@ _getReplaceTargets = function(x, tar, r) {
 	}
 	return r;
 },
+_sectionAjaxCB = function(method, data, ajax) {
+	var s = this.x[method];
+	if (!s) {
+		var t = this.x.template && _getTemplateBody(this.x.template);
+		s = t && t[method];
+	}
+	s && this.formatJS(s, {$response: data, $ajax: ajax});
+	return !this._disposed;
+},
 /* `AbsSection` */
 AbsSection = define.widget('AbsSection', {
 	Const: function(x, p, n) {
@@ -2519,35 +2528,20 @@ AbsSection = define.widget('AbsSection', {
 				t = _getTemplateBody(t);
 			d(), e();
 			var u = this.getSrc();
-			u && typeof u === _STR ? this.exec({type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync, success: function(x) {
-				if (this._success(x)) {
-					n = x, d(), e();
-				}
-			}, error: function(a) {
-				if (this._error(a)) {
-					n = new Error({text: Loc.ps(a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status)});
-					d(), e();
-				}
-			}}) : (n = u && typeof u === _OBJ ? u : {}, d(), e());
+			u && typeof u === _STR ? this.exec({type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync,
+				success: function(x, a) {
+					if (_sectionAjaxCB.call(this, 'success', x, a)) {
+						n = x, d(), e();
+					}
+				}, error: function(a) {
+					if (_sectionAjaxCB.call(this, 'error', N, a)) {
+						n = new Error({text: Loc.ps(a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status, u)});
+						d(), e();
+					}
+				}, complete: function(x, a) {
+					_sectionAjaxCB.call(this, 'complete', x, a);
+				}}) : (n = u && typeof u === _OBJ ? u : {}, d(), e());
 			cache && this.addEvent('unload', function() {$.ajaxClean(u)});
-		},
-		_success: function(x) {
-			var t = this.x.template && _getTemplateBody(this.x.template), s = this.x.success || (t && t.success);
-			s && this.formatJS(s, {'$response': x});
-			if (this._disposed) return F;
-			s = this.x.complete || (t && t.complete);
-			s && this.formatJS(s, {'$response': x});
-			if (this._disposed) return F;
-			return T;
-		},
-		_error: function(x) {
-			var t = this.x.template && _getTemplateBody(this.x.template), s = this.x.error || (t && t.error);
-			s && this.formatJS(s, {'$response': N});
-			if (this._disposed) return F;
-			s = this.x.complete || (t && t.complete);
-			s && this.formatJS(s, {'$response': N});
-			if (this._disposed) return F;
-			return T;
 		},
 		// @x -> data json
 		_loadEnd: function(d) {
@@ -8825,7 +8819,7 @@ ComboBox = define.widget('ComboBox', {
 				o.width = w;
 			}
 			$.extendDeep(d, o);
-			d.data = $.extend(r, d.data || {});
+			d.data = $.extend(d.data || {}, r);
 			var self = this;
 			return this.add(d, -1).addEvent('close', function() {
 				!self.$().contains(document.activeElement) && self.focus(F);
@@ -10095,24 +10089,14 @@ AbsLeaf = define.widget('AbsLeaf', {
 			this.$('o') && !this.$('r') && $.prepend(this.$('o'), this.caret(this.isExpanded()));
 			this.$('c') && $.classAdd(this.$('c'), 'z-open', !!(this.isFolder() && this.x.open));
 		},
-		_success: function(x) {
-			return Section.prototype._success.apply(this, arguments);
-		},
-		_error: function() {
-			if (this.x.folder && !this.length) {
-				this.x.folder = F;
-				this.fixFolder();
-			}
-			return Section.prototype._error.apply(this, arguments);
-		},
 		// @a -> sync? b -> fn?
 		request: function(a, b) {
 			this.loading = T;
 			var f = this.x.filter, t = this.x.template;
 			t && (t = _getTemplateBody(t));
 			this.exec({type: 'Ajax', src: this.getSrc(), filter: this.x.filter || (t && t.filter), sync: a, loading: F,
-				success: function(x) {
-					if (!this._success(x))
+				success: function(x, j) {
+					if (!_sectionAjaxCB.call(this, 'success', x, j))
 						return;
 					this.loaded = T;
 					this._srcdata = x;
@@ -10129,10 +10113,11 @@ AbsLeaf = define.widget('AbsLeaf', {
 					}
 					b && b.call(this);
 				},
-				error: function(a) {
-					this._error(a);
+				error: function(j) {
+					_sectionAjaxCB.call(this, 'error', N, j);
 				},
-				complete: function(x) {// complete
+				complete: function(x, j) {
+					if (this._disposed) return;
 					this.loading = F;
 					this.loaded = T;
 					if (!this.getLength()) {
@@ -10147,6 +10132,7 @@ AbsLeaf = define.widget('AbsLeaf', {
 						} else
 							$.remove(this.id + 'ld');
 					}
+					_sectionAjaxCB.call(this, 'complete', x, j);
 				}});
 		},
 		render_nodes: function(n) {
