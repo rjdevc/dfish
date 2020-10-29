@@ -95,7 +95,7 @@ public abstract class AbstractCryptor implements Cryptor{
     @Override
     public String encrypt(String src) {
         if (Utils.isEmpty(src)) {
-            return null;
+            return src;
         }
         ByteArrayInputStream bais;
         try {
@@ -111,7 +111,7 @@ public abstract class AbstractCryptor implements Cryptor{
     @Override
     public String decrypt(String src) {
         if (Utils.isEmpty(src)) {
-            return null;
+            return src;
         }
         ByteArrayInputStream bais = new ByteArrayInputStream(src.getBytes());
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
