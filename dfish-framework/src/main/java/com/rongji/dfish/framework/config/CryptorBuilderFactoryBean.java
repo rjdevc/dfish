@@ -56,9 +56,6 @@ public class CryptorBuilderFactoryBean implements FactoryBean<CryptorBuilder> {
             case "DESede":
                 KEY_LENGTH=8;
                 break;
-            case "SM4":
-                KEY_LENGTH=32;
-                break;
             default: KEY_LENGTH=16;
         };
         byte[] key;
