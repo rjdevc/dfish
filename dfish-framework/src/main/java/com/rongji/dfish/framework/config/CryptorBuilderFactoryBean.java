@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.config;
 
 import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.util.CryptoUtil;
 import org.springframework.beans.factory.FactoryBean;
 
@@ -10,7 +11,7 @@ import org.springframework.beans.factory.FactoryBean;
  * @since DFish5.0
  * @author LinLW
  */
-public class CryptorFactoryBean implements FactoryBean<Cryptor> {
+public class CryptorBuilderFactoryBean implements FactoryBean<CryptorBuilder> {
 
     /**
      * 默认算法
@@ -30,10 +31,9 @@ public class CryptorFactoryBean implements FactoryBean<Cryptor> {
     public static final String SECRET_KEY_DEFAULT = "DFish@RJ002474";
 
     @Override
-    public Cryptor getObject() throws Exception {
+    public CryptorBuilder getObject() throws Exception {
         return CryptoUtil.prepareCryptor(algorithm,secretKey.getBytes("UTF-8"))
-                .encoding(encoding).present(present)
-                .build();
+                .encoding(encoding).present(present);
     }
 
     @Override

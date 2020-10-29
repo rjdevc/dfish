@@ -8,7 +8,7 @@
        default-lazy-init="true">
 
     <!-- 加密提供 -->
-    <bean id="cryptor" class="com.rongji.dfish.framework.config.CryptorFactoryBean">
+    <bean id="cryptor" class="com.rongji.dfish.framework.config.CryptorBuilderFactoryBean">
         <property name="secretKey" value="${crypt.key}"></property>
     </bean>
 

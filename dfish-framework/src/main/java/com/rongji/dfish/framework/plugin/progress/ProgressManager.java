@@ -8,7 +8,7 @@ import com.rongji.dfish.base.exception.MarkedRuntimeException;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.ThreadUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.config.CryptorFactoryBean;
+import com.rongji.dfish.framework.config.CryptorBuilderFactoryBean;
 
 import java.io.Serializable;
 import java.text.DecimalFormat;
@@ -738,7 +738,7 @@ public class ProgressManager {
     private Cryptor cryptor() {
         if (this.cryptor == null && !getDefaultCryptor) {
             try {
-                this.cryptor = new CryptorFactoryBean().getObject();
+                this.cryptor = new CryptorBuilderFactoryBean().getObject().build();
             } catch (Exception e) {
                 LogUtil.error(getClass(), "default cryptor can not be created.", e);
             }
