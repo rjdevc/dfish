@@ -1,6 +1,5 @@
 package com.rongji.dfish.framework.config;
 
-import com.rongji.dfish.base.crypto.Cryptor;
 import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.util.CryptoUtil;
 import org.springframework.beans.factory.FactoryBean;
@@ -38,12 +37,7 @@ public class CryptorBuilderFactoryBean implements FactoryBean<CryptorBuilder> {
 
     @Override
     public Class getObjectType() {
-        return Cryptor.class;
-    }
-
-    @Override
-    public boolean isSingleton() {
-        return true;
+        return CryptorBuilder.class;
     }
 
     private String algorithm = ALGORITHM_DEFAULT;
