@@ -15,21 +15,22 @@ public class CryptorBuilder {
     /**
      * 16进制表示，原一个字节表示成2个16进制字符。
      */
-    public static final int PRESENT_HEX = 1;
+    public static final int PRESENT_HEX = 100;
     /**
      * Base64表示。原3个字节的二进制内容表示成4个字符。
      */
-    public static final int PRESENT_BASE64 = 2;
-    /**
-     * Bsee32表示。原5个字节的二进制内容表示成8个字符
-     */
-    public static final int PRESENT_BASE32 = 3;
+    public static final int PRESENT_BASE64 = 200;
     /**
      * 注意和 RTF4648 的并不完全一致，该表示方式没有最后的PAD(=)
      * 加密的话和旧版本有所不同，后面不再带点号(.) 所以新版本加密的在旧版本中将无法解密
      * 但旧版本加密的新版本中可以解密。
      */
-    public static final int PRESENT_BASE64_URLSAFE = 4;
+    public static final int PRESENT_BASE64_URLSAFE = 201;
+    /**
+     * Bsee32表示。原5个字节的二进制内容表示成8个字符
+     */
+    public static final int PRESENT_BASE32 = 300;
+
 
     /**
      * 字符集用GBK
@@ -219,13 +220,13 @@ public class CryptorBuilder {
      */
     public Cryptor build() {
         if(isDigest(algorithm)){
+            if(ALGORITHM_SM3.equals(algorithm)){
+                return new SM3Cryptor(this);
+            }
             return new MessageDigestCryptor(this);
         }
         if(ALGORITHM_SM4.equals(algorithm)){
             return new SM4Cryptor(this);
-        }
-        if(ALGORITHM_SM3.equals(algorithm)){
-            return new SM3Cryptor(this);
         }
         // MD5 SHA
         return new CipherCryptor(this);
