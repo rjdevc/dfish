@@ -8819,7 +8819,7 @@ ComboBox = define.widget('ComboBox', {
 				o.width = w;
 			}
 			$.extendDeep(d, o);
-			d.data = $.extend(d.data || {}, r);
+			d.data = $.extend(r || {}, d.data);
 			var self = this;
 			return this.add(d, -1).addEvent('close', function() {
 				!self.$().contains(document.activeElement) && self.focus(F);
@@ -10185,10 +10185,11 @@ AbsLeaf = define.widget('AbsLeaf', {
 			}
 		},
 		compare: function(x) {
+			var n = x.nodes, l = n && n.length;
 			if (x.text || x.format) {
 				var _x = this.x, b = ['icon', 'expandedIcon', 'src', 'cls', 'focus'];
-				this.init_x(x);
-				for (var i = 0, l = b.length, e; i < l; i ++) {
+				//this.init_x(x);
+				for (var i = 0, e; i < b.length; i ++) {
 					e = b[i];
 					if (_x[e] !== x[e])
 						this.attr(e, x[e] || '');
@@ -10196,7 +10197,6 @@ AbsLeaf = define.widget('AbsLeaf', {
 				if (this.x.format || (_x.text !== x.text))
 					this.attr('text', x.text);
 			}
-			var n = x.nodes, l = n && n.length;
 			if (l) {
 				if (!this.length) {
 					this.render_nodes(n);
