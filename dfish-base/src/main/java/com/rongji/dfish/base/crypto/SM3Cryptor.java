@@ -101,6 +101,8 @@ public class SM3Cryptor extends  AbstractCryptor {
         value=IV;
         buffLen=0;
         buff=new byte[64];
+        this.buffLen=0;
+        this.totalByte=0;
     }
 
     /**
