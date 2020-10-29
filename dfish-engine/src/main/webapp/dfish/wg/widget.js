@@ -6094,16 +6094,16 @@ AbsForm = define.widget('AbsForm', {
 			}
 		},
 		scaleWidth: function(a, b) {
-				var d, e, s = this.inputScale();
-				if (this.label) {
-					var w = this.label.attr('width');
-					if ((w == -1 && isNaN(s)) || (isNaN(w) && s == -1)) {
-						d = this.$() ? [w < 0 ? this.label.$().offsetWidth : w, s < 0 ? this.$('m').offsetWidth : s] : [w, s];
-					} else
-						d = [w, s];
-				} else 
-					d = [s];
-				e = $.scale(this.innerWidth(), d);
+			var d, e, s = this.inputScale();
+			if (this.label) {
+				var w = this.label.attr('width');
+				if ((w == -1 && isNaN(s)) || (isNaN(w) && s == -1)) {
+					d = this.$() ? [w < 0 ? this.label.$().offsetWidth : w, s < 0 ? this.$('m').offsetWidth : s] : [w, s];
+				} else
+					d = [w, s];
+			} else 
+				d = [s];
+			e = $.scale(this.innerWidth(), d);
 
 			if (a == this.label)
 				return e[0];
@@ -10065,6 +10065,8 @@ AbsLeaf = define.widget('AbsLeaf', {
 				}
 			} else if (a === 'icon' || a === 'expandedIcon') {
 				this.$('i') ? $.replace(this.$('i'), this.html_icon()) : (this.$('t') && $.before(this.$('t'), this.html_icon()));
+			} else if (a === 'expanded') {
+				b != N && this.toggle(b);
 			} else if (a === 'focus') {
 				this.focus(b);
 			} else if (a === 'src' || a === 'folder') {
@@ -10185,13 +10187,14 @@ AbsLeaf = define.widget('AbsLeaf', {
 		},
 		compare: function(x) {
 			var n = x.nodes, l = n && n.length;
+			delete x.nodes;
 			if (x.text || x.format) {
-				var _x = this.x, b = ['icon', 'expandedIcon', 'src', 'cls', 'focus'];
-				//this.init_x(x);
+				var _x = this.x, b = ['icon', 'expandedIcon', 'src', 'cls', 'expanded', 'focus'];
+				this.init_x(x);
 				for (var i = 0, e; i < b.length; i ++) {
 					e = b[i];
 					if (_x[e] !== x[e])
-						this.attr(e, x[e] || '');
+						this.attr(e, x[e]);
 				}
 				if (this.x.format || (_x.text !== x.text))
 					this.attr('text', x.text);
@@ -10446,7 +10449,7 @@ Leaf = define.widget('Leaf', {
 			return this.rootNode.focusNode === this;
 		},
 		isExpanded: function() {
-			return this.x.expanded && !!this.length;
+			return !!this.x.expanded && !!this.length;
 		},
 		isEvent4Box: function(e) {
 			return this.box && e && e.srcElement && e.srcElement.id === this.box.id + 't';
