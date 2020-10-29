@@ -6107,8 +6107,7 @@ AbsForm = define.widget('AbsForm', {
 
 			if (a == this.label)
 				return e[0];
-			var w = _proto.scaleWidth.call(this, a, b, e[e.length - 1]);
-			return w == N || w < 0 ? N : w - (a.attr('widthMinus') || 0);
+			return _proto.scaleWidth.call(this, a, b, e[e.length - 1]);
 		},
 		formWidth: function() {
 			return AbsForm.prototype.scaleWidth.call(this, this, this.inputScale());
