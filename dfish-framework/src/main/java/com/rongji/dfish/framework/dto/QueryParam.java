@@ -117,7 +117,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
                         continue;
                     }
                     String[] strValues = toStringValue(value, fieldType);
-                    String valueStr = StringUtil.joinString(strValues);
+                    String valueStr = StringUtil.join(strValues);
                     if (Utils.notEmpty(valueStr)) {
                         sb.append('&').append(fieldName).append('=');
                         try {
