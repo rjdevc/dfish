@@ -966,6 +966,12 @@ W = define('Widget', function() {
 				case 'pub':
 					b && c && (this.x.pub = $.extend(c, b));
 				break;
+				case 'tip':
+					if(this.$()) {
+						var t = this.attr('tip');
+						this.$().title = t === T ? (this.attr('text') || '') : typeof t === _STR ? t : '';
+					}
+				break;
 				case 'width':
 					this.width(b);
 				break;
@@ -4444,6 +4450,7 @@ Img = define.widget('Img', {
 			return Button.prototype.init_badge.call(this);
 		},
 		attrSetter: function(a, b) {
+			_proto.attrSetter.apply(this, arguments);
 			if (a === 'src') {
 				this.$('i') && $.replace(this.$('i'), this.html_img());
 			} else if (a === 'text' || a === 'description') {
@@ -6461,6 +6468,7 @@ FormLabel = define.widget('FormLabel', {
 	},
 	Extend: [AbsForm, Html],
 	Prototype: {
+		attrSetter: Html.prototype.attrSetter,
 		text: function() {
 			return Html.prototype.text.apply(this, arguments);
 		},
@@ -6473,6 +6481,9 @@ FormLabel = define.widget('FormLabel', {
 		},
 		form_cls: function() {
 			return 'w-formlabel-text f-nv f-oh f-wdbr';
+		},
+		main_prop: function() {
+			return AbsForm.prototype.main_prop.call(this) + _html_on.call(this);
 		},
 		html_nodes: function() {
 			return Html.prototype.html_nodes.call(this);
