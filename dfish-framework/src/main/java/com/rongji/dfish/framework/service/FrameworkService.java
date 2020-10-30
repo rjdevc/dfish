@@ -1,6 +1,7 @@
 package com.rongji.dfish.framework.service;
 
 import com.rongji.dfish.base.Pagination;
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.base.crypto.Cryptor;
 import com.rongji.dfish.framework.dao.FrameworkDao;
@@ -147,10 +148,10 @@ public interface FrameworkService<V, P, ID extends Serializable> {
     }
 
     /**
-     * 获取加密器
+     * 获取加密构建器
      * @return Cryptor
      */
-    Cryptor getCryptor();
+    CryptorBuilder getCryptorBuilder();
 
     /**
      * 加密字符
@@ -159,7 +160,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * @return 加密后的密文
      */
     default String encrypt(String str) {
-        return getCryptor().encrypt(str);
+        return getCryptorBuilder().build().encrypt(str);
     }
 
     /**
@@ -169,7 +170,7 @@ public interface FrameworkService<V, P, ID extends Serializable> {
      * @return 解密后的字符
      */
     default String decrypt(String str) {
-        return getCryptor().decrypt(str);
+        return getCryptorBuilder().build().decrypt(str);
     }
 
     /**

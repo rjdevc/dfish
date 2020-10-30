@@ -1,8 +1,9 @@
 package com.rongji.dfish.framework.config;
 
+import com.rongji.dfish.base.crypto.Cryptor;
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.framework.config.impl.DefaultPropertyCryptor;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.beans.factory.config.PropertyPlaceholderConfigurer;
@@ -27,22 +28,14 @@ import java.util.Properties;
  */
 public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 
-	protected PropertyCryptor propertyCryptor;
+	protected CryptorBuilder cryptorBuilder;
 
-	/**
-	 * 获得PropertyCryptor
-	 * @return 属性加密器
-	 */
-	public PropertyCryptor getPropertyCryptor() {
-		return propertyCryptor;
+	public CryptorBuilder getCryptorBuilder() {
+		return cryptorBuilder;
 	}
 
-	/**
-	 * 设置PropertyCryptor
-	 * @param propertyCryptor 属性加密器
-	 */
-	public void setPropertyCryptor(PropertyCryptor propertyCryptor) {
-		this.propertyCryptor = propertyCryptor;
+	public void setCryptorBuilder(CryptorBuilder cryptorBuilder) {
+		this.cryptorBuilder = cryptorBuilder;
 	}
 
 	/**
@@ -57,8 +50,16 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 	@Override
 	protected void processProperties(ConfigurableListableBeanFactory beanFactoryToProcess, Properties properties)
 	        throws BeansException {
+
+		Cryptor cryptor = null;
 		// 获取系统配置加密器,为空时使用默认配置加密器
-		propertyCryptor = propertyCryptor == null ? new DefaultPropertyCryptor() : propertyCryptor;
+		try {
+			cryptorBuilder = cryptorBuilder == null ? new CryptorBuilderFactoryBean().getObject() : cryptorBuilder;
+			cryptor = cryptorBuilder.build();
+		} catch (Exception e) {
+			LogUtil.error("获取加密器异常", e);
+		}
+
 		int suffixLength = ENCRYPTION_SUFFIX.length();
 		// 加密的属性
 		Map<String, String> encryptProps = new HashMap<>();
@@ -68,11 +69,13 @@ public class PropertyConfigurer extends PropertyPlaceholderConfigurer {
 			String key = String.valueOf(entry.getKey());
 			if (key.endsWith(ENCRYPTION_SUFFIX)) { // 若配置名称后缀带有密文标识,需要进行解密
 				String value = String.valueOf(entry.getValue());
-				try {
-	                value = propertyCryptor.decrypt(value); // 解密密文
-                } catch (Exception e) {
-	                LogUtil.error("配置解密失败[" + key + "]", e);
-                }
+				if (cryptor != null) {
+					try {
+						value = cryptor.decrypt(value); // 解密密文
+					} catch (Exception e) {
+						LogUtil.error("配置解密失败[" + key + "]", e);
+					}
+				}
 				// 解密完成后,将配置名称的密文标识去除,设置加进去
 				encryptProps.put(key.substring(0, key.length() - suffixLength), value);
 				// 将原加密的名称去除,已经没有作用
