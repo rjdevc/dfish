@@ -8140,7 +8140,7 @@ Jigsaw = define.widget('Jigsaw', {
 			Q(this.$('pht')).html(this.html_info(d));
 			this.readonly();
 			this.more && this.more.close();
-			var a = Math.abs(d.error.timeout || 0), self = this;
+			var a = d.error.timeout ? Math.floor(d.error.timeout / 1000) : 0, self = this;
 			if (a) {
 				this._cntdn_inter = setInterval(function() {
 					if (a < 2) {
@@ -8163,7 +8163,7 @@ Jigsaw = define.widget('Jigsaw', {
 			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);
 		},
 		html_info: function(d) {
-			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
+			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.floor(d.error.timeout / 1000) + '</em>)' : '') + '</var>' :
 				d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
 				(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
