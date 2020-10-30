@@ -10188,17 +10188,6 @@ AbsLeaf = define.widget('AbsLeaf', {
 		compare: function(x) {
 			var n = x.nodes, l = n && n.length;
 			delete x.nodes;
-			if (x.text || x.format) {
-				var _x = this.x, b = ['icon', 'expandedIcon', 'src', 'cls', 'expanded', 'focus'];
-				this.init_x(x);
-				for (var i = 0, e; i < b.length; i ++) {
-					e = b[i];
-					if (_x[e] !== x[e])
-						this.attr(e, x[e]);
-				}
-				if (this.x.format || (_x.text !== x.text))
-					this.attr('text', x.text);
-			}
 			if (l) {
 				if (!this.length) {
 					this.render_nodes(n);
@@ -10221,6 +10210,17 @@ AbsLeaf = define.widget('AbsLeaf', {
 						this[i].remove();
 					}
 				}
+			}
+			if (x.text || x.format) {
+				var _x = this.x, b = ['icon', 'expandedIcon', 'src', 'cls', 'expanded', 'focus'];
+				this.init_x(x);
+				for (var i = 0, e; i < b.length; i ++) {
+					e = b[i];
+					if (_x[e] !== x[e])
+						this.attr(e, x[e]);
+				}
+				if (this.x.format || (_x.text !== x.text))
+					this.attr('text', x.text);
 			}
 			return this;
 		},
