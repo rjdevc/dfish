@@ -33,7 +33,7 @@ public class SM4ECBInputStream extends AbstractPresentInputStream {
         }
         SM4.oneRound(key,inBuff,0,outBuff,0);
         if(end){
-            if(outBuff[15]>=16||outBuff[15]<0){
+            if(outBuff[15]>16||outBuff[15]<=0){
                 throw new RuntimeException("SM4 decrypt fail");
             }
             outBuffLen = 16-outBuff[15];//把PADDING去除
