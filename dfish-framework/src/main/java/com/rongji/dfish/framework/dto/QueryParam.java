@@ -33,20 +33,6 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
     protected Date endTime;
 
     /**
-     * 构造函数
-     */
-    public QueryParam() {
-    }
-
-    /**
-     * 构造函数
-     * @param request
-     */
-    public QueryParam(HttpServletRequest request) {
-        bind(request);
-    }
-
-    /**
      * 查询开始时间
      * @return Date 查询开始时间
      */
@@ -287,6 +273,9 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
      * @return 本身，这样可以继续设置其他属性
      */
     public T bind(HttpServletRequest request) {
+        if (request == null) {
+            return (T) this;
+        }
         Map<String, FieldMethods> fields = getDefineFields();
         if (fields != null) {
             for (Map.Entry<String, FieldMethods> entry : fields.entrySet()) {
