@@ -257,7 +257,8 @@ public class FrameworkDao4Hibernate<P, ID extends Serializable> extends Abstract
 
     @Override
     public List<P> list(Pagination pagination, QueryParam queryParam) {
-        String hql = "FROM " + entitySupport.getEntityName();
+        // 默认按照ID排序
+        String hql = "FROM " + entitySupport.getEntityName() + " t ORDER BY t." + entitySupport.getIdName();
         return queryForList(hql, pagination);
     }
 
