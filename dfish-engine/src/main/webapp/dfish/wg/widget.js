@@ -44,21 +44,6 @@ _dfcls = (function() {
 	}
 	return r;
 })(),
-// 获取模板  /@a -> template id
-_getTemplate = function(a) {
-	var t = typeof a === _OBJ ? {body: a} : $.require((cfg.templateDir || '') + a);
-	return t || {};
-},
-// 获取模板内容  /@a -> template id, b -> clone?
-_getTemplateBody = function(a, b) {
-	var t = _getTemplate(a).body;
-	return b && t ? $.jsonClone(t) : t;
-},
-// 获取预装模板  /@a -> template id, b -> clone?
-_getPreload = function(a, b) {
-	var t = typeof a === _OBJ ? a : $.require((cfg.preloadDir || '') + a);
-	return b && t ? $.jsonClone(t) : t;
-},
 // 事件白名单
 _white_events = $.white_events,
 _event_zhover = (mbi ? '' : ' onmouseover=$.zover(this) onmouseout=$.zout(this)'),
@@ -79,17 +64,18 @@ Q.each(_white_events.all, function(k, v) {
 // @a -> htmlElement: 返回html元素对象所在的widget
 // @a -> JSON: 参数为符合widget配置项的json对象，则创建这个widget
 var
-_widget = function(a) {
-	var b = typeof a === _STR ? a : a.id;
-	if (b && (b = _getWidgetById(b)))
-		return b;
-	if (a.isWidget) {
+_widget = function(a, b) {
+	if (!a) return;
+	if (typeof a === _STR)
+		return _widget(Q(a, b && b.isWidget ? b.$() : b));
+	if (a.isWidget)
 		return a;
-	} else if (a.widget) {
-		return a.widget;
-	} else if (a.nodeType) {
+	if (a.jquery)
+		return _widget(a[0]);
+	if (a.nodeType) {
 		do {
-			if (a.id && (b = _getWidgetById(a.id))) return b;
+			var c = a.id && _getWidgetById(a.id);
+			if (c) return c;
 		} while ((a = a.parentNode) && a.nodeType === 1);
 	} else if (a.type && Q.isPlainObject(a)) {
 		return new (require(a.type))(a);
@@ -439,7 +425,21 @@ Node = $.createClass({
 Error = $.createClass({
 	Const: function(x) {this.x = x}
 }),
-
+// 获取模板  /@a -> template id
+_getTemplate = function(a) {
+	var t = typeof a === _OBJ ? {body: a} : $.require((cfg.templateDir || '') + a);
+	return t || {};
+},
+// 获取模板内容  /@a -> template id, b -> clone?
+_getTemplateBody = function(a, b) {
+	var t = _getTemplate(a).body;
+	return b && t ? $.jsonClone(t) : t;
+},
+// 获取预装模板  /@a -> template id, b -> clone?
+_getPreload = function(a, b) {
+	var t = typeof a === _OBJ ? a : $.require((cfg.preloadDir || '') + a);
+	return b && t ? $.jsonClone(t) : t;
+},
 _compileTemplate = function(g, d, s) {
 	var t = new Template(s || g.x.template, d, g), r = t.compile(t.templateBody);
 	!r.type && (r.type = g.type);
@@ -461,22 +461,6 @@ TemplateWidget = $.createClass({
 		}
 	}
 }),
-Tmpl = $.createClass({
-	Const: function(t) {
-		this.data = t.data;
-		this.widget = t.wg;
-		
-	},
-	Prototype: {
-		isWidget: T,
-		data: function() {
-			return _proto.data.apply(this, arguments);
-		},
-		closest: function(a) {
-			return this.parentNode.closest(a);
-		}
-	}
-});
 _regAt = function(x, k, v) {
 	(_atCache[x.at] || (new TemplateMark(x))).addProp(k, v);
 	return x.at;
@@ -965,12 +949,6 @@ W = define('Widget', function() {
 				break;
 				case 'pub':
 					b && c && (this.x.pub = $.extend(c, b));
-				break;
-				case 'tip':
-					if(this.$()) {
-						var t = this.attr('tip');
-						this.$().title = t === T ? (this.attr('text') || '') : typeof t === _STR ? t : '';
-					}
 				break;
 				case 'width':
 					this.width(b);
@@ -3995,7 +3973,6 @@ Button = define.widget('Button', {
 					if (v && v.nodeIndex < this.nodeIndex) {
 						v.swap(this);
 						p.trigger('nodeChange');
-						//p.overflow();
 					}
 				}
 			}
@@ -4450,7 +4427,6 @@ Img = define.widget('Img', {
 			return Button.prototype.init_badge.call(this);
 		},
 		attrSetter: function(a, b) {
-			_proto.attrSetter.apply(this, arguments);
 			if (a === 'src') {
 				this.$('i') && $.replace(this.$('i'), this.html_img());
 			} else if (a === 'text' || a === 'description') {
@@ -6468,7 +6444,6 @@ FormLabel = define.widget('FormLabel', {
 	},
 	Extend: [AbsForm, Html],
 	Prototype: {
-		attrSetter: Html.prototype.attrSetter,
 		text: function() {
 			return Html.prototype.text.apply(this, arguments);
 		},
@@ -6481,9 +6456,6 @@ FormLabel = define.widget('FormLabel', {
 		},
 		form_cls: function() {
 			return 'w-formlabel-text f-nv f-oh f-wdbr';
-		},
-		main_prop: function() {
-			return AbsForm.prototype.main_prop.call(this) + _html_on.call(this);
 		},
 		html_nodes: function() {
 			return Html.prototype.html_nodes.call(this);
@@ -8151,7 +8123,7 @@ Jigsaw = define.widget('Jigsaw', {
 			Q(this.$('pht')).html(this.html_info(d));
 			this.readonly();
 			this.more && this.more.close();
-			var a = d.error.timeout ? Math.floor(d.error.timeout / 1000) : 0, self = this;
+			var a = Math.abs(d.error.timeout || 0), self = this;
 			if (a) {
 				this._cntdn_inter = setInterval(function() {
 					if (a < 2) {
@@ -8174,7 +8146,7 @@ Jigsaw = define.widget('Jigsaw', {
 			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);
 		},
 		html_info: function(d) {
-			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.floor(d.error.timeout / 1000) + '</em>)' : '') + '</var>' :
+			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
 				d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
 				(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
@@ -10202,7 +10174,6 @@ AbsLeaf = define.widget('AbsLeaf', {
 			if (l) {
 				if (!this.length) {
 					this.render_nodes(n);
-					x.expanded && this.toggle(T);
 				} else {
 					for (var i = 0, b, c; i < l; i ++) {
 						b = n[i];

@@ -688,12 +688,13 @@ define( {
             var vm2 = VM( '/index' );
           }
       ] },
-      { name: '$.widget(elem)', remark: '获取某个元素对象所属的widget。"', common: true, param: [
-        { name: 'elem', type: 'htmlElement', remark: 'html元素对象' }
+      { name: '$.widget(selector, [range])', remark: '获取某个元素对象所属的widget。', common: true, param: [
+        { name: 'selector', type: 'HtmlElement | String', remark: 'html元素对象，或CSS选择器格式的字符串。' },
+        { name: 'range', type: 'HtmlElement | Widget', remark: '限定查找的范围对象。' }
       ], example: [
           function() {
-          	// 点击这个 html widget 里的链接，更换内容为123
-          	var opt = { type: 'Html', text: '<a href="javascript:" onclick="$.widget(this).text(123)">click</a>' }
+          	//获取样式名为 x-btn 的 widget。
+          	var wg = $.widget('.x-btn');
           }
       ] },
       { name: '$.width()', remark: '获取浏览器可用的宽度。', common: true, example: [
