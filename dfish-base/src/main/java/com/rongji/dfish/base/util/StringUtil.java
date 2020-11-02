@@ -934,23 +934,6 @@ public class StringUtil {
     }
 
     /**
-     * 拼接字符串,等同于+操作
-     *
-     * @param obj
-     * @return
-     */
-    public static String joinString(Object... obj) {
-        StringBuilder sb = new StringBuilder();
-        if (obj != null) {
-            for (Object o : obj) {
-                sb.append(o);
-            }
-        }
-        return sb.toString();
-    }
-
-
-    /**
      * 把一个集合转化成可显示的字符串
      *
      * @param coll
@@ -1123,29 +1106,39 @@ public class StringUtil {
     }
 
     /**
-     * 把一个集合转化成可显示的字符串
-     * @param strs 集合
-     * @return
+     * 把一个数组转化成可显示的字符串
+     * @param strs 数组
+     * @return String
      */
     public static String join(Object[] strs){
         return join(Arrays.asList(strs),",");
     }
 
     /**
-     * 把一个集合转化成可显示的字符串
-     * @param strs
-     * @param split
-     * @return
+     * 把一个数组转化成可显示的字符串
+     *
+     * @param strs 数组
+     * @return String
+     */
+    public static String join(String... strs) {
+        return join(strs, ',');
+    }
+
+    /**
+     * 把一个数组转化成可显示的字符串
+     * @param strs 数组
+     * @param split 分隔符
+     * @return String
      */
     public static String join(Object[] strs, char split){
         return join(Arrays.asList(strs),new String(new char[]{split}));
     }
 
     /**
-     * 把一个集合转化成可显示的字符串
-     * @param strs
-     * @param split
-     * @return
+     * 把一个数组转化成可显示的字符串
+     * @param strs 数组
+     * @param split 分隔符
+     * @return String
      */
     public static String join(Object[] strs, String split){
         return join(Arrays.asList(strs),split);
@@ -1153,8 +1146,8 @@ public class StringUtil {
 
     /**
      * 把一个集合转化成可显示的字符串
-     * @param strs
-     * @return
+     * @param strs 集合
+     * @return String
      */
     public static String join(Collection strs){
         return join(strs,",");
@@ -1162,9 +1155,9 @@ public class StringUtil {
 
     /**
      * 把一个集合转化成可显示的字符串
-     * @param strs
-     * @param split
-     * @return
+     * @param strs 集合
+     * @param split 分隔符
+     * @return String
      */
     public static String join(Collection strs, char split){
         return join(strs,new String(new char[]{split}));
@@ -1172,9 +1165,9 @@ public class StringUtil {
 
     /**
      * 把一个集合转化成可显示的字符串
-     * @param strs
-     * @param split
-     * @return
+     * @param strs 集合
+     * @param split 分隔符
+     * @return String
      */
     public static String join(Collection strs, String split){
         if (strs == null) {
@@ -1202,7 +1195,7 @@ public class StringUtil {
      * @param str
      * @param size
      * @param padStr
-     * @return
+     * @return String
      */
     public static String leftPad(String str,int size, String padStr){
         if (str == null) {
@@ -1305,7 +1298,7 @@ public class StringUtil {
      * @param str
      * @param size
      * @param padChar
-     * @return
+     * @return String
      */
     public static String rightPad(String str,int size, char padChar){
         if (str == null) {
