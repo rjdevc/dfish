@@ -629,7 +629,7 @@ _idsRemove = $.idsRemove = function(s, n, p) {
 	s = s == N ? '' : '' + s;
 	n = n == N ? '' : '' + n;
 	p = p == N ? ',' : '' + p;
-	if (!s || !n) return s || n;
+	if (!s || !n) return s;
 	for (var i = 0, e, n = n.split(p), l = n.length; i < l; i ++) {
 		e = (p + s + p).indexOf(p + n[i] + p);
 		if (e > -1) s = s.slice(0, e ? e - 1 : e) + s.slice(e + n[i].length + (e ? 0 : 1));

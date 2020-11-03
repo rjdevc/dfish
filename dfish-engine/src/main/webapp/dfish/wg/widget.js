@@ -1291,8 +1291,8 @@ W = define('Widget', function() {
 			}
 			return this;
 		},
-		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({name: value})?, c -> data?, d -> callback?
-		formatJS: function(a, b, c, d, x) {
+		// 解析并运行包含 "$属性名" 的js语法内容  /@a -> js string, b -> args({name: value})?, c -> data?
+		formatJS: function(a, b, c, x) {
 			var x = x || this.x, n = ['$this'], m = [c || x.data];
 			if (b) {
 				if ($.isArray(b)) {
@@ -1319,12 +1319,12 @@ W = define('Widget', function() {
 				} else {
 					(v = x.data && x.data[f[i]]) === U && (v = x[f[i]]) === U && (v = this.closestData(f[i]));
 				}
-				m.push(d ? d(v) : v);
+				m.push(v);
 			}
 			return h.apply(this, m);
 		},
-		// @a -> content|js, b -> args?, c -> urlEncode?, d -> callback?
-		formatStr: function(a, b, c, d, x) {
+		// @a -> content|js, b -> args?, c -> urlEncode?
+		formatStr: function(a, b, c, x) {
 			var self = this, r = b && $.isArray(b),
 				s = a.replace(/\$\{(\w[\w.]*)\}|\$(\w+)/gi, function($0, $1, $2) {
 					var e = $1 || $2, k = e, v, t;
@@ -1341,7 +1341,6 @@ W = define('Widget', function() {
 					if (t && v != N) {
 						try {eval('v = v' + t);} catch(ex) {v = N;}
 					}
-					d && (v = d(v));
 					return v && c ? $[c === T ? 'urlEncode' : c](v) : (v == N ? '' : v);
 				});
 			return s;
@@ -1535,14 +1534,14 @@ W = define('Widget', function() {
 			var t = _s_html_title.apply(this, arguments);
 			return t ? ' title="' + t + '"' : '';
 		},
-		// @a -> text, b -> format, c -> escape?, d -> callback?, e -> x?
-		html_format: function(a, b, c, d, e) {
+		// @a -> text, b -> format, c -> escape?, d -> x?
+		html_format: function(a, b, c, d) {
 			var l = arguments.length;
 			l < 1 && (a = this.x.text);
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
 			if (b) {
-				var s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d, e) : this.formatStr(b, N, c !== F && 'strEscape', d, e);
+				var s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d) : this.formatStr(b, N, c !== F && 'strEscape', d);
 				return typeof s === _STR ? _parseHTML.call(this, s) : s;
 			} else
 				return c !== F ? $.strEscape(a) : (a == N ? '' : '' + a);
