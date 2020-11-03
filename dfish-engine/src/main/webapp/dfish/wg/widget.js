@@ -10989,7 +10989,7 @@ TableRow = define.widget('TableRow', {
 					t = this.addCell(v, k);
 				} else {
 					if (e) {
-						var m = this.html_format(v, f.format, h, _table_f_attr);
+						var m = this.html_format(v, f.format, h);
 						if (typeof m === _OBJ)
 							t = this.addCell(m, i);
 						else
@@ -11083,9 +11083,8 @@ TD = define.widget('TD', {
 			this.x.style && (t += this.x.style);
 			t && (s += ' style="' + t + '"');
 			this.x.id && (s += ' w-id="' + this.x.id + '"');
-			t = this.x.text;
-			if (t != N) {
-				t = this.html_format(t, e ? this.x.format || c.x.format : this.x.format, d, _table_f_attr);
+			if (this.x.text || this.x.format) {
+				t = this.html_format(this.x.text, this.x.format, d);
 				if (typeof t === _OBJ) this.x.node = t;
 			}
 			s += '>' + this.html_prepend() + this.html_nodes();

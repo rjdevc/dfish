@@ -615,37 +615,50 @@ _strFormat = $.strFormat = function(a, b, c) {
 /*  下面定义ID连接字符串的方法 (如: 001,002,003)  */
 // 添加一个ID
 _idsAdd = $.idsAdd = function(s, n, p) {
-	if (!p) p = ',';
-	return _idsAny(s, n, p) ? s : (s ? s + p + n : n);
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
+	if (!s || !n) return s || n;
+	for (var i = 0, n = n.split(p), l = n.length; i < l; i ++) {
+		if ((p + s + p).indexOf(p + n[i] + p) < 0) s += (s ? p : '') + n[i];
+	}
+	return s;
 },
 // 删除一个ID
 _idsRemove = $.idsRemove = function(s, n, p) {
-	if (s == N) return '';
-	if (!p) p = ',';
-	return (p + s + p).replace(new RegExp(p + n + '\\b', 'g'), '').slice(1, -1);
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
+	if (!s || !n) return s || n;
+	for (var i = 0, e, n = n.split(p), l = n.length; i < l; i ++) {
+		e = (p + s + p).indexOf(p + n[i] + p);
+		if (e > -1) s = s.slice(0, e ? e - 1 : e) + s.slice(e + n[i].length + (e ? 0 : 1));
+	}
+	return s;
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAny = $.idsAny = function(s, n, p) {
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
 	if (!s) return F;
 	if (!n || s == n) return T;
-	if (!p) p = ',';
-	if ((n = String(n)).indexOf(p) > -1) {
-		for (var i = 0, b = n.split(p), l = b.length; i < l; i ++)
-			if ((p + s + p).indexOf(p + b[i] + p) > -1) return T;
-	} else
-		return (p + s + p).indexOf(p + n + p) > -1;
+	for (var i = 0, n = n.split(p), l = n.length; i < l; i ++) {
+		if ((p + s + p).indexOf(p + n[i] + p) > -1) return T;
+	}
+	return F;
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAll = $.idsAll = function(s, n, p) {
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
 	if (!s) return F;
 	if (!n || s == n) return T;
-	if (!p) p = ',';
-	if ((n = String(n)).indexOf(p) > -1) {
-		for (var i = 0, b = n.split(p), l = b.length; i < l; i ++)
-			if ((p + s + p).indexOf(p + b[i] + p) === -1) return F;
-		return T;
-	} else
-		return (p + s + p).indexOf(p + n + p) > -1;
+	for (var i = 0, n = n.split(p), l = n.length; i < l; i ++) {
+		if ((p + s + p).indexOf(p + n[i] + p) < 0) return F;
+	}
+	return T;
 },
 // $.scale的辅助方法
 _scaleRange = $.scaleRange = function(a, b) {
