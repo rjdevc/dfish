@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.file.service.impl;
 
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;
@@ -24,6 +25,8 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     private FileDao dao;
     @Resource(name = "fileHandleManager")
     private FileHandleManager fileHandleManager;
+    @Resource(name = "fileCryptorBuilder")
+    protected CryptorBuilder cryptorBuilder;
 
     @Override
     public FileDao getDao() {
