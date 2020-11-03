@@ -1606,6 +1606,9 @@ W = define('Widget', function() {
 					delete this.ownerView.widgets[this.x.id];
 				if (this.x.name && this.ownerView.names[this.x.name])
 					$.arrPop(this.ownerView.names[this.x.name], this);
+			} else if (this.type_view) {
+				if (this.x.id)
+					delete this.parent.widgets[this.x.id];
 			}
 			if (this.parentNode) {
 				delete this.parentNode._scales;
@@ -2960,6 +2963,7 @@ View = define.widget('View', {
 		dispose: function() {
 			this.trigger('unload');
 			this.abort();
+			var p = this.parent;
 			_proto.dispose.call(this);
 			delete this.layout;
 		}
