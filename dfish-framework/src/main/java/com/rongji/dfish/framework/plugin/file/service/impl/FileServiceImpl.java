@@ -25,8 +25,6 @@ public class FileServiceImpl extends AbstractFrameworkService4Simple<PubFileReco
     private FileDao dao;
     @Resource(name = "fileHandleManager")
     private FileHandleManager fileHandleManager;
-    @Resource(name = "fileCryptorBuilder")
-    protected CryptorBuilder cryptorBuilder;
 
     @Override
     public FileDao getDao() {
