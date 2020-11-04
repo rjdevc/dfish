@@ -9741,7 +9741,7 @@ PickBox = define.widget('PickBox', {
 				this.text(Loc.loading);
 				(this.dropper = this.createPop(this.x.drop, {value: this.val()})).preload(function() {
 					var r = self.param(v, T);
-					r ? self.val(r.value, r.text) : self.text('');
+					r ? self.val(r.value, r.text) : (this.x.text === Loc.loading) && self.text('');
 					self.loading = F;
 					self.removeClass('z-loading');
 					self.addClass('z-empty', !r);
