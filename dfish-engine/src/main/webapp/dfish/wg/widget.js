@@ -5188,7 +5188,7 @@ Dialog = define.widget('Dialog', {
 			// _ori_height表示当前窗口曾经调整过高度，再次打开时尝试恢复
 			if (this._ori_height !== U) {
 				this.height(this._ori_height);
-				if (this._ori_height == -1)
+				if (this._ori_height == -1 && this.$())
 					this.$().style.height = '';
 				delete this._ori_height;
 			}
