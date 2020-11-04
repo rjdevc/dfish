@@ -1709,22 +1709,23 @@ _ajax_data = function(e) {
 	return e;
 },
 _ajax_httpmode = function(a) {return a.indexOf('http:') === 0 || a.indexOf('https:') === 0},
+_ajax_args = function(a, b, c, d, e, f, g) {
+	if (typeof a === _STR)
+		return {src: a, success: b, context: c, sync: d, data: e, error: f, dataType: g};
+	!a.dataType && (a.dataType = g);
+	return a;
+},
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
+_ajax_cache = {},
 _ajax_contexts = {},
-_ajax_cache   = {},
 
 /*!`Ajax` */
 Ajax = _createClass({
-/* @ a->src, b->callback, c->context, d->sync?, e->data, f->error[false:ignore error,fn:callback], g->data type(text,xml,json)? */
-	Const: function(a, b, c, d, e, f, g) {
-		var x = typeof a === _STR ? {src: a, success: b, context: c, sync: d, data: e, error: f} : a,
-			c = x.context, h;
-		c && !x.sync && _jsonArray(this, _ajax_contexts, _uid(c)), (h = _ajax_contexts[_uid(c)]);
-		!x.dataType && (x.dataType = g);
+	Const: function(x) {
+		x.context && !x.sync && _jsonArray(this, _ajax_contexts, _uid(x.context));
 		this.x = x;
-		//if (x.sync || !h || h.length === 1)
-			this.go();
+		this.go();
 	},
 	Extend: _Event,
 	Prototype: {
@@ -1876,15 +1877,17 @@ _ajax_play  = function() {
 
 // a -> url, b -> callback, c -> context, d -> sync?, e -> data, f -> error hdl, g -> type
 $.ajax = function(a, b, c, d, e, f, g) {
-	return new Ajax(a, b, c, d, e, f, g);
+	return new Ajax(_ajax_args(a, b, c, d, e, f, g));
 }
 // a -> url, b -> callback, c -> context, d -> sync?, e -> data, f -> error hdl
 $.ajaxXML = function(a, b, c, d, e, f) {
-	return new Ajax(a, b, c, d, e, f, 'xml');
+	return new Ajax(_ajax_args(a, b, c, d, e, f, 'xml'));
 }
 // a -> url, b -> callback, c -> context, d -> sync?, e -> data, f -> error hdl
-$.ajaxJSON = function(a, b, c, d, e, f, g) {
-	return new Ajax(a, b, c, d, e, f, 'json');
+$.ajaxJSON = function(a, b, c, d, e, f) {
+	var x = _ajax_args(a, b, c, d, e, f, 'json');
+	if (!x.filter) x.filter = _cfg.ajaxFilter;
+	return new Ajax(x);
 }
 $.ajaxAbort = function(a) {
 	var b = _uid(a), c = _ajax_contexts[b];

@@ -311,7 +311,7 @@ _ajaxCmd = function(x, a, t) {
 		d = this.exec(typeof x.loading === _OBJ ? $.extend({type: 'Loading'}, x.loading) : {type: 'Loading', text: x.loading === T ? N : x.loading});
 	this.trigger('lock');
 	// @fixme: view base
-	$.ajaxJSON({src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter != N ? x.filter : cfg.ajaxFilter, error: x.error, beforeSend: x.beforeSend, 
+	$.ajaxJSON({src: u, context: this, sync: x.sync, data: t || x.data, headers: x.headers, dataType: x.dataType, filter: x.filter, error: x.error, beforeSend: x.beforeSend, 
 		success: sc, complete: cp});
 },
 _cmd = function(x, d) {
@@ -5108,10 +5108,10 @@ Dialog = define.widget('Dialog', {
 			$.snapTo(this.$(), r);
 			if (vs && this.type === 'Dialog') {
 				// snap的窗口如果超出屏幕高度，强制修改高度到可见范围内
-				var xh = this.x.height, t = r.top < 0, b = r.bottom < 0, w = $.boxwd(this.$()), h = $.boxht(this.$());
+				var xh = this.x.height, t = r.top < 0, b = r.bottom < 0, w = $.boxwd(this.$()) + (this.attr('widthMinus') || 0), h = $.boxht(this.$()) + (this.attr('heightMinus') || 0);
 				t && (this.height(h + r.top));
 				b && (this.height(h + r.bottom));
-				(t || b) && (this._ori_height = xh, this.width(w));
+				(t || b) && (this._ori_height = xh === U ? -1 : xh, this.width(w));
 			}
 			// 八方位浮动效果
 			n && Q(this.$()).animate(n, 200);
@@ -5174,6 +5174,16 @@ Dialog = define.widget('Dialog', {
 			Section.prototype.reset.apply(this, arguments);
 			if (!tar) {
 				delete this.contentView;
+				this._resetHeight();
+			}
+		},
+		_resetHeight: function() {
+			// _ori_height表示当前窗口曾经调整过高度，再次打开时尝试恢复
+			if (this._ori_height !== U) {
+				this.height(this._ori_height);
+				if (this._ori_height == -1)
+					this.$().style.height = '';
+				delete this._ori_height;
 			}
 		},
 		render: function() {
@@ -5181,11 +5191,7 @@ Dialog = define.widget('Dialog', {
 				return;
 			!this.parentNode && _docView.add(this);
 			this.$() && this.removeElem();
-			// _ori_height表示当前窗口曾经调整过高度，再次打开时尝试恢复
-			if (this._ori_height) {
-				this.height(this._ori_height);
-				delete this._ori_height;
-			}
+			this._resetHeight();
 			var c = this.attr('local');
 			if (c) {
 				var d = this.getLocalParent();
@@ -5385,12 +5391,11 @@ AlertSubmitButton = define.widget('AlertSubmitButton', {
 Alert = define.widget('Alert', {
 	Const: function(x, p) {
 		this.x = x;
+		!x.ownproperty && $.extend(x, this.getDefaultOption(x.cls));
 		var a = this.type === 'Alert', r = x.args, s = x.buttonCls || 'f-button',
 			b = {type: 'AlertSubmitButton', cls: s, text: '    ' + Loc.confirm + '    '},
 			c = {type: 'AlertButton', cls: s, text: '    ' + Loc.cancel + '    '},
-			d,
-			o = this.getDefaultOption(x.cls),
-			t = x.preload || (!x.ownproperty && o && o.preload);
+			t = x.preload;
 		if (x.buttons) {
 			for (var i = 0, d = []; i < x.buttons.length; i ++) {
 				x.buttons[i].type = 'alert/' + x.buttons[i].type;
