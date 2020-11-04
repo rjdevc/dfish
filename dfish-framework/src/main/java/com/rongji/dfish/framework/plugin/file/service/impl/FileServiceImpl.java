@@ -1,5 +1,6 @@
 package com.rongji.dfish.framework.plugin.file.service.impl;
 
+import com.rongji.dfish.base.crypto.CryptorBuilder;
 import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.Utils;
 import com.rongji.dfish.framework.FrameworkHelper;

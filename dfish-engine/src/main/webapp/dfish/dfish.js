@@ -615,37 +615,50 @@ _strFormat = $.strFormat = function(a, b, c) {
 /*  下面定义ID连接字符串的方法 (如: 001,002,003)  */
 // 添加一个ID
 _idsAdd = $.idsAdd = function(s, n, p) {
-	if (!p) p = ',';
-	return _idsAny(s, n, p) ? s : (s ? s + p + n : n);
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
+	if (!s || !n) return s || n;
+	for (var i = 0, n = n.split(p), l = n.length; i < l; i ++) {
+		if ((p + s + p).indexOf(p + n[i] + p) < 0) s += (s ? p : '') + n[i];
+	}
+	return s;
 },
 // 删除一个ID
 _idsRemove = $.idsRemove = function(s, n, p) {
-	if (s == N) return '';
-	if (!p) p = ',';
-	return (p + s + p).replace(new RegExp(p + n + '\\b', 'g'), '').slice(1, -1);
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
+	if (!s || !n) return s;
+	for (var i = 0, e, n = n.split(p), l = n.length; i < l; i ++) {
+		e = (p + s + p).indexOf(p + n[i] + p);
+		if (e > -1) s = s.slice(0, e ? e - 1 : e) + s.slice(e + n[i].length + (e ? 0 : 1));
+	}
+	return s;
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAny = $.idsAny = function(s, n, p) {
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
 	if (!s) return F;
 	if (!n || s == n) return T;
-	if (!p) p = ',';
-	if ((n = String(n)).indexOf(p) > -1) {
-		for (var i = 0, b = n.split(p), l = b.length; i < l; i ++)
-			if ((p + s + p).indexOf(p + b[i] + p) > -1) return T;
-	} else
-		return (p + s + p).indexOf(p + n + p) > -1;
+	for (var i = 0, n = n.split(p), l = n.length; i < l; i ++) {
+		if ((p + s + p).indexOf(p + n[i] + p) > -1) return T;
+	}
+	return F;
 },
 // s是否包含n。如果 n 也是逗号隔开，那么只需n中有匹配到s中的一项即返回true
 _idsAll = $.idsAll = function(s, n, p) {
+	s = s == N ? '' : '' + s;
+	n = n == N ? '' : '' + n;
+	p = p == N ? ',' : '' + p;
 	if (!s) return F;
 	if (!n || s == n) return T;
-	if (!p) p = ',';
-	if ((n = String(n)).indexOf(p) > -1) {
-		for (var i = 0, b = n.split(p), l = b.length; i < l; i ++)
-			if ((p + s + p).indexOf(p + b[i] + p) === -1) return F;
-		return T;
-	} else
-		return (p + s + p).indexOf(p + n + p) > -1;
+	for (var i = 0, n = n.split(p), l = n.length; i < l; i ++) {
+		if ((p + s + p).indexOf(p + n[i] + p) < 0) return F;
+	}
+	return T;
 },
 // $.scale的辅助方法
 _scaleRange = $.scaleRange = function(a, b) {
@@ -892,7 +905,7 @@ _urlLoc = $.urlLoc = function(a, b) {
 _urlParam = $.urlParam = function(a, b) {
 	var r = a.split('#'), u = r[0], h = r[1];
 	if (typeof b === _STR) {
-		return b === '#' ? (h || '') : (u.match(new RegExp('[\\?&]' + b + '=([^&]*)'), 'g') || A)[1];
+		return b === '#' ? (h || '') : _urlDecode((u.match(new RegExp('[\\?&]' + b + '=([^&]*)'), 'g') || A)[1]);
 	} else if (b && typeof b === _OBJ) {
 		for (var k in b) {
 			if (k === '#') {
@@ -1696,22 +1709,23 @@ _ajax_data = function(e) {
 	return e;
 },
 _ajax_httpmode = function(a) {return a.indexOf('http:') === 0 || a.indexOf('https:') === 0},
+_ajax_args = function(a, b, c, d, e, f, g) {
+	if (typeof a === _STR)
+		return {src: a, success: b, context: c, sync: d, data: e, error: f, dataType: g};
+	!a.dataType && (a.dataType = g);
+	return a;
+},
 _ajax_cntp  = 'application/x-www-form-urlencoded; charset=UTF-8',
 _ajax_ifmod = 'Thu, 01 Jan 1970 00:00:00 GMT',
+_ajax_cache = {},
 _ajax_contexts = {},
-_ajax_cache   = {},
 
 /*!`Ajax` */
 Ajax = _createClass({
-/* @ a->src, b->callback, c->context, d->sync?, e->data, f->error[false:ignore error,fn:callback], g->data type(text,xml,json)? */
-	Const: function(a, b, c, d, e, f, g) {
-		var x = typeof a === _STR ? {src: a, success: b, context: c, sync: d, data: e, error: f} : a,
-			c = x.context, h;
-		c && !x.sync && _jsonArray(this, _ajax_contexts, _uid(c)), (h = _ajax_contexts[_uid(c)]);
-		!x.dataType && (x.dataType = g);
+	Const: function(x) {
+		x.context && !x.sync && _jsonArray(this, _ajax_contexts, _uid(x.context));
 		this.x = x;
-		//if (x.sync || !h || h.length === 1)
-			this.go();
+		this.go();
 	},
 	Extend: _Event,
 	Prototype: {
@@ -1863,15 +1877,17 @@ _ajax_play  = function() {
 
 // a -> url, b -> callback, c -> context, d -> sync?, e -> data, f -> error hdl, g -> type
 $.ajax = function(a, b, c, d, e, f, g) {
-	return new Ajax(a, b, c, d, e, f, g);
+	return new Ajax(_ajax_args(a, b, c, d, e, f, g));
 }
 // a -> url, b -> callback, c -> context, d -> sync?, e -> data, f -> error hdl
 $.ajaxXML = function(a, b, c, d, e, f) {
-	return new Ajax(a, b, c, d, e, f, 'xml');
+	return new Ajax(_ajax_args(a, b, c, d, e, f, 'xml'));
 }
 // a -> url, b -> callback, c -> context, d -> sync?, e -> data, f -> error hdl
-$.ajaxJSON = function(a, b, c, d, e, f, g) {
-	return new Ajax(a, b, c, d, e, f, 'json');
+$.ajaxJSON = function(a, b, c, d, e, f) {
+	var x = _ajax_args(a, b, c, d, e, f, 'json');
+	if (!x.filter) x.filter = _cfg.ajaxFilter;
+	return new Ajax(x);
 }
 $.ajaxAbort = function(a) {
 	var b = _uid(a), c = _ajax_contexts[b];
