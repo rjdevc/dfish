@@ -62,7 +62,7 @@ public class CipherCryptor extends  AbstractCryptor{
         }catch (RuntimeException ex){
             throw ex;
         }catch (Exception ex){
-           throw new RuntimeException(ex);
+            throw new RuntimeException(ex);
         }
     }
     private static boolean inited=false;
