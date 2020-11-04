@@ -25,6 +25,7 @@ dfish.config({
         'Alert': {preload: 'g/alert'},
         'Alert.x-alert-info': {icon: '.f-i-check-circle', position: 'br', timeout: 3000},
         'Alert.x-alert-warn': {icon: '.f-i-warning'},
+        'Alert.x-alert-error': {icon: '.f-i-warning'},
         'Confirm': {preload: 'g/alert'},
         'Dialog': {preload: 'g/std', width: 680, height: 410},
         'Dialog.dlg-large': {width: 980, height: 550},
