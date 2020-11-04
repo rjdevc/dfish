@@ -950,6 +950,12 @@ W = define('Widget', function() {
 				case 'pub':
 					b && c && (this.x.pub = $.extend(c, b));
 				break;
+				case 'tip':
+					if(this.$()) {
+						var t = this.attr('tip');
+						this.$().title = t === T ? (this.attr('text') || '') : typeof t === _STR ? t : '';
+					}
+				break;
 				case 'width':
 					this.width(b);
 				break;
@@ -4430,6 +4436,7 @@ Img = define.widget('Img', {
 			return Button.prototype.init_badge.call(this);
 		},
 		attrSetter: function(a, b) {
+			_proto.attrSetter.apply(this, arguments);
 			if (a === 'src') {
 				this.$('i') && $.replace(this.$('i'), this.html_img());
 			} else if (a === 'text' || a === 'description') {
@@ -5410,7 +5417,8 @@ Alert = define.widget('Alert', {
 				//移动端要-6的widthMinus,否则文本会换行,尚未搞清楚原因
 				widthMinus: mbi ? -6 : 0, title: Loc.opertip, node: {type: 'Vert', height: '*', nodes: [
 				{type: 'Html', scroll: T, height: '*', text: '<div class=w-alert-content><table border=0 class=w-alert-table><tr>' +
-				'<td align=center valign=top>' + $.image(x.icon ? x.icon : '.f-i-' + (a ? 'warning' : 'question'), {cls: 'w-alert-icon'}) + '<td class=w-alert-td><div class=w-alert-text>' + f + '</div></table></div>'},
+				(x.icon == N || x.icon ? '<td align=center valign=top>' + $.image(x.icon || '.f-i-' + (a ? 'warning' : 'question'), {cls: 'w-alert-icon'}) : '') +
+				'<td class=w-alert-td><div class=w-alert-text>' + f + '</div></table></div>'},
 				{type: 'ButtonBar', cls: 'z-sub-' + this.type, align: 'center', height: mbi ? 40 : 60, space: mbi ? 0 : 10, pub: mbi && {width: '*'}, nodes: d || (a ? [b] : mbi ? [c, b] : [b, c])}
 			]}});
 		}
@@ -6452,6 +6460,7 @@ FormLabel = define.widget('FormLabel', {
 	},
 	Extend: [AbsForm, Html],
 	Prototype: {
+		attrSetter: Html.prototype.attrSetter,
 		text: function() {
 			return Html.prototype.text.apply(this, arguments);
 		},
@@ -6464,6 +6473,9 @@ FormLabel = define.widget('FormLabel', {
 		},
 		form_cls: function() {
 			return 'w-formlabel-text f-nv f-oh f-wdbr';
+		},
+		main_prop: function() {
+			return AbsForm.prototype.main_prop.call(this) + _html_on.call(this);
 		},
 		html_nodes: function() {
 			return Html.prototype.html_nodes.call(this);
@@ -8131,7 +8143,7 @@ Jigsaw = define.widget('Jigsaw', {
 			Q(this.$('pht')).html(this.html_info(d));
 			this.readonly();
 			this.more && this.more.close();
-			var a = Math.abs(d.error.timeout || 0), self = this;
+			var a = d.error.timeout ? Math.floor(d.error.timeout / 1000) : 0, self = this;
 			if (a) {
 				this._cntdn_inter = setInterval(function() {
 					if (a < 2) {
@@ -8154,7 +8166,7 @@ Jigsaw = define.widget('Jigsaw', {
 			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);
 		},
 		html_info: function(d) {
-			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.abs(d.error.timeout) + '</em>)' : '') + '</var>' :
+			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.floor(d.error.timeout / 1000) + '</em>)' : '') + '</var>' :
 				d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
 				(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
@@ -8192,7 +8204,7 @@ DropBox = define.widget('DropBox', {
 				this.checkPlaceholder();
 			},
 			click: {
-				method: function() {
+				method: function(e) {
 					this.isNormal() && this.drop();
 				}
 			},
@@ -8275,10 +8287,7 @@ DropBox = define.widget('DropBox', {
 		isEmpty: function() {
 			return !this.val();
 		},
-		clkhdr: function(e) {
-			this.drop();
-			AbsInput.prototype.clkhdr.apply(this, arguments);
-		},
+		clkhdr: $.rt(),
 		checkPlaceholder: function(v) {
 			this.$('ph') && $.classAdd(this.$('ph'), 'f-none', !!(arguments.length === 0 ? this.val() : v) || !(this.x.cancelable || this.x.multiple));
 		},
