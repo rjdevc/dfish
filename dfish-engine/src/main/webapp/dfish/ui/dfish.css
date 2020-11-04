@@ -277,8 +277,9 @@
 .w-dialog.z-closing:after{content:"";position:absolute;top:0;bottom:0;left:0;right:0;z-index:11;background:#000;opacity:0;}
 
 .w-alert{z-index:12}
-.w-alert .f-i-warning{font-size:32px;color:rgb(255,150,4)}
-.w-alert .f-i-question{font-size:32px;color:rgb(37,195,3)}
+.w-alert-icon ._ico{font-size:32px}
+.w-alert .f-i-warning{color:rgb(255,150,4)}
+.w-alert .f-i-question{color:rgb(37,195,3)}
 .w-alert-content{padding-top:10px;padding-bottom:20px}
 .w-alert-table{margin-left:20px;word-wrap:break-word}
 .w-alert-text{padding-left:15px;padding-right:20px}
