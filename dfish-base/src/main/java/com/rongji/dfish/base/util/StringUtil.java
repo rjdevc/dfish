@@ -51,6 +51,8 @@ public class StringUtil {
      */
     public static java.util.Comparator<Object> CHINESE_ORDER = null;
 
+    public static final char CHAR_COMMA =',';
+    public static final String COMMA=",";
 
     /**
      * 截取字符串content前面size个字节的内容 汉字相当于2个英文,数字相当于1个英文，每个英文字母占一个字节空间 要保证汉字不被错误分割 by
@@ -973,7 +975,7 @@ public class StringUtil {
      */
     @Deprecated
     public static String toString(Collection coll) {
-        return toString(coll, ',');
+        return toString(coll, CHAR_COMMA);
     }
 
     /**
@@ -989,7 +991,7 @@ public class StringUtil {
         if (array == null) {
             return null;
         }
-        return toString(array, ',');
+        return toString(array, CHAR_COMMA);
     }
 
     /**
@@ -1111,7 +1113,7 @@ public class StringUtil {
      * @return String
      */
     public static String join(Object[] strs){
-        return join(Arrays.asList(strs),",");
+        return join(Arrays.asList(strs),COMMA);
     }
 
     /**
@@ -1150,7 +1152,7 @@ public class StringUtil {
      * @return String
      */
     public static String join(Collection strs){
-        return join(strs,",");
+        return join(strs,COMMA);
     }
 
     /**
@@ -1171,7 +1173,7 @@ public class StringUtil {
      */
     public static String join(Collection strs, String split){
         if (strs == null) {
-            return null;
+            return "";
         }
         StringBuilder sb = new StringBuilder();
         boolean begin = true;
@@ -1316,4 +1318,163 @@ public class StringUtil {
         }
     }
 
+    /**
+     * 把两个用特定符号(常用的是逗号)隔开多个关键字的字符串。合并起来
+     * 比如001,002  合并  002,003 得到 001,002,003
+     * 集合运算中 UNION
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @param separator 默认为 半角逗号(,)
+     * @return String
+     */
+    public static String addAll(String separatedString1, String separatedString2, char separator){
+        return addAll(separatedString1,separatedString2,separator,false);
+    }
+
+    /**
+     * 把两个用特定符号(常用的是逗号)隔开多个关键字的字符串。合并起来
+     * 比如001,002  合并  002,003 得到 001,002,003两个用特定符号(常用的是逗号)隔开多个关键字的字符串。合并起来
+     * 集合运算中 UNION
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @return String
+     */
+    public static String addAll(String separatedString1, String separatedString2){
+        return addAll(separatedString1,separatedString2, CHAR_COMMA,false);
+    }
+
+    /**
+     * 两个用特定符号(常用的是逗号)隔开多个关键字的字符串。从第一个里面移除第二个出现的字符串
+     * 比如001,002  扣除  002,003 得到 003
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @return String
+     */
+    public static String removeAll(String separatedString1, String separatedString2){
+        return removeAll(separatedString1,separatedString2, CHAR_COMMA);
+    }
+    /**
+     * 两个用特定符号(常用的是逗号)隔开多个关键字的字符串。从第一个里面保留第二个出现的字符串
+     * 比如001,002  保留  002,003 得到 002
+     * 集合运算中 INTERSECTION
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @return String
+     */
+    public static String retainAll(String separatedString1, String separatedString2){
+        return retainAll(separatedString1,separatedString2, CHAR_COMMA);
+    }
+
+    /**
+     * 两个用特定符号(常用的是逗号)隔开多个关键字的字符串。如果第一个和第二个有相同元素则返回true
+     * 比如001,002  是否与交集  002,003 得到 true
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @return boolean
+     */
+    public static boolean containsAny(String separatedString1, String separatedString2){
+        return containsAny(separatedString1,separatedString1, CHAR_COMMA);
+    }
+
+    /**
+     * 个用特定符号(常用的是逗号)隔开多个关键字的字符串。如果第一个里包含第二个所有元素则返回true
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @return boolean
+     */
+    public static boolean containsAll(String separatedString1, String separatedString2){
+        return containsAll(separatedString1,separatedString1, CHAR_COMMA);
+    }
+    /**
+     * 把两个用特定符号(常用的是逗号)隔开多个关键字的字符串。合并起来
+     * 比如001,002  合并  002,003 得到 001,002,003
+     * 集合运算中 UNION
+     * 可以是设置允许重复，一般不常用，允许重复，直接字符串相加即可。
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @param separator 默认为 半角逗号(,)
+     * @param duplicate 是否可以重复
+     * @return String
+     */
+    public static String addAll(String separatedString1, String separatedString2, char separator, boolean duplicate){
+        if(duplicate){
+            List<String> list = toList(separatedString1, separator);
+            list.addAll(toList(separatedString2, separator));
+            return join(list, separator);
+        }else {
+            Set<String> set = toSet(separatedString1, separator);
+            set.addAll(toSet(separatedString2, separator));
+            return join(set, separator);
+        }
+    }
+    /**
+     * 把两个用特定符号(常用的是逗号)隔开多个关键字的字符串。合并起来
+     * 比如001,002  合并  002,003 得到 001,002,003两个用特定符号(常用的是逗号)隔开多个关键字的字符串。合并起来
+     * 集合运算中 UNION
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @param separator 默认为 半角逗号(,)
+     * @return String
+     */
+    public static String removeAll(String separatedString1, String separatedString2, char separator){
+        List<String> list = toList(separatedString1, separator);
+        list.removeAll(toList(separatedString2, separator));
+        return join(list, separator);
+    }
+    /**
+     * 两个用特定符号(常用的是逗号)隔开多个关键字的字符串。从第一个里面保留第二个出现的字符串
+     * 比如001,002  保留  002,003 得到 002
+     * 集合运算中 INTERSECTION
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @param separator 默认为 半角逗号(,)
+     * @return String
+     */
+    public static String retainAll(String separatedString1, String separatedString2, char separator){
+        List<String> list = toList(separatedString1, separator);
+        list.retainAll(toList(separatedString2, separator));
+        return join(list, separator);
+    }
+    /**
+     * 两个用特定符号(常用的是逗号)隔开多个关键字的字符串。如果第一个和第二个有相同元素则返回true
+     * 比如001,002  是否与交集  002,003 得到 true
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @param separator 默认为 半角逗号(,)
+     * @return boolean
+     */
+    public static boolean containsAny(String separatedString1, String separatedString2, char separator){
+        Set<String> set = toSet(separatedString1, separator);
+        for(String token:toList(separatedString2, separator)){
+            if(set.contains(token)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * 个用特定符号(常用的是逗号)隔开多个关键字的字符串。如果第一个里包含第二个所有元素则返回true
+     * @param separatedString1 String
+     * @param separatedString2 String
+     * @param separator 默认为 半角逗号(,)
+     * @return boolean
+     */
+    public static boolean containsAll(String separatedString1, String separatedString2, char separator){
+        Set<String> set = toSet(separatedString1, separator);
+        return set.containsAll(toSet(separatedString2, separator));
+    }
+
+    private static LinkedHashSet<String> toSet(String separatedString,char separator){
+        if(separatedString==null){
+            return new LinkedHashSet<>();
+        }
+        return new LinkedHashSet<>(Arrays.asList(separatedString.split(new String(new char[]{separator}))));
+    }
+    private static ArrayList<String> toList(String separatedString,char separator){
+        if(separatedString==null){
+            return new ArrayList<>();
+        }
+        return new ArrayList<>(Arrays.asList(separatedString.split(new String(new char[]{separator}))));
+    }
 }

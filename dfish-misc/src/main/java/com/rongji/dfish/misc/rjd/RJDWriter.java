@@ -66,8 +66,8 @@ public class RJDWriter {
                 key=password.getBytes();
             }
         }
-        //如果key 大于32字节，截取，否则循环补齐
-        int KEY_LENGTH=32;
+        //如果key 大于16字节，截取，否则循环补齐
+        int KEY_LENGTH=16;
         if(key.length>KEY_LENGTH){
             byte[] realKey=new byte[KEY_LENGTH];
             System.arraycopy(key,0,realKey,0,KEY_LENGTH);

@@ -41,7 +41,7 @@ import java.util.concurrent.Executors;
  */
 public class ExceptionManager {
 	private static ExceptionManager instance;
-	private final static Executor SNGL_EXEC = Executors.newSingleThreadExecutor();
+	private final static Executor SINGLE_EXEC = Executors.newSingleThreadExecutor();
 	private boolean inited;
 	private boolean shutdown;
 	private PubExceptionService pubExceptionService;
@@ -87,7 +87,7 @@ public class ExceptionManager {
 			return;
 		}
 		final long now=System.currentTimeMillis();
-		SNGL_EXEC.execute(new LogAction(t,now));
+		SINGLE_EXEC.execute(new LogAction(t,now));
 	}
 
     public String getStackAsString(long typeId) {
@@ -128,10 +128,10 @@ public class ExceptionManager {
 
     private class LogAction implements Runnable {
 		private Throwable t;
-		private long oc;
-		private LogAction(Throwable t, long oc) {
+		private long time;
+		private LogAction(Throwable t, long time) {
 			this.t=t;
-			this.oc=oc;
+			this.time = time;
 		}
 
 		@Override
@@ -144,7 +144,7 @@ public class ExceptionManager {
 			}
 			ExceptionManager ep=ExceptionManager.getInstance();
 			long excepid=ep.getExceptionId(t);
-			ep.save(excepid,oc,t.getMessage());
+			ep.save(excepid, time,t.getMessage());
 		}
 	}
 	/**
@@ -264,13 +264,13 @@ public class ExceptionManager {
 	/**
 	 * 将数据写入数据
 	 * @param excepid
-	 * @param oc
+	 * @param time
 	 * @param message
 	 */
-	protected void save(long excepid, long oc, String message) {
+	protected void save(long excepid, long time, String message) {
 		PubExceptionRecord rec=new PubExceptionRecord();
 		rec.setRecId(IdGenerator.getSortedId32());
-	 	rec.setEventTime(oc);
+	 	rec.setEventTime(time);
 		rec.setExptMsg(StringUtil.shortenStringUTF8(message, 255,  ""));
 		rec.setTypeId(excepid);
 		batchLogger.save(rec);
