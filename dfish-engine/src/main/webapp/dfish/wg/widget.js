@@ -3013,13 +3013,11 @@ DocView = define.widget('DocView', {
 		outerHeight: function() {return $.height()},
 		// 调整大小
 		resize: function(w, h) {
-			if (w != N || h != N) {
-				for (var i = 0, l = this.length; i < l; i ++)
-					_w_rsz_all.call(this[i]);
-				for (i in this.discNodes)
-					_w_rsz_all.call(this.discNodes[i]);
-				this.trigger('resize');
-			}
+			for (var i = 0, l = this.length; i < l; i ++)
+				_w_rsz_all.call(this[i]);
+			for (i in this.discNodes)
+				_w_rsz_all.call(this.discNodes[i]);
+			this.trigger('resize');
 		}
 	}
 }),
@@ -5188,8 +5186,8 @@ Dialog = define.widget('Dialog', {
 			// _ori_height表示当前窗口曾经调整过高度，再次打开时尝试恢复
 			if (this._ori_height !== U) {
 				this.height(this._ori_height);
-				if (this._ori_height == -1 && this.$())
-					this.$().style.height = '';
+				if (this._ori_height == -1)
+					this.css({height: ''});
 				delete this._ori_height;
 			}
 		},
@@ -5208,12 +5206,16 @@ Dialog = define.widget('Dialog', {
 				$.db('<div id=' + this.id + 'cvr class="w-dialog-cover z-type-' + this.type.toLowerCase() + '"></div>', c && this.getLocalParent().$());
 			$.db(this.html(), c && this.getLocalParent().$());
 			if (this.x.minWidth || this.x.maxWidth) {
-				var ew = Math.min(Math.max($.boxwd(this.$()), this.$().scrollWidth), $.width()), n = this.minWidth(T), m = this.maxWidth(T);
-				this.width(n && n > ew ? n : m && m < ew ? m : ew);
+				var ew = Math.min(Math.max($.boxwd(this.$()), this.$().scrollWidth), $.width()), n = this.minWidth(T), m = this.maxWidth(T),
+					w = n && n > ew ? n : m && m < ew ? m : ew;
+				if (w != N && w > -1) w += this.attr('widthMinus') || 0;
+				this.width(w);
 			}
 			if (this.x.minHeight || this.x.maxHeight) {
-				var eh = Math.min(Math.max($.boxht(this.$()), this.$().scrollHeight), $.height()), n = this.minHeight(T), m = this.maxHeight(T);
-				this.height(n && n > eh ? n : m && m < eh ? m : eh);
+				var eh = Math.min(Math.max($.boxht(this.$()), this.$().scrollHeight), $.height()), n = this.minHeight(T), m = this.maxHeight(T),
+					h = n && n > eh ? n : m && m < eh ? m : eh;
+				if (h != N && h > -1) h += this.attr('heightMinus') || 0;
+				this.height(h);
 			}
 			// 检测object控件，如果存在则生成iframe遮盖。如果确定object不会影响dialog的显示，请给object标签加上属性 data-transparent="1"
 			for (var i = 0, o = $.tags('object'); i < o.length; i ++) {
@@ -11025,17 +11027,23 @@ TableRow = define.widget('TableRow', {
 					b.push(t.html(k, i, L));
 				} else {
 					v = v == N ? '' : v;
-					var g = '';
+					var g = '', y = '';
 					if (!q.x.br)
-						g += ' class="f-fix"';
-					if (this.type_thr && f.sort)
-						v = '<span class=f-va>' + v + '</span>' + c[i].html_sortarrow();
+						y += ' f-fix';
+					if (this.type_thr) {
+						y += ' w-th-text';
+						if (f.sort)
+							v = '<span class=f-va>' + v + '</span>' + c[i].html_sortarrow();
+					}
 					if (f.tip)
 						g += this.prop_title((d && d[f.tip.field || f.field]) || '', f.format, h);
+					if (y)
+						g += ' class="' + y + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
-					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') + (this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') : '') +
+					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') +
+						(this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') + (f.removable ? ' z-rma' : '') : '') +
 						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
-						(this.type_thr && f.removable ? '<div class=w-th-rm><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
+						(this.type_thr && f.removable ? '<div class=w-th-rma><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
 			return b.join('');
@@ -11416,10 +11424,10 @@ ContentTHead = define.widget('ContentTHead', {
 						}, e);
 					});
 				}
-				var m = Q('.w-th-rm', this.$());
+				var m = Q('.w-th-rma', this.$());
 				m.height(this.$().offsetHeight).on('click', function() {
-					for (var i = 0, d = [], e = Column.index(this.parentNode); i < m.length; i ++) {
-						var f = m.eq(i).parent(), h = f.prop('cellIndex');
+					for (var i = 0, c = r.getColGroup(), d = [], e = Column.index(this.parentNode), n = Q('.w-th-rma', r.contentTHead().$()); i < n.length; i ++) {
+						var f = n.eq(i).parent(), h = f.prop('cellIndex');
 						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
 							change: function() {
 								g.showColumn(this.x.data.colIndex, this.isChecked());
@@ -11429,7 +11437,7 @@ ContentTHead = define.widget('ContentTHead', {
 							}
 						}});
 					}
-					g.cmd({type: 'Dialog', id: '#w-th-rm-dialog', ownproperty: T, cls: 'w-th-rm-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+					g.cmd({type: 'Dialog', id: '#w-th-rma-dialog', ownproperty: T, cls: 'w-th-rma-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
 						ready: 'this.trigger("usable")',
 						usable: function() {
 							var a = this.elements(T).length == 1;

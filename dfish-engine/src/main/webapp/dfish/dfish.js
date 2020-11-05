@@ -299,7 +299,11 @@ Require = function(uri, id) {
 		typeof b === _STR && (b = [b]);
 		for (var i = 0, c = [], d = []; i < b.length; i ++)
 			b[i] = _mod_uri(uri, b[i], 'css');
-		_loadCss(b, f);
+		_loadCss(b, function() {
+			f && f();
+			//调用require.css()方法异步加载css，可能会造成-1,*混编排版错乱。这里调用VM().resize暂时解决
+			VM().resize();
+		});
 	};
 	// require.async(): 异步装载js
 	r.async = function(b, f) {
@@ -392,14 +396,16 @@ _loadCss = function(a, b, c) {
 			continue;
 		}
 		u = c ? c[i] : _uid();
-		f = _ajax_url(a[i], T) + _ver;
+		f = _ajax_url(a[i], T);
+		if (_cfg.ver) f = _urlParam(f, {_v: _cfg.ver});
 		if (d) {
-			var s = '<link rel=stylesheet href="' + f + '" id="' + u + '">';
+			var s = '<link rel="stylesheet" type="text/css" href="' + f + '" id="' + u + '">';
 			doc.write(s);
 			e = $(u);
 		} else {
 			e = doc.createElement('link');
 			e.rel  = 'stylesheet';
+			e.type = 'text/css';
 			e.href = f;
 			e.id = u;
 			_tags('head')[0].appendChild(e);
@@ -411,7 +417,7 @@ _loadCss = function(a, b, c) {
 		        img.onerror = function() {--n === 0 && b()};
 		        img.src = f;
 		  	} else {
-		    	e.onload = e.onerror = function() {--n === 0 && b()};
+		    	e.onload = e.onerror = function(t) {--n === 0 && b()};
 		  	}
 		}
 	}
@@ -631,8 +637,10 @@ _idsRemove = $.idsRemove = function(s, n, p) {
 	p = p == N ? ',' : '' + p;
 	if (!s || !n) return s;
 	for (var i = 0, e, n = n.split(p), l = n.length; i < l; i ++) {
-		e = (p + s + p).indexOf(p + n[i] + p);
-		if (e > -1) s = s.slice(0, e ? e - 1 : e) + s.slice(e + n[i].length + (e ? 0 : 1));
+		do {
+			e = (p + s + p).indexOf(p + n[i] + p);
+			if (e > -1) s = s.slice(0, e ? e - 1 : e) + s.slice(e + n[i].length + (e ? 0 : 1));
+		} while (s && e > -1);
 	}
 	return s;
 },
