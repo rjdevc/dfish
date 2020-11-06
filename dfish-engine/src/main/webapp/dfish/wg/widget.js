@@ -6419,7 +6419,7 @@ FormGroup = define.widget('FormGroup', {
 	},
 	Extend: [AbsForm, Horz],
 	Prototype: {
-		className: 'w-formgroup w-horz',
+		className: 'w-formgroup w-horz f-nv',
 		scaleWidth: function(a, b) {
 			return a == this.label ? AbsForm.prototype.scaleWidth.call(this, a, b) : _w_scale.width.call(this, a, b, this.formWidth());
 		},
@@ -6614,7 +6614,7 @@ CheckBoxGroup = define.widget('CheckBoxGroup', {
 	Listener: {
 		range: 'option',
 		body: {
-			/*ready: function() {
+			ready: function() {
 				if (this.targets && this[0].attr('width') == -1) {
 					var w = 0;
 					for (var i = 0; i < this.length; i ++)
@@ -6623,7 +6623,7 @@ CheckBoxGroup = define.widget('CheckBoxGroup', {
 						this[i].attr('width', w);
 					_w_rsz_all.call(this);
 				}
-			}*/
+			}
 		}
 	},
 	Prototype: {
