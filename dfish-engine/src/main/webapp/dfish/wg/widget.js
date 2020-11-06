@@ -2743,6 +2743,7 @@ Layout = define.widget('Layout', {
 		p.x.hiddens && _addHiddens.call(this, p.x.hiddens);
 		W.apply(this, arguments);
 	},
+	//Extend: Vert,
 	Prototype: {
 		x_childtype: function(t) {
 			return this.parentNode.x_childtype ? this.parentNode.x_childtype(t) : t;
@@ -6717,7 +6718,7 @@ CheckBoxGroup = define.widget('CheckBoxGroup', {
 		html_nodes: function() {
 			if (this.targets) {
 				for (var i = 0, s = '', l = Math.max(this.length, this.targets.length); i < l; i ++)
-					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i === 0 ? ' z-firt' : '') + (i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)><i class=f-vi></i>' + (this[i] ? this[i].html() : '') + (this.targets[i] ? this.targets[i].html() : '') + '</div>';
+					s += '<div class="w-' + this.type.toLowerCase() + '-list' + (i === 0 ? ' z-first' : '') + (i == l - 1 ? ' z-last' : '') + '" onclick=' + evw + '.evwClickList(' + i + ',event)><i class=f-vi></i>' + (this[i] ? this[i].html() : '') + (this.targets[i] ? this.targets[i].html() : '') + '</div>';
 				return s;
 			} else
 				return AbsForm.prototype.html_nodes.call(this);
@@ -6814,7 +6815,7 @@ CheckBox = define.widget('CheckBox', {
 			var b = this.x.target.isWidget ? [this.x.target] : findIDs.call(this.ownerView, this.x.target);
 			for (var i = 0, c; i < b.length; i ++) {
 				for (var j = 0, c = this.ownerView.fAll('*', b[i]); j < c.length; j ++)
-					c[j].disable(!this.isChecked());
+					c[j].status(this.isNormal() ? (this.isChecked() ? 'normal' : 'disabled') : this.status());
 			}
 		},
 		elements: function(a, b) {
