@@ -710,9 +710,9 @@
 .w-button .w-badge,.w-tab .w-badge{position:relative;margin-left:10px;top:-1px;*top:-6px}
 .w-button .w-badge.z-t,.w-tab .w-badge.z-t{top:2px}
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute;top:2px}
-.w-button.z-dir-v,.w-tab.z-dir-v{border:0;height:auto}
-.w-button.z-dir-v ._c,.w-tab.z-dir-v ._c{height:auto;vertical-align:middle}
-.w-button.z-dir-v ._i,.w-tab.z-dir-v ._i{float:none}
+.w-button.z-dir-v,.w-tab.z-dir-v{height:auto}
+.w-button.z-dir-v ._c,.w-tab.z-dir-v ._c{height:auto;padding:0;max-width:100%;vertical-align:middle}
+.w-button.z-dir-v ._i,.w-tab.z-dir-v ._i,.w-button.z-dir-v ._t,.w-tab.z-dir-v ._t{float:none;padding:0 10px;}
 .w-button.z-dir-v.z-i ._c,.w-tab.z-dir-v.z-i ._c{height:100%}
 .w-button ._ld,.w-tab ._ld{position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;line-height:1}
 .f-ms .w-button ._ld,.f-ms .w-tab ._ld{background:url(g/loading-cir.gif) no-repeat 50% 50%}

@@ -747,9 +747,11 @@ W = define('Widget', function() {
 		p && _setView.call(this, this.ownerView);
 		this.init_nodes();
 		this._instanced = T;
-		if (this.x.id && this.ownerView.initTargets[this.x.id]) {
-			this.ownerView.initTargets[this.x.id]();
-			delete this.ownerView.initTargets[this.x.id];
+		if (this.x.id) {
+			if(this.ownerView.initTargets[this.x.id]) {
+				this.ownerView.initTargets[this.x.id]();
+				delete this.ownerView.initTargets[this.x.id];
+			}
 		}
 	},
 	Helper: {
@@ -2766,6 +2768,12 @@ View = define.widget('View', {
 		p && p.bind && (this.bind = p.bind);
 		this.init_nodes();
 		this._instanced = T;
+		if (this.x.id) {
+			if(this.parent.initTargets[this.x.id]) {
+				this.parent.initTargets[this.x.id]();
+				delete this.parent.initTargets[this.x.id];
+			}
+		}
 	},
 	Extend: Section,
 	Prototype: {
@@ -3661,6 +3669,9 @@ ButtonBar = define.widget('ButtonBar', {
 				}
 				this.fixLine();
 				this.addClass('z-empty', !this.length);
+				if (this.innerHeight() == N) {
+					this.parentNode.trigger('resize');
+				}
 			}
 		}
 	},
