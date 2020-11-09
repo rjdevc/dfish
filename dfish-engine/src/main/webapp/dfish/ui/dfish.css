@@ -706,7 +706,7 @@
 .w-button.z-combo ._t,.w-tab.z-combo ._t{*padding-right:30px}
 .w-button.z-combo ._m,.w-tab.z-combo ._m{border-left:1px solid #ccc;width:20px;text-align:center}
 .w-button.z-combo ._m .f-i,.w-tab.z-combo ._m .f-i{margin-left:0}
-.w-button.z-x ._t,.w-tab.z-x ._t{*padding-right:24px}
+.w-button.z-x ._t,.w-tab.z-x ._t,.w-button.z-x ._i,.w-tab.z-x ._i{padding-right:10px;*padding-right:24px}
 .w-button .w-badge,.w-tab .w-badge{position:relative;margin-left:10px;top:-1px;*top:-6px}
 .w-button .w-badge.z-t,.w-tab .w-badge.z-t{top:2px}
 .w-button.z-i .w-badge,.w-tab.z-i .w-badge{position:absolute;top:2px}
