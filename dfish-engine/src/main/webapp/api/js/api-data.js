@@ -2000,7 +2000,8 @@ define( {
   	extend: 'ButtonBar',
   	deprecate: 'dir,focusMultiple,br,scroll,.w-buttonbar,.z-dirh,.z-dirv',
     Config: [
-      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组。' },
+      { name: 'hiddens', type: 'Array', remark: '隐藏表单的数组集合。' },
+      { name: 'nodes', type: 'Array', remark: '子节点的数组集合。子节点类型应该是Tab。' },
       { name: 'position', type: 'String', remark: 'tab位置。可选值: <b>top</b> <b>right</b> <b>bottom</b> <b>left</b>' }
     ],
     Properties: [
@@ -2205,6 +2206,7 @@ define( {
         { name: 'field', type: 'String', remark: '字段名。' },
         { name: 'fixed', type: 'String', remark: '固定列。可选值：<b>left</b>, <b>right</b>' },
         { name: 'format', type: 'String', remark: '格式化内容。支持替换 "$field" 和 "${field.prop}" 形式的变量。支持"javascript:"开头的js语句(需return返回值，可返回字符串或widget格式的json对象)。' },
+        { name: 'hidable', type: 'Boolean', remark: '是否可隐藏列。' },
         { name: 'highlight', type: 'Object', remark: '高亮关键词的配置。', param: [
           { name: 'key', type: 'String', remark: '关键词。' },
           { name: 'keyCls', type: 'String', remark: '关键词样式名。' },
@@ -3494,7 +3496,7 @@ define( {
       { name: 'folder', type: 'Boolean', remark: '是否有子节点。' },
       { name: 'format', type: 'String', remark: '格式化内容。"$字段名"形式的变量将被解析替换。支持"javascript:"开头的js语句(需return返回值)。' },
       { name: 'line', type: 'Boolean', remark: '是否有连线效果。' },
-      { name: 'nodes', type: 'Array', remark: '子节点集合。' },
+      { name: 'nodes', type: 'Array', remark: '子节点集合。子节点类型应该是Leaf。' },
       { name: 'expanded', type: 'Boolean', remark: '是否展开状态。' },
       { name: 'expandedIcon', type: 'String', remark: '展开状态图标。可使用图片url地址，或以 "." 开头的样式名。' },
       { name: 'src', type: 'String', remark: '获取子节点的 URL 地址。' },

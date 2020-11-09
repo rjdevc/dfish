@@ -3826,8 +3826,8 @@ Button = define.widget('Button', {
 				if (this.x.target) {
 					var p = this.parentNode, f = p === this.pubParent() && p.getFocus(), n = f && f == this && (this.next() || this.prev());
 					n && n.click();
-					for (var i = 0, b = this.ownerView.find(this.x.target.split(',')); i < b.length; i ++)
-						b[i].remove();
+					for (var i = 0, b = this.x.target.split(','), c; i < b.length; i ++)
+						(c = this.ownerView.find(b[i])) && c.remove();
 				}
 			}
 		}
@@ -4094,11 +4094,14 @@ Button = define.widget('Button', {
 				a += '<div class=_m id=' + this.id + 'm' + (c ? _html_on.call(this, ' onclick=' + evw + '.drop()') : '') + '><i class="f-i f-i-caret-down"></i><i class=f-vi></i></div>';
 			else if (x.closable)
 				a += '<div class=_x onclick=' + evw + '.close(event)><i class=f-vi></i><i class="_xi">&times;</i></div>';
-			a += '<div class=_c id=' + this.id + 'c' + (c ? _html_on.call(this, ' onclick=' + eve) : '') + '>';
+			a += '<div class="_c' + (this.x.dir === 'v' ? ' f-nv' : '') + '" id=' + this.id + 'c' + (c ? _html_on.call(this, ' onclick=' + eve) : '') + '>';
 			a += this.html_icon();
 			if (t || this.x.format)
 				a += this.html_text();
-			a += '</div>' + this.html_append() + (ie7 && !w ? '</table>' : '') + (io && this._badge ? this._badge.html() : '') + '</' + g + '>';
+			a += '</div>';
+			if (this.x.dir === 'v')
+				a += '<i class=f-vi></i>';
+			a += this.html_append() + (ie7 && !w ? '</table>' : '') + (io && this._badge ? this._badge.html() : '') + '</' + g + '>';
 			return this.html_before() + a + this.html_after();
 		}
 	}
@@ -10120,24 +10123,26 @@ AbsLeaf = define.widget('AbsLeaf', {
 				error: function(j) {
 					_sectionAjaxCB.call(this, 'error', N, j);
 				},
-				complete: function(x, j) {
-					if (this._disposed) return;
-					this.loading = F;
-					this.loaded = T;
-					if (!this.getLength()) {
-						this.x.folder = F;
-						this.toggle(F);
-					}
-					this.fixFolder();
-					$.classRemove(this.$(), 'z-loading');
-					if (this.level > -1) {
-						if (x = this.html_icon()) {
-							this.$('i') && $.replace(this.$('i'), x);
-						} else
-							$.remove(this.id + 'ld');
-					}
-					_sectionAjaxCB.call(this, 'complete', x, j);
-				}});
+				complete: this._requestComplete});
+		},
+		_requestComplete: function(x, j) {
+			if (!this._disposed) {
+				this.loading = F;
+				this.loaded = T;
+				if (!this.getLength()) {
+					this.x.folder = F;
+					this.toggle(F);
+				}
+				this.fixFolder();
+				$.classRemove(this.$(), 'z-loading');
+				if (this.level > -1) {
+					if (x = this.html_icon()) {
+						this.$('i') && $.replace(this.$('i'), x);
+					} else
+						$.remove(this.id + 'ld');
+				}
+			}
+			_sectionAjaxCB.call(this, 'complete', x, j);
 		},
 		render_nodes: function(n) {
 			this.loaded = T;
@@ -10243,14 +10248,9 @@ AbsLeaf = define.widget('AbsLeaf', {
 						var d = x.id ? this.ownerView.find(x.id) : this;
 						d && d.compare(x);
 					}
-				},
-				complete: function() {
-					this.loading = F;
-					this.loaded = T;
-					var d = (this.rootNode || this).getFocus();
-					d && d !== f && d.scrollIntoView();
 					c && c.call(this);
-				}});
+				},
+				complete: this._requestComplete});
 		},
 		// @a -> sync, b -> fn?
 		reload: function(a, b) {
@@ -11042,9 +11042,9 @@ TableRow = define.widget('TableRow', {
 						g += ' class="' + y + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') +
-						(this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') + (f.removable ? ' z-rma' : '') : '') +
+						(this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') + (f.visible && f.visible != 'normal' ? ' z-hda' : '') : '') +
 						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
-						(this.type_thr && f.removable ? '<div class=w-th-rma><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
+						(this.type_thr && f.visible && f.visible != 'normal' ? '<div class=w-th-hda><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
 			return b.join('');
@@ -11425,9 +11425,9 @@ ContentTHead = define.widget('ContentTHead', {
 						}, e);
 					});
 				}
-				var m = Q('.w-th-rma', this.$());
+				var m = Q('.w-th-hda', this.$());
 				m.height(this.$().offsetHeight).on('click', function() {
-					for (var i = 0, c = r.getColGroup(), d = [], e = Column.index(this.parentNode), n = Q('.w-th-rma', r.contentTHead().$()); i < n.length; i ++) {
+					for (var i = 0, c = r.getColGroup(), d = [], e = Column.index(this.parentNode), n = Q('.w-th-hda', r.contentTHead().$()); i < n.length; i ++) {
 						var f = n.eq(i).parent(), h = f.prop('cellIndex');
 						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
 							change: function() {
@@ -11438,7 +11438,7 @@ ContentTHead = define.widget('ContentTHead', {
 							}
 						}});
 					}
-					g.cmd({type: 'Dialog', id: '#w-th-rma-dialog', ownproperty: T, cls: 'w-th-rma-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+					g.cmd({type: 'Dialog', id: '#w-th-hda-dialog', ownproperty: T, cls: 'w-th-hda-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
 						ready: 'this.trigger("usable")',
 						usable: function() {
 							var a = this.elements(T).length == 1;
@@ -11449,7 +11449,7 @@ ContentTHead = define.widget('ContentTHead', {
 					}}, on: {mouseLeave: 'this.close()'}});
 				});
 				// 排序
-				for (var i = 0, d = F; i < c.length; i ++) {
+				for (var i = 0; i < c.length; i ++) {
 					if (c[i].x.sort) {
 						Q('.w-th-sort', this.$()).each(function() {
 							var f = c[Column.index(this)].x.field;
@@ -11459,6 +11459,18 @@ ContentTHead = define.widget('ContentTHead', {
 							});
 						});
 						break;
+					}
+				}
+				if (r == g) {
+					var d = Q.grep(c, function(n){return n.x.visible && n.x.visible !== 'normal'});
+					if (d.length) {
+						var e = Q.grep(d, function(n){return n.x.visible === 'hide'});
+						d.length == e.length && d.shift();
+						$.each(d, function(n) {
+							g.showColumn(n.nodeIndex, n.x.visible === 'show');
+						});
+						g.fixScroll();
+						g.trigger('resize');
 					}
 				}
 			}
