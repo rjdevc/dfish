@@ -3641,10 +3641,10 @@ ButtonBar = define.widget('ButtonBar', {
 		W.apply(this, arguments);
 		x.split && _initSplit.call(this);
 		this.attr('align') && (this.property = ' align=' + this.attr('align'));
-		(!x.vAlign && p && p.x.vAlign) && this.defaults({vAlign: p.x.vAlign});
+		!x.vAlign && x.dir !== 'v' && this.defaults({vAlign: 'middle'});
+		//(!x.vAlign && p && p.x.vAlign) && this.defaults({vAlign: p.x.vAlign});
 	},
 	Extend: Horz,
-	Default: {vAlign: 'middle'},
 	Listener: {
 		body: {
 			ready: function(e) {
