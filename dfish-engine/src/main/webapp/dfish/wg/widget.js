@@ -549,7 +549,7 @@ Template = $.createClass({
 			if ((b = x['@w-include'])) {
 				var d = _getTemplateBody(b, T);
 				if (d) {
-					d = $.extend({}, d);
+					//d = $.extend({}, d);
 					for (var k in x)
 						if (k.indexOf('@w-') < 0) {
 							if ((k in d) && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
@@ -579,7 +579,7 @@ Template = $.createClass({
 						if (d != N) {
 							var e = k.substr(1);
 							if ((e in x) && Q.isPlainObject(x[e]) && Q.isPlainObject(d))
-								$.mergeDeep(d, x[e]);
+								$.mergeDeep(d, this.compile(x[e], y));
 							r[e] = d;
 						}
 						//d != N && (r[k.substr(1)] = d);
@@ -630,7 +630,7 @@ Template = $.createClass({
 					}
 					r[k] = c;
 				} else if (typeof b === _OBJ) {
-					if (!(k in r)) r[k] = this.compile(b, y);
+					if(!(k in r)) r[k] = this.compile(b, y);
 				} else {
 					r[k] = b;
 				}
