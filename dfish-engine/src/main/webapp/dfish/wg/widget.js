@@ -549,9 +549,14 @@ Template = $.createClass({
 			if ((b = x['@w-include'])) {
 				var d = _getTemplateBody(b, T);
 				if (d) {
-					d = $.extend({}, d);
+					//d = $.extend({}, d);
 					for (var k in x)
-						if (k.indexOf('@w-') < 0) d[k] = x[k];
+						if (k.indexOf('@w-') < 0) {
+							if (d[k] !== U && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
+								$.extendDeep(d[k], x[k]);
+							else
+								d[k] = x[k];
+						}
 				}
 				return d && this.compile(d, y);
 			}
