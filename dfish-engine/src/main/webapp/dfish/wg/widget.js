@@ -553,7 +553,7 @@ Template = $.createClass({
 					for (var k in x)
 						if (k.indexOf('@w-') < 0) {
 							if (d[k] !== U && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
-								$.extendDeep(d[k], x[k]);
+								$.mergeDeep(d[k], x[k]);
 							else
 								d[k] = x[k];
 						}
@@ -576,8 +576,14 @@ Template = $.createClass({
 						}
 					} else {
 						var d = typeof b === _STR ? this.format(b, g, y) : this.compile(b, y);
-						d != N && (r[k.substr(1)] = d);
-						//r.at = _regAt(x, k, d);
+						if (d != N) {
+							var e = k.substr(1);
+							if ((e in x) && Q.isPlainObject(x[e]) && Q.isPlainObject(d))
+								r[e] = $.extendDeep(x[e], d); // 注意除了给r[e]赋值，d也要注入x[e]里面，让两个object合并
+							else
+								r[e] = d;
+						}
+						//d != N && (r[k.substr(1)] = d);
 					}
 				} else if ($.isArray(b)) {
 					for (var i = 0, c = [], d, m, l = b.length, IF, EIF; i < l; i ++) if (m = b[i]) {
