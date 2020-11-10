@@ -186,15 +186,15 @@ i {
     visibility: hidden;
 }
 
-.w-alert.x-alert-info ._ico {
+.w-alert.x-alert-info .w-alert-icon ._ico {
     color: #23C300;
 }
 
-.w-alert.x-alert-warn ._ico {
+.w-alert.x-alert-warn .w-alert-icon ._ico {
     color: #FF9E15;
 }
 
-.w-alert.x-alert-error ._ico {
+.w-alert.x-alert-error .w-alert-icon ._ico {
     color: #E42525;
 }
 
@@ -233,37 +233,24 @@ i {
     /*color: #999;*/
 }
 
-.w-buttonbar.x-face-text .w-button ._t, .w-buttonbar.x-face-text .w-button ._i, .w-buttonbar.x-face-text .w-button ._t, .w-buttonbar.x-face-text .w-button ._i {
+.w-buttonbar.x-face-text .w-button ._t, .w-buttonbar.x-face-text .w-button ._i,
+.w-button.x-face-text ._t, .w-button.x-face-text ._i {
     padding-right: 5px;
 }
 
-.w-buttonbar.x-face-text .w-button ._c, .w-buttonbar.x-face-text .w-button ._c {
+.w-buttonbar.x-face-text .w-button ._c,
+.w-button.x-face-text ._c {
     padding-left: 5px;
 }
 
-.w-buttonbar.x-face-text .w-button.z-normal, .w-buttonbar.x-face-text .w-button.z-normal {
+.w-buttonbar.x-face-text .w-button,
+.w-button.x-face-text {
     border-color: transparent;
     background-color: transparent;
 }
 
-.w-buttonbar.x-face-text .w-button.z-normal.z-hv, .w-buttonbar.x-face-text .w-button.z-normal.z-on, .w-buttonbar.x-face-text .w-button.z-normal.z-dn, .w-buttonbar.x-face-text .w-button.z-normal.z-ds {
-    background-color: transparent;
-}
-
-.w-button.x-face-text ._t, .w-button.x-face-text ._i, .w-button.x-face-text ._t, .w-button.x-face-text ._i {
-    padding-right: 5px;
-}
-
-.w-button.x-face-text ._c, .w-button.x-face-text ._c {
-    padding-left: 5px;
-}
-
-.w-button.x-face-text.z-normal, .w-button.x-face-text.z-normal {
-    border-color: transparent;
-    background-color: transparent;
-}
-
-.w-button.x-face-text.z-normal.z-hv, .w-button.x-face-text.z-normal.z-on, .w-button.x-face-text.z-normal.z-dn, .w-button.x-face-text.z-normal.z-ds {
+.w-buttonbar.x-face-text .w-button.z-hv, .w-buttonbar.x-face-text .w-button.z-on, .w-buttonbar.x-face-text .w-button.z-dn, .w-buttonbar.x-face-text .w-button.z-ds,
+.w-button.x-face-text.z-hv, .w-button.x-face-text.z-on, .w-button.x-face-text.z-dn, .w-button.x-face-text.z-ds {
     background-color: transparent;
 }
 

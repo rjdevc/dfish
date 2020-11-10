@@ -306,7 +306,9 @@ public class FrameworkController {
                 }
             } else if (type == java.util.Date.class) {
                 str = str.trim();
-                if (str.length() <= 7) {
+                if (str.length() <= 4) {
+                    value = DateUtil.parse(str, "yyyy");
+                } else if (str.length() <= 7) {
                     value = DateUtil.parse(str, "yyyy-MM");
                 } else if (str.length() <= 10) {
                     value = DateUtil.parse(str, "yyyy-MM-dd");
