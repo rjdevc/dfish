@@ -3721,9 +3721,8 @@ ButtonBar = define.widget('ButtonBar', {
 				for (var i = 0; i < this.length; i ++)
 					this[i].css({visibility: ''});
 			}
-			// 调整页面百分比时，scrollWidth可能会比offsetWidth大一个像素。这里加一个像素容错
-			var tw = this.$().offsetWidth + 1, o = this.x.overflow;
-			if (this.$().scrollWidth > tw) {
+			var tw = this.$().offsetWidth, o = this.x.overflow;
+			if (this.length && $.bcr(this[this.length - 1].$()).right > $.bcr(this.$()).right) {
 				var t = $.extend({type: 'OverflowButton', focusable: F, closable: F, on: {click: ''}}, this.x.pub || {}, o);
 				t.text == N && t.icon == N && (t.text = Loc.more);
 				this._more = this.add(t, -1);
@@ -5341,7 +5340,7 @@ Dialog = define.widget('Dialog', {
 				this.listenHide_ && this._listenHide(a);
 			} else {
 				var self = this;
-				setTimeout(function() {!self._disposed && self._listenHide(a);}, 200); // 延时处理，避免出现后立即消失的情况
+				setTimeout(function() {self.parentNode._disposed ? self.close() : !self._disposed && self._listenHide(a);}, 200); // 延时处理，避免出现后立即消失的情况
 				//Dialog.cleanPop(this); // 关闭除了自己之外的所有autoHide窗口
 			}
 		},
@@ -9087,7 +9086,7 @@ ComboBox = define.widget('ComboBox', {
 				} else {
 					var g = this.add(this.x.picker, -1, {width: -1});
 					g.className += ' f-pick';
-					return g.html();
+					s += g.html();
 				}
 			}
 			if (this.x.drop)
