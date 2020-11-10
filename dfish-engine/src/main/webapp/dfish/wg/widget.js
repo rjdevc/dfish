@@ -549,10 +549,10 @@ Template = $.createClass({
 			if ((b = x['@w-include'])) {
 				var d = _getTemplateBody(b, T);
 				if (d) {
-					//d = $.extend({}, d);
+					d = $.extend({}, d);
 					for (var k in x)
 						if (k.indexOf('@w-') < 0) {
-							if (d[k] !== U && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
+							if ((k in d) && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
 								$.mergeDeep(d[k], x[k]);
 							else
 								d[k] = x[k];
@@ -579,9 +579,8 @@ Template = $.createClass({
 						if (d != N) {
 							var e = k.substr(1);
 							if ((e in x) && Q.isPlainObject(x[e]) && Q.isPlainObject(d))
-								r[e] = $.extendDeep(x[e], d); // 注意除了给r[e]赋值，d也要注入x[e]里面，让两个object合并
-							else
-								r[e] = d;
+								$.mergeDeep(d, x[e]);
+							r[e] = d;
 						}
 						//d != N && (r[k.substr(1)] = d);
 					}
@@ -631,7 +630,7 @@ Template = $.createClass({
 					}
 					r[k] = c;
 				} else if (typeof b === _OBJ) {
-					r[k] = this.compile(b, y);
+					if (!(k in r)) r[k] = this.compile(b, y);
 				} else {
 					r[k] = b;
 				}
