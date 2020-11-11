@@ -487,13 +487,8 @@ TemplateMark = $.createClass({
 		}
 	}
 }),
-_mergeAtPropHooks = {
-	'cls': function(a, b) {
-		return a + ' ' + b;
-	},
-	'style': function(a, b) {
-		return (a + ';' + b).replace(/;{2,}/g, ';');
-	}
+_templateMerges = {
+	pub: T, on: T, data: T
 },
 /* `Template` */
 Template = $.createClass({
@@ -549,7 +544,6 @@ Template = $.createClass({
 			if ((b = x['@w-include'])) {
 				var d = _getTemplateBody(b, T);
 				if (d) {
-					//d = $.extend({}, d);
 					for (var k in x)
 						if (k.indexOf('@w-') < 0) {
 							if ((k in d) && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
@@ -587,7 +581,6 @@ Template = $.createClass({
 				} else if ($.isArray(b)) {
 					for (var i = 0, c = [], d, m, l = b.length, IF, EIF; i < l; i ++) if (m = b[i]) {
 						if (m['@w-for']) {
-							//_regAt(m);
 							var e = m['@w-for'].split(/ in /),
 								v = e[0].replace(/[^\$\w,]/g, '').split(','), // $item,$index
 								h = this.format(e[1], g, y); // array
@@ -3996,15 +3989,14 @@ Button = define.widget('Button', {
 			return this.x.focus;
 		},
 		focusOver: function() {
-			if (this.x.focus) {
-				var p = this.parentNode;
-				if (p._more && p._more.x.effect === 'swap') {
-					p.fixLine();
-					var v = _widget(Q(p._more.$()).prev('.w-button'));
-					if (v && v.nodeIndex < this.nodeIndex) {
-						v.swap(this);
-						p.trigger('nodeChange');
-					}
+			if (this.x.focus) return;
+			var p = this.parentNode;
+			if (p._more && p._more.x.effect === 'swap') {
+				p.fixLine();
+				var v = _widget(Q(p._more.$()).prev('.w-button'));
+				if (v && v.nodeIndex < this.nodeIndex) {
+					v.swap(this);
+					p.trigger('nodeChange');
 				}
 			}
 		},
@@ -6044,9 +6036,9 @@ _valid_err = function(b, v) {
 		return;
 	if (this.vv('required', b) && (k.required ? k.required.call(this, b, v) : (!v)))
 		return _form_err.call(this, b, 'required');
-	if ((c = this.vv('minLength', b)) && c > 0 && (k.minLength ? k.minLength.call(this, b, v) : ($.strLen(v) < c)))
+	if ((c = this.vv('minLength', b)) && c > 0 && v && (k.minLength ? k.minLength.call(this, b, v) : ($.strLen(v) < c)))
 		return _form_err.call(this, b, 'minLength', [c]);
-	if ((c = this.vv('maxLength', b)) && c > 0 && (k.maxLength ? k.maxLength.call(this, b, v) : ((d = $.strLen(v)) > c)))
+	if ((c = this.vv('maxLength', b)) && c > 0 && v && (k.maxLength ? k.maxLength.call(this, b, v) : ((d = $.strLen(v)) > c)))
 		return _form_err.call(this, b, 'maxLength', [d - c]);
 	if ((c = this.vv('minValue', b)) && v && (k.minValue ? k.minValue.call(this, b, v) : ($.isNumber(c) ? (_number(v) < _number(c)) : (v < c))))
 		return _form_err.call(this, b, 'minValue', [c]);
