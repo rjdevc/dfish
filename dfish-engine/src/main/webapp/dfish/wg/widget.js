@@ -1193,6 +1193,7 @@ W = define('Widget', function() {
 				return !b && this.contains(_widget(a));
 			}
 		}, 
+		// 是否包含某wg或元素 /@a -> elem|widget, b -> strict mode?
 		hasBubble: function(a, b) {
 			return this.contains(a, b);
 		},
@@ -3764,6 +3765,7 @@ ButtonBar = define.widget('ButtonBar', {
 _hover_tip = function() {
 	var t = this.x.tip;
 	t && (t.text || t.node) && this.tip();
+	if (this.x.hoverDrop) this.drop();
 },
 /* `button` */
 Button = define.widget('Button', {
@@ -3995,9 +3997,10 @@ Button = define.widget('Button', {
 		},
 		focusOver: function() {
 			if (this.x.focus) {
-				var p = this.parentNode, o = p.x.overflow;
-				if (o && o.effect === 'swap' && p._more) {
-					var q = Q(p._more.$()).prev('.w-button')[0], v = q && _widget(q);
+				var p = this.parentNode;
+				if (p._more && p._more.x.effect === 'swap') {
+					p.fixLine();
+					var v = _widget(Q(p._more.$()).prev('.w-button'));
 					if (v && v.nodeIndex < this.nodeIndex) {
 						v.swap(this);
 						p.trigger('nodeChange');
@@ -5742,6 +5745,12 @@ Menu = define.widget('Menu', {
 		},
 		listenHide: function(a) {
 			this.type === 'Menu' && Dialog.prototype.listenHide.call(this, a);
+		},
+		// 是否包含某wg或元素 /@a -> elem|widget, b -> strict mode?
+		hasBubble: function(a, b) {
+			if(this.contains(a, b)) return T;
+			var d = $.dialog(a);
+			if (d && d.parentNode == this.parentNode) return T;
 		},
 		// 检查是否有高度溢出，并填充内容
 		checkOverflow: function() {
