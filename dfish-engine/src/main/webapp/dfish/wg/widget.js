@@ -487,6 +487,7 @@ TemplateMark = $.createClass({
 		}
 	}
 }),
+//指定的属性可以合并
 _templateMerges = {
 	pub: T, on: T, data: T
 },
@@ -544,15 +545,18 @@ Template = $.createClass({
 			if ((b = x['@w-include'])) {
 				var d = _getTemplateBody(b, T);
 				if (d) {
-					for (var k in x)
-						if (k.indexOf('@w-') < 0) {
-							if ((k in d) && Q.isPlainObject(d[k]) && Q.isPlainObject(x[k]))
-								$.mergeDeep(d[k], x[k]);
-							else
-								d[k] = x[k];
-						}
+					d = this.compile(d, y);
+					$.extend(f, x);
+					delete f['@w-include'];
+					f = this.compile(f, y);
+					for (var k in f) {
+						if (_templateMerges[k] && d[k] && Q.isPlainObject(d[k]) && Q.isPlainObject(f[k]))
+							$.mergeDeep(d[k], f[k]);
+						else
+							d[k] = f[k];
+					}
 				}
-				return d && this.compile(d, y);
+				return d;
 			}
 			for (var k in x) {
 				var b = x[k];
@@ -572,7 +576,7 @@ Template = $.createClass({
 						var d = typeof b === _STR ? this.format(b, g, y) : this.compile(b, y);
 						if (d != N) {
 							var e = k.substr(1);
-							if ((e in x) && Q.isPlainObject(x[e]) && Q.isPlainObject(d))
+							if (_templateMerges[e] && x[e] && Q.isPlainObject(x[e]) && Q.isPlainObject(d))
 								$.mergeDeep(d, this.compile(x[e], y));
 							r[e] = d;
 						}
