@@ -4575,7 +4575,7 @@ Toggle = define.widget('Toggle', {
 			var p = this;
 			while ((p = p.parentNode) && p.innerHeight() == N);
 			p && p.triggerAll('resize');
-			this.trigger('toggle');
+			this.trigger(!!b ? 'expand' : 'collapse');
 			a && a.type && $.stop(a);
 		},
 		isExpanded: function() {
@@ -6471,6 +6471,7 @@ Range = define.widget('Range', {
 		this.begin = x.begin && this.add(x.begin);
 		this.to    = (x.begin && x.end) && this.add(typeof x.to === _OBJ ? x.to : {type: 'Html', cls: 'w-range-to', text: x.to || Loc.to, width: mbi ? 20 : 30, align: 'center'});
 		this.end   = x.end && this.add(x.end);
+		x.br = T;
 		if (!x.vAlign && p && p.x.vAlign)
 			this.defaults({vAlign: p.x.vAlign});
 	},
@@ -6764,7 +6765,7 @@ CheckBox = define.widget('CheckBox', {
 			this.defaults({width: p.x.targets ? 62 : -1});
 			p.x.status && $.extend(x, {status: p.x.status});
 		}
-		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && p.x.value && x.value && $.idsAny(p.x.value, x.value)));
+		this._dft_modchk = this._modchk = !!(x.checked != N ? x.checked : (p && p.isBoxGroup && ((p.x.value != N && p.x.value == x.value) || (p.x.value && x.value && $.idsAny(p.x.value, x.value)))));
 		AbsForm.apply(this, arguments);
 	},
 	Extend: AbsForm,
@@ -8320,7 +8321,7 @@ DropBox = define.widget('DropBox', {
 		},
 		clkhdr: $.rt(),
 		checkPlaceholder: function(v) {
-			this.$('ph') && $.classAdd(this.$('ph'), 'f-none', !!(arguments.length === 0 ? this.val() : v) || !(this.x.cancelable || this.x.multiple));
+			this.$('ph') && $.classAdd(this.$('ph'), 'f-none', !!(arguments.length === 0 ? this.text() : v));
 		},
 		focus: function(a) {
 			_z_on.call(this, a == N || a);
