@@ -2762,6 +2762,9 @@ _merge($, {
 		$.query('style', w).each(function() {c.push(this.outerHTML)});
 		var s = d.outerHTML;
 		s = s.replace(/<div[^>]+overflow-y[^>]+>/gi, function($0) {return $0.replace(/height: \w+/gi, '');});
+		$.query('.w-input-placeholder', d).each(function() {
+			s = s.replace(this.outerHTML, '');
+		});
 		$.query(':text,:password,textarea,select', d).each(function() {
 			var h = this.outerHTML, v, r;
 			if (y.input2text) {
@@ -2804,10 +2807,10 @@ _merge($, {
 		d.open('text/html', 'replace');
 		d.write('<!doctype html><html class=f-print><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join('') +
 			(y.head || '') + '</head><body><div class=x-print>' + s + '</div>' +
-			(!br.ms && y.print ? '<script>window.print();window.close()</script>' : '') +
+			(!br.ms && y.print !== F ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>');
 		d.close();
-		if (br.ms && y.print) {
+		if (br.ms && y.print !== F) {
 			w.print(), w.close();
 		}
 		return d;

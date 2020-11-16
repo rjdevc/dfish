@@ -541,7 +541,7 @@
 .w-combobox.z-ds ._x{display:none}
 
 .w-combobox-opt{position:relative;height:24px;border:1px solid #e6e6e6;background:#f8f8f8;text-indent:0;margin:2px 0 2px 3px;line-height:1}
-.w-combobox-opt ._s{height:100%;padding:0 4px 0 8px;color:#333;overflow:hidden;vertical-align:middle;cursor:default;*padding-right:24px;*line-height:1.8}
+.w-combobox-opt ._s{height:100%;padding:0 3px 0 7px;color:#333;overflow:hidden;vertical-align:middle;cursor:default;*padding-right:24px;*line-height:1.8}
 .w-combobox-opt ._b{position:absolute;top:0;bottom:0;left:-3px;padding-left:3px;height:100%;vertical-align:middle}
 .w-combobox-opt ._x{float:right;height:100%;padding:0 2px;margin-right:3px;*line-height:1}
 .w-combobox-opt ._xi{display:inline-block;margin-top:-2px;font:normal 17px verdana;color:#999;vertical-align:middle}
@@ -552,6 +552,7 @@
 .w-combobox-opt.z-err{background:#fff;border-color:#ff7921}
 .w-combobox-opt.z-err.z-on{border-color:#3298fe}
 .w-combobox.z-ds .w-combobox-opt{border-color:#d0d0d0;background:transparent}
+.w-combobox.z-ds .w-combobox-opt ._s{padding-right:7px}
 
 .w-linkbox{height:auto;min-height:30px}
 .w-linkbox .w-input-t{min-height:30px;word-break:break-all;word-wrap:break-word;font-family:verdana;font-style:normal;outline:none}

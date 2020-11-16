@@ -2684,6 +2684,9 @@ Section = define.widget('Section', {
 		},
 		// tar -> 目标ID, re -> ready event?
 		showLayout: function(tar, re) {
+			this.removeClass('z-loading');
+			if (!this.$())
+				return;
 			if (tar) {
 				for (var i = 0, b = _getReplaceTargets(this.x.node, tar), c = (this.getContentView && this.getContentView()) || _view(this); i < b.length; i ++)
 					c.find(b[i].id).replace(b[i]);
@@ -2693,7 +2696,6 @@ Section = define.widget('Section', {
 				re !== F && this.layout.triggerAllReady();
 				this.trigger('load');
 			}
-			this.removeClass('z-loading');
 		},
 		// @a -> close?
 		showLoading: function(a) {
@@ -5339,7 +5341,7 @@ Dialog = define.widget('Dialog', {
 				this.listenHide_ && this._listenHide(a);
 			} else {
 				var self = this;
-				setTimeout(function() {self.parentNode._disposed ? self.close() : !self._disposed && self._listenHide(a);}, 200); // 延时处理，避免出现后立即消失的情况
+				setTimeout(function() {if(!self._disposed){self.parentNode._disposed ? self.close() : self._listenHide(a)}}, 200); // 延时处理，避免出现后立即消失的情况
 				//Dialog.cleanPop(this); // 关闭除了自己之外的所有autoHide窗口
 			}
 		},
