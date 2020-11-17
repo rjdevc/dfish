@@ -5410,20 +5410,15 @@ AlertButton = define.widget('AlertButton', {
 	Extend: Button,
 	Listener: {
 		body: {
-			click: {
-				block: function() {
-					var d = $.dialog(this);
-					_operexe((this.x.on && this.x.on.click) || (this.type === 'AlertSubmitButton' ? d.x.yes : d.x.no), d.commander, d.x.args);
-					d.remove();
-					return T;
-				}
+			click: function() {
+				$.close(this);
 			}
 		}
 	}
 }),
 AlertSubmitButton = define.widget('AlertSubmitButton', {
 	Extend: SubmitButton,
-	Listener: {body: {click: {block: AlertButton.Listener.body.click.block}}}
+	Listener: {body: {click: AlertButton.Listener.body.click}}
 }),
 /*  `alert`  */
 Alert = define.widget('Alert', {
