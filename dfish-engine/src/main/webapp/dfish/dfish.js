@@ -2771,12 +2771,10 @@ _merge($, {
 				var g = $.widget(this), w = 'auto';
 				if (g && g.isFormWidget) {
 					h = g.$('f').outerHTML;
-					v = g.text(), r = $.query('.f-remark,.f-beforecontent,.f-aftercontent', g.$()).html();
-					if (g.type !== 'Date' && g.type !== 'Spinner')
-						w = g.$('f').style.width;
+					v = g.text();//, r = $.query('.f-remark,.f-beforecontent,.f-aftercontent', g.$()).html();
 				} else
 					v = this.value;
-				v = '<div class="f-inbl f-va f-wdbr w-input-s" style="width:' + w + '">' + v + '</div>';
+				v = '<div class="f-oh w-input-s">' + v + '</div>';
 			} else {
 				v = h.replace('value="' + this.defaultValue + '"', 'value="' + this.value + '"');
 			}
