@@ -5449,7 +5449,7 @@ Alert = define.widget('Alert', {
 			]}});
 		}
 		(x.yes || x.no) && this.addEvent('close', function() {
-			return _operexe(a ? x.yes : x.no, this.commander, x.args);
+			return _operexe(a ? x.yes : x.no, this, x.args);
 		});
 		Dialog.call(this, x, a ? _docView : p);
 	},
@@ -5460,10 +5460,10 @@ Alert = define.widget('Alert', {
 		front: $.rt(F),
 		_front: $.rt(F),
 		yes: function() {
-			return _operexe(this.x.yes, this.commander, this.x.args);
+			return _operexe(this.x.yes, this, this.x.args);
 		},
 		no: function() {
-			return _operexe(this.x.no, this.commander, this.x.args);
+			return _operexe(this.x.no, this, this.x.args);
 		},
 		render: function() {
 			var s = document.readyState;
@@ -5473,9 +5473,9 @@ Alert = define.widget('Alert', {
 				var x = this.x;
 				if (this.type === 'Alert') {
 					$.winbox(x.text);
-					x.yes && _operexe(x.yes, this.commander, x.args);
+					x.yes && _operexe(x.yes, this, x.args);
 				} else {
-					_operexe(confirm(x.text) ? x.yes : x.no, this.commander, x.args);
+					_operexe(confirm(x.text) ? x.yes : x.no, this, x.args);
 				}
 			}
 		}
