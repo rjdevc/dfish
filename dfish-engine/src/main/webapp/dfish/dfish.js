@@ -2805,7 +2805,7 @@ _merge($, {
 		w = window.open();
 		d = w.document;
 		d.open('text/html', 'replace');
-		d.write('<!doctype html><html class=f-print><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><script>var $={e:function(){}}</script>' + c.join('') +
+		d.write('<!doctype html><html class=f-print><head><meta charset=utf-8><title>' + $.loc.print_preview + '</title><style>@page{margin-bottom:0mm;margin-top:0mm;}</style><script>var $={e:function(){}}</script>' + c.join('') +
 			(y.head || '') + '</head><body><div class=x-print>' + s + '</div>' +
 			(!br.ms && y.print !== F ? '<script>window.print();window.close()</script>' : '') +
 			'</body></html>');
