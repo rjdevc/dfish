@@ -5464,6 +5464,12 @@ Alert = define.widget('Alert', {
 		// alert 类型对话框z-index固定值为3，总在最前面，不做修改
 		front: $.rt(F),
 		_front: $.rt(F),
+		yes: function() {
+			return _operexe(this.x.yes, this.commander, this.x.args);
+		},
+		no: function() {
+			return _operexe(this.x.no, this.commander, this.x.args);
+		},
 		render: function() {
 			var s = document.readyState;
 			if (this._tpl && (s === 'complete' || s === U)) {
@@ -5936,13 +5942,11 @@ CollapseList = define.widget('CollapseList', {
 /* `label` */
 Label = define.widget('Label', {
 	Const: function(x, p) {
-		this._pad = x.space != N ? x.space : 5;
 		this.className += ' z-type-' + p.type.toLowerCase();
 		var td = p.parentNode, w = td.x.labelWidth;
 		if (w == N && td.col)
 			w = td.col.x.labelWidth;
 		w != N && x.width == N && (x.width = w);
-		this.defaults({widthMinus: this._pad});
 		W.apply(this, arguments);
 		x.vAlign && (this.className += ' z-va-' + x.vAlign);
 		this.attr('align') && (this.property = ' align=' + this.attr('align')); 
@@ -5961,7 +5965,7 @@ Label = define.widget('Label', {
 		}
 	},
 	Extend: Html,
-	Default: {align: 'right', vAlign: 'middle', height: -1},
+	Default: {align: 'right', vAlign: 'middle', height: -1, widthMinus: 5},
 	Listener: {
 		body: {
 			ready: function() {
@@ -5995,9 +5999,6 @@ Label = define.widget('Label', {
 		prop_cls: function() {
 			return _proto.prop_cls.call(this, this.parentNode.parentNode);
 		},
-		prop_style: function() {
-			return (this._pad ? 'margin-right:' + this._pad + 'px;' : '') + _proto.prop_style.call(this);
-		},
 		html_star: function() {
 			return '<span class="f-required f-va-bottom">*</span>';
 		},
@@ -6008,7 +6009,7 @@ Label = define.widget('Label', {
 			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span id=' + this.id + 't class=f-va>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
-			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;padding-left:' + this._pad + 'px"><div class=_pad></div></div>' : '';
+			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;"><div class=_pad></div></div>' : '';
 		},
 		html: function() {
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + (br.css3 ? '' : '<i class=f-vi></i>') + 
@@ -6304,12 +6305,9 @@ AbsForm = define.widget('AbsForm', {
 		input_prop_style: function() {
 			return '';
 		},
-		input_prop_title: function() {
-			return ' title="' + $.strQuot(this.x.value) + '"';
-		},
 		input_prop: function() {
 			var v = this.input_prop_value();
-			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.input_prop_title() +
+			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.prop_title(this.x.value) +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call(this);
 		},
 		prop_cls: function() {

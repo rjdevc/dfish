@@ -419,9 +419,9 @@
 .w-f.z-trans .w-input,.w-f.z-trans.z-err .w-input{border-width:0;border-radius:0;box-shadow:none}
 .w-f-remark{float:right;padding-left:5px;height:32px;line-height:32px}
 
-.w-label{position:relative}
+.w-label{position:relative;margin-right:5px}
 .w-label ._lb{padding-right:6px;padding-bottom:2px;}
-.w-label ._bg{position:absolute;top:0;left:0}
+.w-label ._bg{position:absolute;top:0;left:0;padding-left:5px}
 .w-label.z-va-top{vertical-align:top}
 .w-label.z-va-top ._lb{padding-top:6px}
 .w-label .f-addcon{position:relative;z-index:1}
