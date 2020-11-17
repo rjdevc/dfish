@@ -6302,9 +6302,12 @@ AbsForm = define.widget('AbsForm', {
 		input_prop_style: function() {
 			return '';
 		},
+		input_prop_title: function() {
+			return ' title="' + $.strQuot(this.x.value) + '"';
+		},
 		input_prop: function() {
-			var t = this.attr('tip'), v = this.input_prop_value();
-			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' +
+			var v = this.input_prop_value();
+			return ' id="' + this.id + 't" class=w-input-t' + this.input_prop_style() + ' name="' + this.input_name() + '"' + this.input_prop_title() +
 				(this.isReadonly() || this.isValidonly() ? ' readonly' : '') + (this.isDisabled() ? ' disabled' : '') + (v ? ' value="' + v + '"' : '') + _html_on.call(this);
 		},
 		prop_cls: function() {

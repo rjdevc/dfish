@@ -219,7 +219,7 @@
 .w-leaf.z-notg .w-leaf-o .f-i{display:none}
 .w-leaf.z-folder .w-leaf-o .f-i{visibility:visible}
 .w-leaf ._ld{position:absolute;left:0;width:100%;height:100%;background:url(g/loading-cir.gif) no-repeat 50% 50%}
-.w-leaf-t{height:100%;font-style:normal;vertical-align:middle;cursor:pointer}
+.w-leaf-t{height:100%;font-style:normal;cursor:pointer;vertical-align:middle;vertical-align:baseline\0}
 .w-leaf-s{padding-left:1px;vertical-align:middle}
 .w-leaf.f-nobr .w-leaf-t,.w-leaf.f-nobr .w-leaf-s{display:inline-block}
 .w-leaf.f-omit .w-leaf-a{display:inline}
