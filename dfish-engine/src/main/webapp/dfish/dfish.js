@@ -2775,7 +2775,7 @@ _merge($, {
 						w = g.$('f').style.width;
 				} else
 					v = this.value;
-				v = '<div class="f-inbl f-va f-wdbr" style="width:' + w + '">' + v + '</div>';
+				v = '<div class="f-inbl f-va f-wdbr w-input-t" style="width:' + w + '">' + v + '</div>';
 			} else {
 				v = h.replace('value="' + this.defaultValue + '"', 'value="' + this.value + '"');
 			}
