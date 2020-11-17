@@ -677,6 +677,7 @@ _tpl_view = function(a) {
 			if (v = _tpl_view(a.nodes[i])) return v;
 	}
 },
+/* `preload` */
 _compilePreload = function(a, x) {
 	var b = typeof a === _OBJ, p = b ? a : _getPreload(a), y = x, x = x.type === 'Dialog' ? x.node : x, n = x, v;
 	if (p) {
@@ -702,6 +703,7 @@ _compilePreload = function(a, x) {
 		if (v && (v = _tpl_view(r))) {
 			x.commands && $.merge(v.commands || (v.commands = {}), x.commands);
 			x.on && $.merge(v.on || (v.on = {}), x.on);
+			x.hiddens && (v.hiddens = x.hiddens);
 		}
 		if (r.type === y.type) {
 			for (var k in y)
