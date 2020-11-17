@@ -1511,13 +1511,15 @@ _Event = $.Event = _createClass({
 		fireEvent: function(e, r) {
 			var a = _event_handlers(this, e.type || e);
 			if (a) {
-				for (var i = 0, k, l = a.length; i < l; i ++) {
+				for (var i = 0, k, l = a.length, v; i < l; i ++) {
 					if ((k = a[i]) && k.fn) {
-						k.fn.apply(k.pvdr || this, r ? [e].concat(r) : [e]);
+						v = k.fn.apply(k.pvdr || this, r ? [e].concat(r) : [e]);
 						if (k.one) {
 							_event_remove(k);
 							a.ori && (i --, l --);
 						}
+						if (v !== U)
+							return v;
 					}
 				}
 			}

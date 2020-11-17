@@ -1267,13 +1267,15 @@ W = define('Widget', function() {
 					return;
 				if (typeof f === _FUN)
 					s = f.apply(this, g);
-				this.fireEvent(e, a);
+				if (F === this.fireEvent(e, a))
+					return F;
 				if (!r)
 					r = s;
 			} else {// 系统事件优先
 				if (typeof f === _FUN && (s = f.apply(this, g)) === F)
 					return F;
-				this.fireEvent(e, a);
+				if (F === this.fireEvent(e, a))
+					return F;
 				if (!(h && h.block && h.block.call(this, e)))
 					r = this.triggerHandler(e, a);
 				if (!r)
@@ -5434,7 +5436,7 @@ Alert = define.widget('Alert', {
 			t = x.preload;
 		if (x.buttons) {
 			for (var i = 0, d = []; i < x.buttons.length; i ++) {
-				x.buttons[i].type = 'alert/' + x.buttons[i].type;
+				//x.buttons[i].type = 'Alert' + (x.buttons[i].type || 'Button');
 				!x.buttons[i].cls && (x.buttons[i].cls = s);
 				d.push(x.buttons[i]);
 			}
@@ -5451,8 +5453,8 @@ Alert = define.widget('Alert', {
 				{type: 'ButtonBar', cls: 'z-sub-' + this.type, align: 'center', height: mbi ? 40 : 60, space: mbi ? 0 : 10, pub: mbi && {width: '*'}, nodes: d || (a ? [b] : mbi ? [c, b] : [b, c])}
 			]}});
 		}
-		(x.yes || x.no) && this.addEventOnce('close', function() {
-			_operexe(a ? x.yes : x.no, this.commander, x.args);
+		(x.yes || x.no) && this.addEvent('close', function() {
+			return _operexe(a ? x.yes : x.no, this.commander, x.args);
 		});
 		Dialog.call(this, x, a ? _docView : p);
 	},
