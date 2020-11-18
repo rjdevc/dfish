@@ -4280,10 +4280,20 @@ define( {
         ] },
         { name: 'method', type: 'String', remark: 'JS语句。如果验证不通过，执行语句应当 return 一个字符串作为说明。如果验证通过则无需返回或返回空。' }
       ] },
-      { name: 'validateGroup', type: 'Object', optional: true, remark: '表单校验选项组。', param: [
-          { name: 'name', type: 'String', remark: '校验组名。' },
-          { name: 'validate', type: 'Object', remark: '校验选项。' }
-        ] }
+      { name: 'validateGroup', type: 'Object', optional: true, remark: '表单校验选项组。是一组key:value的键值对。key为校验组名，value为Validate对象。', example: [
+          function() {
+            // 设置表单的验证组
+            return~
+            {
+              type: 'Text',
+              validateGroup: {
+                'offline': {
+                  required: true
+                }
+              }
+            }
+          }
+      ] }
     ],
     Event: [
       { name: 'change', remark: '值发生改变时触发。' },
@@ -4478,6 +4488,9 @@ define( {
     Methods: [
       { name: 'checkAll([checked])', remark: '设置全选/不选。', param: [
         { name: 'checked', type: 'Boolean', remark: '是否可用。', optional: true }
+      ] },
+      { name: 'getOptions([checked])', remark: '获取所有选中或未选的选项，返回一个数组。', param: [
+        { name: 'checked', type: 'Boolean', remark: '设为true，返回所有选中项。设为false，返回所有未选项。不设置，返回所有选项。', optional: true }
       ] }
     ],
     Classes: [

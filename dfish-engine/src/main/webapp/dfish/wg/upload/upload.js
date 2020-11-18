@@ -1340,8 +1340,8 @@ AbsUpload = define.widget('AbsUpload', {
 			if (ldr) {
 				if (typeof message === 'string')
 					$.alert(message);
-				else if (message.text)
-					$.alert(message.text);
+				else if (message.text || message.message)
+					$.alert(message.text || message.message);
 				else if (W.isCmd(message))
 					this.cmd(message);
 				ldr.setError(errorCode, message);
