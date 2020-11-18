@@ -5422,7 +5422,12 @@ AlertSubmitButton = define.widget('AlertSubmitButton', {
 		body: {
 			click: function() {
 				var d = $.dialog(this);
-				d.yes() !== F && d.close();
+				if (d.type === 'Alert') {
+					d.close();
+				} else {
+					if (d.triggerHandler('close') !== F && d.yes() !== F)
+						d.remove();
+				}
 			}
 		}
 	}
@@ -5467,10 +5472,10 @@ Alert = define.widget('Alert', {
 		front: $.rt(F),
 		_front: $.rt(F),
 		yes: function() {
-			return _operexe(this.x.yes, this.commader, this.x.args);
+			return _operexe(this.x.yes, this.commander, this.x.args);
 		},
 		no: function() {
-			return _operexe(this.x.no, this.commader, this.x.args);
+			return _operexe(this.x.no, this.commander, this.x.args);
 		},
 		render: function() {
 			var s = document.readyState;
@@ -5480,7 +5485,7 @@ Alert = define.widget('Alert', {
 				var x = this.x;
 				if (this.type === 'Alert') {
 					$.winbox(x.text);
-					this.yes();
+					x.yes && _operexe(x.yes, this.commander, x.args);
 				} else {
 					_operexe(confirm(x.text) ? x.yes : x.no, this, x.args);
 				}
