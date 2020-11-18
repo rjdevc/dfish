@@ -5418,7 +5418,14 @@ AlertButton = define.widget('AlertButton', {
 }),
 AlertSubmitButton = define.widget('AlertSubmitButton', {
 	Extend: SubmitButton,
-	Listener: {body: {click: AlertButton.Listener.body.click}}
+	Listener: {
+		body: {
+			click: function() {
+				var d = $.dialog(this);
+				d.yes() !== F && d.close();
+			}
+		}
+	}
 }),
 /*  `alert`  */
 Alert = define.widget('Alert', {
@@ -5449,7 +5456,7 @@ Alert = define.widget('Alert', {
 			]}});
 		}
 		(x.yes || x.no) && this.addEvent('close', function() {
-			return _operexe(a ? x.yes : x.no, this, x.args);
+			return a ? this.yes() : this.no();
 		});
 		Dialog.call(this, x, a ? _docView : p);
 	},
@@ -5460,10 +5467,10 @@ Alert = define.widget('Alert', {
 		front: $.rt(F),
 		_front: $.rt(F),
 		yes: function() {
-			return _operexe(this.x.yes, this, this.x.args);
+			return _operexe(this.x.yes, this.commader, this.x.args);
 		},
 		no: function() {
-			return _operexe(this.x.no, this, this.x.args);
+			return _operexe(this.x.no, this.commader, this.x.args);
 		},
 		render: function() {
 			var s = document.readyState;
@@ -5473,7 +5480,7 @@ Alert = define.widget('Alert', {
 				var x = this.x;
 				if (this.type === 'Alert') {
 					$.winbox(x.text);
-					x.yes && _operexe(x.yes, this, x.args);
+					this.yes();
 				} else {
 					_operexe(confirm(x.text) ? x.yes : x.no, this, x.args);
 				}
@@ -5995,20 +6002,20 @@ Label = define.widget('Label', {
 			return _proto.prop_cls.call(this, this.parentNode.parentNode);
 		},
 		html_star: function() {
-			return '<span class="f-required f-va-bottom">*</span>';
+			return '<span class="f-required">*</span>';
 		},
 		html_text: function() {
 			var t = this.html_format();
 			if (typeof t === _OBJ)
 				t = this.add(t, -1).html();
-			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span id=' + this.id + 't class=f-va>' + t + (this.x.suffix || '') + '</span>';
+			return (this.parentNode.isRequired() ? this.html_star() : '') + '<span id=' + this.id + 't>' + t + (this.x.suffix || '') + '</span>';
 		},
 		html_bg: function() {
 			return this.parentNode.parentNode.type === 'TD' ? '<div id=' + this.id + 'bg class="_bg" style="width:' + (this.innerWidth() - 1) + 'px;"><div class=_pad></div></div>' : '';
 		},
 		html: function() {
 			return this.html_before() + '<' + this.tagName + this.html_prop() + '>' + (br.css3 ? '' : '<i class=f-vi></i>') + 
-				'<div class="_lb f-nv">' + this.html_prepend() + 
+				'<div class="_lb">' + this.html_prepend() + 
 				this.html_text() + this.html_append() + '</div>' + this.html_bg() + '</' + this.tagName + '>' + this.html_after();
 		}
 	}

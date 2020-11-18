@@ -651,7 +651,7 @@
 .w-album .w-img.z-on{border-color:#b7c6ce;background-color:#f2f2f2;box-shadow:0 2px 3px 0 #eee;}
 .w-album .w-img .w-img-i img{width:100%}
 .w-img .w-img-t{text-align:center;margin-top:10px}
-.w-img .w-img-i{position:relative;text-align:center;vertical-align:middle;margin:0 auto}
+.w-img .w-img-i{position:relative;text-align:center;vertical-align:middle;margin:0 auto;line-height:1}
 .w-img.z-dir-h{text-align:left;white-space:nowrap}
 .w-img.z-dir-h .w-img-t{padding-left:10px;margin-top:0;display:inline-block;text-align:left;vertical-align:middle;*display:inline;*zoom:1}
 .w-img.z-dir-h .w-img-s{font-size:14px;line-height:2}
