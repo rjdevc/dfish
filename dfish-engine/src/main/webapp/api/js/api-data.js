@@ -4949,7 +4949,7 @@ define( {
           { name: 'width', type: 'Number', remark: '图片宽度。' }
         ] },
         { name: 'error', type: 'Object', remark: '错误信息。', param: [
-          { name: 'text', type: 'String', remark: '错误描述文本。' },
+          { name: 'message', type: 'String', remark: '错误描述文本。' },
           { name: 'timeout', type: 'Number', remark: '锁定并倒数时间，结束后自动刷新。单位:毫秒。' }
         ] },
         { name: 'maxValue', type: 'Number', remark: '最大值。' },
@@ -4991,7 +4991,7 @@ define( {
               src: 'getimg.sp',
               result: {
       	          error: {
-                      text: '次数过多，请稍候再试', timeout: 15
+                      message: '次数过多，请稍候再试', timeout: 15
                   }
               }
             }

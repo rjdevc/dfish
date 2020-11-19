@@ -1335,16 +1335,16 @@ AbsUpload = define.widget('AbsUpload', {
 			else
 				this.trigger('change');
 		},
-		upload_error_handler: function(file, errorCode, message) {
+		upload_error_handler: function(file, errorCode, errorData) {
 			var ldr = this.getLoaderByFile(file);
 			if (ldr) {
-				if (typeof message === 'string')
-					$.alert(message);
-				else if (message.text || message.message)
-					$.alert(message.text || message.message);
-				else if (W.isCmd(message))
-					this.cmd(message);
-				ldr.setError(errorCode, message);
+				if (typeof errorData === 'string')
+					$.alert(errorData);
+				else if (errorData.message)
+					$.alert(errorData.message);
+				else if (W.isCmd(errorData))
+					this.cmd(errorData);
+				ldr.setError(errorCode, errorData);
 			}
 		}
 	}
@@ -1784,7 +1784,7 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 				u.upload_complete_handler(f);
 			}, false);
 			r.addEventListener('error', function(e) {
-				u.uploadError(f, e.error, e.error);
+				u.uploadError(f, -200, {error: {message: 'http ' + e.status + ' error: ' + u.x.upload_url}});
 			}, false);
 			this.loading = true;
 			this.xhr     = r;
@@ -1850,10 +1850,10 @@ ImageUploadValue = define.widget('ImageUploadValue', {
 			//Q('._loading,._progress', this.$()).remove();
 			this.render();
 		},
-		setError: function(errorCode, message) {
+		setError: function(errorCode, errorData) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = message;
+			this.error   = errorData;
 			this.removeElem('p');
 			this.removeClass('z-loading');
 			this.addClass('z-err');
@@ -1977,10 +1977,10 @@ FileUploadValue = define.widget('FileUploadValue', {
 		setProgress: function(a) {
 			this.$('p').style.width = a + '%';
 		},
-		setError: function(errorCode, message) {
+		setError: function(errorCode, errorData) {
 			this.loading = false;
 			this.loaded  = true;
-			this.error   = message;
+			this.error   = errorData;
 			this.removeElem('g');
 			$.classAdd(this.$(), 'z-err');
 			$.classRemove(this.$(), 'z-loading');

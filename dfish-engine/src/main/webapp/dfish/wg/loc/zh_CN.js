@@ -100,7 +100,7 @@ debug: {
 	no_combo: '选项列表(或树)没有设置combo参数\nname: {0}',
 	error_template_type: '{0}\n请把此模板类型改为 "{1}"',
 	error_type: 'type错误或丢失\n{0}',
-	tmpl_method_undefined: '"{0}" 方法不存在',
+	tmpl_method_undefined: '"{0}" 方法不存在'
 },
 
 form : {

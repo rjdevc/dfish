@@ -1491,13 +1491,13 @@ W = define('Widget', function() {
 				((a && _widget(a)) || _docView).add(this);
 			}
 			var p = this.parentNode, s = this.html();
-			if (this.$() && !a)
-				$.replace(this.$(), s);
-			else if (a)
+			if (this.$() && !a) {
+				 $.replace(this.$(), s);
+			} else if (a) {
 				 $[b || 'append'](a, s);
-			else if (this.nodeIndex === -1)
+			} else if (this.nodeIndex === -1) {
 				p.insertHTML(s);
-			else {
+			} else {
 				for (var i = this.nodeIndex - 1, l = p.length, c; i > -1; i --)
 					if (p[i].$()) {(c = p[i]).insertHTML(s, 'after'); break;}
 				if (!c) {
@@ -1561,6 +1561,7 @@ W = define('Widget', function() {
 			l < 2 && (b = this.x.format);
 			l < 3 && (c = this.x.escape);
 			if (b) {
+				if (typeof b === _OBJ) return b;
 				var s = b.indexOf('javascript:') === 0 ? this.formatJS(b, N, N, d) : this.formatStr(b, N, c !== F && 'strEscape', d);
 				return typeof s === _STR ? _parseHTML.call(this, s) : s;
 			} else
@@ -8212,7 +8213,7 @@ Jigsaw = define.widget('Jigsaw', {
 			return AbsForm.prototype.form_prop.call(this) + _html_on.call(this);
 		},
 		html_info: function(d) {
-			return d && d.error ? '<var class=_err>' + (d.error.text != N ? d.error.text : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.floor(d.error.timeout / 1000) + '</em>)' : '') + '</var>' :
+			return d && d.error ? '<var class=_err>' + (d.error.message != N ? d.error.message : Loc.auth_fail) + (d.error.timeout ? '(<em>' + Math.floor(d.error.timeout / 1000) + '</em>)' : '') + '</var>' :
 				d && d.success ? '<var class=_ok>' + (d.text != N ? d.text : Loc.auth_success) + '</var>' : 
 				(this.x.placeholder || Loc.form.jigsaw_drag_right);
 		},
@@ -12308,7 +12309,7 @@ LeftTable = define.widget('LeftTable', {
 					_superTrigger(this, Vert, e);
 					this.rootNode.scrollY(this.body.$().scrollTop);
 				}
-			},
+			}
 		}
 	},
 	Prototype: {

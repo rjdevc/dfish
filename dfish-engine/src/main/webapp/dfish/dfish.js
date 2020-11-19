@@ -2210,7 +2210,8 @@ var boot = {
 			_compatDOM();
 			// 生成首页view
 			if (_cfg.view) {
-				var g = $.widget(_extend(_cfg.view, {type: 'View', width: '*', height: '*'})).render(_db());
+				var g = $.widget(_extend(_cfg.view, {type: 'View', width: '*', height: '*'}));
+				g.render(_db());
 				//Q(win).on('beforeunload', function() {g.dispose()});
 			} else {
 				// 把 <d:wg> 标签转换为 widget
