@@ -5463,7 +5463,7 @@ Alert = define.widget('Alert', {
 		(x.yes || x.no) && this.addEvent('close', function() {
 			return a ? this.yes() : this.no();
 		});
-		Dialog.call(this, x, a ? _docView : p);
+		Dialog.call(this, x, p);
 	},
 	Extend: Dialog,
 	Prototype: {
