@@ -204,7 +204,7 @@ public class FileController extends FrameworkController {
             uploadItem.setError(new UploadItem.Error("附件上传失败@" + System.currentTimeMillis()));
             // 错误格式按照DFish前端格式
 //            return uploadItem;
-            jsonResponse.setErrorMessage(uploadItem.getError().getText());
+            jsonResponse.setErrorMessage(uploadItem.getError().getMessage());
         } else {
             PubFileRecord fileRecord = uploadItem.getFileRecord();
             // FIXME 这里先简单处理全部记录更新
@@ -216,7 +216,7 @@ public class FileController extends FrameworkController {
             if (uploadItem.getError() != null) {
                 // 错误格式按照DFish前端格式
 //                return uploadItem;
-                jsonResponse.setErrorMessage(uploadItem.getError().getText());
+                jsonResponse.setErrorMessage(uploadItem.getError().getMessage());
             } else {
                 jsonResponse.setData(uploadItem);
             }
