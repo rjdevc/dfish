@@ -187,7 +187,7 @@ public class FileController extends FrameworkController {
      */
     @RequestMapping("/upload/{fileType}")
     @ResponseBody
-    public JsonResponse upload(HttpServletRequest request, @PathVariable String fileType) throws Exception {
+    public Object upload(HttpServletRequest request, @PathVariable String fileType) throws Exception {
         String scheme = request.getParameter("scheme");
         FileHandleScheme handleScheme = fileHandleManager.getScheme(fileType, scheme);
 
@@ -200,7 +200,11 @@ public class FileController extends FrameworkController {
         JsonResponse jsonResponse = new JsonResponse();
         if (uploadItem == null) {
             // FIXME 这里做容错,但这里很可能不会出现这种情况
-            jsonResponse.setErrorMessage("附件上传失败@" + System.currentTimeMillis());
+            uploadItem = new UploadItem();
+            uploadItem.setError(new UploadItem.Error("附件上传失败@" + System.currentTimeMillis()));
+            // 错误格式按照DFish前端格式
+//            return uploadItem;
+            jsonResponse.setErrorMessage(uploadItem.getError().getText());
         } else {
             PubFileRecord fileRecord = uploadItem.getFileRecord();
             // FIXME 这里先简单处理全部记录更新
@@ -210,6 +214,8 @@ public class FileController extends FrameworkController {
 
             uploadItem.setFileRecord(null);
             if (uploadItem.getError() != null) {
+                // 错误格式按照DFish前端格式
+//                return uploadItem;
                 jsonResponse.setErrorMessage(uploadItem.getError().getText());
             } else {
                 jsonResponse.setData(uploadItem);

@@ -11,7 +11,7 @@ import java.util.zip.ZipOutputStream;
 /**
  * RJD格式写入器
  */
-public class RJDWriter {
+public class RJDWriter implements Closeable {
     private static final String ENCODING="UTF-8";
     private ZipOutputStream zos;
     private String password;
@@ -103,6 +103,7 @@ public class RJDWriter {
      * 写入结束后，关闭。
      * @throws IOException
      */
+    @Override
     public void close() throws IOException{
         zos.close();
     }
