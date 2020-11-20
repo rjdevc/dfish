@@ -89,7 +89,7 @@ public abstract class AbstractFileUploadPlugin implements FileUploadPlugin {
                 fileRecord.setFileScheme(fileScheme);
                 uploadItem = fileService.saveFile(fileData.getInputStream(), fileRecord);
 
-                if (uploadItem != null && (uploadItem.getError() == null || Utils.isEmpty(uploadItem.getError().getText()))) {
+                if (uploadItem != null && (uploadItem.getError() == null || Utils.isEmpty(uploadItem.getError().getMessage()))) {
                     String fileId = fileService.decrypt(uploadItem.getId());
                     // FIXME 哪些附件未被启用还需进一步判断
                     fileService.updateFileLink(fileId, name(), fileId,loginUserId);

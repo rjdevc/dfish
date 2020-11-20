@@ -11,17 +11,17 @@ import java.io.Serializable;
 public class JigsawImgError implements Serializable {
     private static final long serialVersionUID = -9063472952742234038L;
 
-    private String text;
+    private String message;
     private long timeout;
 
     /**
      * 构造函数
      *
-     * @param text     String 验证信息
+     * @param message     String 验证信息
      * @param timeout long 下次恢复可操作时间(毫秒)
      */
-    public JigsawImgError(String text, long timeout) {
-        this.text = text;
+    public JigsawImgError(String message, long timeout) {
+        this.message = message;
         this.timeout = timeout;
     }
 
@@ -30,18 +30,18 @@ public class JigsawImgError implements Serializable {
      *
      * @return String
      */
-    public String getText() {
-        return text;
+    public String getMessage() {
+        return message;
     }
 
     /**
      * 验证信息
      *
-     * @param text String
+     * @param message String
      * @return 本身，这样可以继续设置其他属性
      */
-    public JigsawImgError setText(String text) {
-        this.text = text;
+    public JigsawImgError setMessage(String message) {
+        this.message = message;
         return this;
     }
 

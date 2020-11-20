@@ -266,18 +266,18 @@ public class UploadItem implements Serializable {
      * 附件上传异常
      */
     public static class Error {
-        private String text;
+        private String message;
 
-        public Error(String text) {
-            this.text = text;
+        public Error(String message) {
+            this.message = message;
         }
 
-        public String getText() {
-            return text;
+        public String getMessage() {
+            return message;
         }
 
-        public void setText(String text) {
-            this.text = text;
+        public void setMessage(String message) {
+            this.message = message;
         }
     }
 

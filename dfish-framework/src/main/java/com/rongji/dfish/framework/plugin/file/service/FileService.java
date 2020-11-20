@@ -113,7 +113,7 @@ public interface FileService extends FrameworkService<PubFileRecord, PubFileReco
      */
     default String getFileTypes(String type, String defaultTypes) {
         type = Utils.isEmpty(type) ? CONFIG_TYPE_FILE : type;
-        defaultTypes = Utils.isEmpty(defaultTypes) ? "*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;*.rjd;" : defaultTypes;
+        defaultTypes = Utils.isEmpty(defaultTypes) ? "*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.jpg;*.gif;*.png;*.vsd;*.txt;*.rtf;*.pdf;*.wps;*.rjd;*.rjb;" : defaultTypes;
         // 默认文件格式*.doc;*.docx;*.xls;*.xlsx;*.ppt;*.pptx;*.zip;*.rar;*.jpg;*.gif;*.png;*.vsd;*.pot;*.pps;*.txt;*.rtf;*.pdf;*.epub;*.wps;*.et;*.dps
         return FrameworkHelper.getSystemConfig(CONFIG_TYPES_PRE + type, defaultTypes);
     }

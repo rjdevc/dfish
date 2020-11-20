@@ -1,7 +1,6 @@
 package com.rongji.dfish.framework.plugin.file.controller.plugin.impl;
 
 import com.rongji.dfish.base.util.Utils;
-import com.rongji.dfish.base.util.FileUtil;
 import com.rongji.dfish.base.util.LogUtil;
 import com.rongji.dfish.framework.plugin.file.controller.FileController;
 import com.rongji.dfish.framework.plugin.file.config.FileHandleScheme;
@@ -41,13 +40,19 @@ public class FileUploadPlugin4Ueditor extends AbstractFileUploadPlugin {
             } catch (IOException e1) {
                 LogUtil.error("上传过程出现异常", e1);
             }
+            // 百度编辑器在IE7兼容模式下需要这个参数
+            String callback = request.getParameter("callback");
+            if (Utils.notEmpty(callback)) {
+                // 百度编辑器兼容
+                return callback + "(" + readJson + ")";
+            }
             return readJson;
         }
         // 百度编辑器的附件上传应该来说只有图片
         UploadItem uploadItem = saveFile(request);
         String resultJson;
         if (uploadItem.getError() != null) {
-            resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getError().getText() + "\"}";
+            resultJson = "{\"state\":\"FAIL\",\"text\":\"" + uploadItem.getError().getMessage() + "\"}";
         } else {
             String scheme = request.getParameter("scheme");
             String fileType = request.getParameter("fileType");
