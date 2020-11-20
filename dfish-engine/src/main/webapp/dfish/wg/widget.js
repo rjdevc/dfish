@@ -2849,14 +2849,15 @@ View = define.widget('View', {
 		f: function(a, b) {
 			return this.fAll(a, b)[0];
 		},
-		// 读/写表单值 /@a -> name, b -> value, c -> text
-		fv: function(a, b, c) {
+		// 读/写表单值 /@a -> name, b -> value
+		fv: function(a, b) {
 			var d = this.f(a);
-			if (b === U) {
-				return d && (d.groupVal ? d.groupVal() : d.val());
-			} else {
+			if (arguments.length === 2) {
 				d ? d.val(b) : this.addHidden(a, b);
-				return this;
+			} else if (typeof a === _OBJ) {
+				for (var i in a) this.fv(i, a[i]);
+			} else {
+				return d && (d.groupVal ? d.groupVal() : d.val());
 			}
 		},
 		// 获取范围内的所有表单 /@a -> name, b -> range?(elem|widget)

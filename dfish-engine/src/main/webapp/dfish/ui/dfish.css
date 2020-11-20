@@ -250,6 +250,7 @@
 
 .w-dialog{position:absolute;z-index:10}
 .w-dialog-cover{position:absolute;background:#333;top:0;left:0;right:0;bottom:0;z-index:11;opacity:.2;filter:Alpha(opacity=20)}
+.w-dialog-cover.z-type-confirm{z-index:12}
 .w-dialog-move{position:fixed;background:#fff;top:0;left:0;right:0;bottom:0;z-index:12;opacity:0;filter:Alpha(opacity=0)}
 .w-dialog-prong{position:absolute}
 .w-dialog-prong .f-arw{position:absolute;margin:0}
