@@ -815,7 +815,6 @@ _date_D = $.DATE_DAY = 86400000,
 _date_sf = 'yyyy-MM-dd HH:mm:ss',
 // 格式化日期
 _dateFormat = $.dateFormat = function(a, b) {
-	if (!a) return '';
 	if (typeof a === _STR)
 		a = _dateParse(a);
 	var o = {y : a.getFullYear(), m : a.getMonth(), d : a.getDate(), h : a.getHours(), i : a.getMinutes(), s : a.getSeconds(), w : (a.getDay() || 7)};
@@ -825,7 +824,6 @@ _dateFormat = $.dateFormat = function(a, b) {
 },
 // 字串型转为日期型 /@a -> str, b -> format?
 _dateParse = $.dateParse = function(a, b) {
-	if (!a) return new Date();
 	a = ('' + a).replace(/\b(\d)\b/g, '0\$1');
 	b = (b || _date_sf).replace(/\b([MdHms])\b/g, '\$1\$1');
 	var c, y = (c = b.indexOf('yyyy')) > -1 ? _number(a.substr(c, 4)) || 2020 : 2020,

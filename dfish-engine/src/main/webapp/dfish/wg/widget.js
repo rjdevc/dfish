@@ -3239,12 +3239,22 @@ Frame = define.widget('Frame', {
 				if (o) delete o.focusOwner;
 				this.focusNode = n;
 				n.focusOwner = this;
-				o && o.display(F, T);
+				if (o) {
+					o.display(F, T);
+					this.x.relateDialog && this.relateDialog(o, F);
+				}
 				n.display(T);
+				this.x.relateDialog && this.relateDialog(n, T);
 				mbi && o && this.$() && this.slideShow(n, o);
 				o && this.trigger('change');
 			}
 			return n;
+		},
+		relateDialog: function(a, b) {
+			for (var k in Dialog.all) {
+				var d = Dialog.all[k];
+				if (a.contains(d.parentNode)) d.addClass('f-hide', !b);
+			}
 		},
 		html_nodes: function() {
 			return _proto.html_nodes.call(this) + (this._hiddens ? this._hiddens.html() : '');
