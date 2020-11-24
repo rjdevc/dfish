@@ -164,15 +164,27 @@ public class EthNetInfo {
 			}
 
 			// see if line contains MAC address
-			int pos1= line.indexOf("HWaddr");
-			int pos2= line.indexOf("ether");
-			int macAddressPosition = Math.max(pos1, pos2);
-			if (macAddressPosition < 0) {
+			String[] KEYS={"HWaddr ","ether ","硬件地址 "};
+			String macAddressCandidate="";
+			for(String key:KEYS){
+				int pos= line.indexOf(key);
+				if(pos==-1){
+					continue;
+				}
+				macAddressCandidate = line.substring(pos + key.length()).trim();
+			}
+			if(macAddressCandidate.equals("")){
 				continue;
 			}
+//			int pos1= line.indexOf("HWaddr");
+//			int pos2= line.indexOf("ether");
+//			int macAddressPosition = Math.max(pos1, pos2);
+//			if (macAddressPosition < 0) {
+//				continue;
+//			}
 
-			String macAddressCandidate = line.substring(macAddressPosition + 6)
-					.trim();
+//			String macAddressCandidate = line.substring(macAddressPosition + 6)
+//					.trim();
 			if(macAddressCandidate.indexOf(' ')>0){
 				String[] tempStrings=macAddressCandidate.split(" ");
 				macAddressCandidate=tempStrings[0];
@@ -236,54 +248,9 @@ public class EthNetInfo {
 	/*
 	 * Linux stuff
 	 */
-	private String linuxParseMacAddress(String ipConfigResponse)
+	public String linuxParseMacAddress(String ipConfigResponse)
 			throws ParseException {
-		String localHost = null;
-		try {
-			localHost = InetAddress.getLocalHost().getHostAddress();
-		} catch (java.net.UnknownHostException ex) {
-			ex.printStackTrace();
-			throw new ParseException(ex.getMessage(), 0);
-		}
-		StringTokenizer tokenizer = new StringTokenizer(ipConfigResponse, "\n");
-		String lastMacAddress = null;
-
-		while (tokenizer.hasMoreTokens()) {
-			String line = tokenizer.nextToken().trim();
-			boolean containsLocalHost = line.indexOf(localHost) >= 0;
-			// see if line contains IP address
-			if (containsLocalHost && lastMacAddress != null) {
-				return lastMacAddress;
-			}
-
-			// see if line contains MAC address
-			int pos1= line.indexOf("HWaddr");
-			int pos2= line.indexOf("ether");
-			int macAddressPosition = Math.max(pos1, pos2);
-			if (macAddressPosition < 0) {
-				continue;
-			}
-
-			String macAddressCandidate = line.substring(macAddressPosition + 6)
-					.trim();
-			if(macAddressCandidate.indexOf(' ')>0){
-				String[] tempStrings=macAddressCandidate.split(" ");
-				macAddressCandidate=tempStrings[0];
-			}
-			if (linuxIsMacAddress(macAddressCandidate)) {
-				lastMacAddress = macAddressCandidate;
-				continue;
-			}
-		}
-		
-		if (lastMacAddress!=null) {
-			return lastMacAddress;
-		}
-
-		ParseException ex = new ParseException("cannot read MAC address for "
-				+ localHost + " from [" + ipConfigResponse + "]", 0);
-		ex.printStackTrace();
-		throw ex;
+		return linuxParseMacAddresses(ipConfigResponse).iterator().next();
 	}
 	private static final Pattern LINUX_MAC_PATTERN=Pattern
 			.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
