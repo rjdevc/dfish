@@ -157,7 +157,7 @@ public class EthNetInfo {
 			throws ParseException {
 		StringTokenizer tokenizer = new StringTokenizer(ipConfigResponse, "\n");
 		String lastMacAddress = null;
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new LinkedHashSet<String>();
 		while (tokenizer.hasMoreTokens()) {
 			String line = tokenizer.nextToken().trim();
 			// see if line contains IP address
@@ -252,7 +252,11 @@ public class EthNetInfo {
 	 */
 	public String linuxParseMacAddress(String ipConfigResponse)
 			throws ParseException {
-		return linuxParseMacAddresses(ipConfigResponse).iterator().next();
+		String ret="";
+		for(String s:linuxParseMacAddresses(ipConfigResponse)){
+			ret=s;
+		}
+		return ret;
 	}
 	private static final Pattern LINUX_MAC_PATTERN=Pattern
 			.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
