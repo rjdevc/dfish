@@ -60,7 +60,7 @@ public class DFishTools extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("DFish辅助工具v1.0");
+        primaryStage.setTitle("DFish辅助工具v1.0.1");
 
         TabPane tabPane = new TabPane();
         tabPane.setSide(Side.TOP);

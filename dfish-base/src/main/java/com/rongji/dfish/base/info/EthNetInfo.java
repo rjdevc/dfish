@@ -1,5 +1,7 @@
 package com.rongji.dfish.base.info;
 
+import com.rongji.dfish.base.util.StringUtil;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.text.ParseException;
@@ -293,21 +295,28 @@ public class EthNetInfo {
 	}
 
 	private String linuxRunIfConfigCommand() throws IOException {
-		Runtime r=Runtime.getRuntime();
-		Process p = r.exec("ifconfig");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
+		Process p = Runtime.getRuntime().exec("ifconfig");
+		return read(p.getInputStream());
+	}
 
-		StringBuffer buffer = new StringBuffer();
-		for (;;) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
+	private String read(InputStream inputStream) throws IOException {
+//        InputStream stdoutStream = new BufferedInputStream();
+//        String outputText=read(p.getInputStream());
+		byte[] buff = new byte[8192];
+		int read;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			while ((read = inputStream.read(buff)) >= 0) {
+				baos.write(buff, 0, read);
 			}
-			buffer.append((char) c);
+			byte[] ret = baos.toByteArray();
+			String charset = StringUtil.detCharset(ret);
+			return new String(ret, charset);
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
 		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
 	}
 
 	/*
@@ -414,19 +423,7 @@ public class EthNetInfo {
 
 	private String aixRunIfConfigCommand() throws IOException {
 		Process p = Runtime.getRuntime().exec("netstat -i");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
-
-		StringBuffer buffer = new StringBuffer();
-		for (;;) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
-			}
-			buffer.append((char) c);
-		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
+		return read(p.getInputStream());
 	}
 
 	/*
@@ -481,19 +478,7 @@ public class EthNetInfo {
 
 	private String windowsRunIpConfigCommand() throws IOException {
 		Process p = Runtime.getRuntime().exec("ipconfig /all");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
-
-		StringBuffer buffer = new StringBuffer();
-		for (;;) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
-			}
-			buffer.append((char) c);
-		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
+		return read(p.getInputStream());
 	}
 
 	/*
@@ -539,18 +524,7 @@ public class EthNetInfo {
 
 	private String osxRunIfConfigCommand() throws IOException {
 		Process p = Runtime.getRuntime().exec("ifconfig");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
-		StringBuffer buffer = new StringBuffer();
-		while (true) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
-			}
-			buffer.append((char) c);
-		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
+		return read(p.getInputStream());
 	}
 //	public static void main(String[] args) throws ParseException {
 //		String s="ens32: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n" +
