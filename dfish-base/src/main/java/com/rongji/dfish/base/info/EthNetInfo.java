@@ -1,5 +1,7 @@
 package com.rongji.dfish.base.info;
 
+import com.rongji.dfish.base.util.StringUtil;
+
 import java.io.*;
 import java.net.InetAddress;
 import java.text.ParseException;
@@ -155,7 +157,7 @@ public class EthNetInfo {
 			throws ParseException {
 		StringTokenizer tokenizer = new StringTokenizer(ipConfigResponse, "\n");
 		String lastMacAddress = null;
-		Set<String> set = new HashSet<String>();
+		Set<String> set = new LinkedHashSet<String>();
 		while (tokenizer.hasMoreTokens()) {
 			String line = tokenizer.nextToken().trim();
 			// see if line contains IP address
@@ -164,15 +166,27 @@ public class EthNetInfo {
 			}
 
 			// see if line contains MAC address
-			int pos1= line.indexOf("HWaddr");
-			int pos2= line.indexOf("ether");
-			int macAddressPosition = Math.max(pos1, pos2);
-			if (macAddressPosition < 0) {
+			String[] KEYS={"HWaddr ","ether ","硬件地址 "};
+			String macAddressCandidate="";
+			for(String key:KEYS){
+				int pos= line.indexOf(key);
+				if(pos==-1){
+					continue;
+				}
+				macAddressCandidate = line.substring(pos + key.length()).trim();
+			}
+			if(macAddressCandidate.equals("")){
 				continue;
 			}
+//			int pos1= line.indexOf("HWaddr");
+//			int pos2= line.indexOf("ether");
+//			int macAddressPosition = Math.max(pos1, pos2);
+//			if (macAddressPosition < 0) {
+//				continue;
+//			}
 
-			String macAddressCandidate = line.substring(macAddressPosition + 6)
-					.trim();
+//			String macAddressCandidate = line.substring(macAddressPosition + 6)
+//					.trim();
 			if(macAddressCandidate.indexOf(' ')>0){
 				String[] tempStrings=macAddressCandidate.split(" ");
 				macAddressCandidate=tempStrings[0];
@@ -236,54 +250,13 @@ public class EthNetInfo {
 	/*
 	 * Linux stuff
 	 */
-	private String linuxParseMacAddress(String ipConfigResponse)
+	public String linuxParseMacAddress(String ipConfigResponse)
 			throws ParseException {
-		String localHost = null;
-		try {
-			localHost = InetAddress.getLocalHost().getHostAddress();
-		} catch (java.net.UnknownHostException ex) {
-			ex.printStackTrace();
-			throw new ParseException(ex.getMessage(), 0);
+		String ret="";
+		for(String s:linuxParseMacAddresses(ipConfigResponse)){
+			ret=s;
 		}
-		StringTokenizer tokenizer = new StringTokenizer(ipConfigResponse, "\n");
-		String lastMacAddress = null;
-
-		while (tokenizer.hasMoreTokens()) {
-			String line = tokenizer.nextToken().trim();
-			boolean containsLocalHost = line.indexOf(localHost) >= 0;
-			// see if line contains IP address
-			if (containsLocalHost && lastMacAddress != null) {
-				return lastMacAddress;
-			}
-
-			// see if line contains MAC address
-			int pos1= line.indexOf("HWaddr");
-			int pos2= line.indexOf("ether");
-			int macAddressPosition = Math.max(pos1, pos2);
-			if (macAddressPosition < 0) {
-				continue;
-			}
-
-			String macAddressCandidate = line.substring(macAddressPosition + 6)
-					.trim();
-			if(macAddressCandidate.indexOf(' ')>0){
-				String[] tempStrings=macAddressCandidate.split(" ");
-				macAddressCandidate=tempStrings[0];
-			}
-			if (linuxIsMacAddress(macAddressCandidate)) {
-				lastMacAddress = macAddressCandidate;
-				continue;
-			}
-		}
-		
-		if (lastMacAddress!=null) {
-			return lastMacAddress;
-		}
-
-		ParseException ex = new ParseException("cannot read MAC address for "
-				+ localHost + " from [" + ipConfigResponse + "]", 0);
-		ex.printStackTrace();
-		throw ex;
+		return ret;
 	}
 	private static final Pattern LINUX_MAC_PATTERN=Pattern
 			.compile("[0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0-9a-fA-F]{2}[-:][0 -9a-fA-F]{2}[-:][0-9a-fA-F]{2}");
@@ -293,21 +266,28 @@ public class EthNetInfo {
 	}
 
 	private String linuxRunIfConfigCommand() throws IOException {
-		Runtime r=Runtime.getRuntime();
-		Process p = r.exec("ifconfig");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
+		Process p = Runtime.getRuntime().exec("ifconfig");
+		return read(p.getInputStream());
+	}
 
-		StringBuffer buffer = new StringBuffer();
-		for (;;) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
+	private String read(InputStream inputStream) throws IOException {
+//        InputStream stdoutStream = new BufferedInputStream();
+//        String outputText=read(p.getInputStream());
+		byte[] buff = new byte[8192];
+		int read;
+		ByteArrayOutputStream baos = new ByteArrayOutputStream();
+		try {
+			while ((read = inputStream.read(buff)) >= 0) {
+				baos.write(buff, 0, read);
 			}
-			buffer.append((char) c);
+			byte[] ret = baos.toByteArray();
+			String charset = StringUtil.detCharset(ret);
+			return new String(ret, charset);
+		} finally {
+			if (inputStream != null) {
+				inputStream.close();
+			}
 		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
 	}
 
 	/*
@@ -414,19 +394,7 @@ public class EthNetInfo {
 
 	private String aixRunIfConfigCommand() throws IOException {
 		Process p = Runtime.getRuntime().exec("netstat -i");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
-
-		StringBuffer buffer = new StringBuffer();
-		for (;;) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
-			}
-			buffer.append((char) c);
-		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
+		return read(p.getInputStream());
 	}
 
 	/*
@@ -481,19 +449,7 @@ public class EthNetInfo {
 
 	private String windowsRunIpConfigCommand() throws IOException {
 		Process p = Runtime.getRuntime().exec("ipconfig /all");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
-
-		StringBuffer buffer = new StringBuffer();
-		for (;;) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
-			}
-			buffer.append((char) c);
-		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
+		return read(p.getInputStream());
 	}
 
 	/*
@@ -539,18 +495,7 @@ public class EthNetInfo {
 
 	private String osxRunIfConfigCommand() throws IOException {
 		Process p = Runtime.getRuntime().exec("ifconfig");
-		InputStream stdoutStream = new BufferedInputStream(p.getInputStream());
-		StringBuffer buffer = new StringBuffer();
-		while (true) {
-			int c = stdoutStream.read();
-			if (c == -1) {
-				break;
-			}
-			buffer.append((char) c);
-		}
-		String outputText = buffer.toString();
-		stdoutStream.close();
-		return outputText;
+		return read(p.getInputStream());
 	}
 //	public static void main(String[] args) throws ParseException {
 //		String s="ens32: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500\n" +
