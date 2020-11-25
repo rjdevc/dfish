@@ -438,11 +438,11 @@ _getPreload = function(a, b) {
 	return b && t ? $.jsonClone(t) : t;
 },
 _compileTemplate = function(g, d, s) {
-	var t = new Template(s || g.x.template, d, g), r;
-	if(t.templateBody) {
-		r = t.compile(t.templateBody);
-		!r.type && (r.type = g.type);
-	}
+	var t = new Template(s || g.x.template, d, g);
+	if (t.error)
+		return g.init_x_error(t.error);
+	var r = t.compile(t.templateBody);
+	!r.type && (r.type = g.type);
 	return r;
 },
 TemplateWidget = $.createClass({
@@ -497,17 +497,20 @@ Template = $.createClass({
 	Const: function(t, d, g) {
 		var t = _getTemplate(t);
 		this.wg = g;
-		this.templateBody = t.body;
-		this.error = t.error;
-		if ($.isArray(d)) {
-			this.data = d;
+		if (t instanceof $.Error) {
+			this.error = t;
 		} else {
-			this.data = $.extend({}, d);
-			if (g.x.data)
-				$.extend(this.data, g.x.data);
-			if (g.x.args) {
-				for (var i = 0, a = g.x.args; i < a.length; i ++)
-					this.data[i] = a[i];
+			this.templateBody = t.body;
+			if ($.isArray(d)) {
+				this.data = d;
+			} else {
+				this.data = $.extend({}, d);
+				if (g.x.data)
+					$.extend(this.data, g.x.data);
+				if (g.x.args) {
+					for (var i = 0, a = g.x.args; i < a.length; i ++)
+						this.data[i] = a[i];
+				}
 			}
 		}
 	},
@@ -816,8 +819,6 @@ W = define('Widget', function() {
 								x[k] = t[k];
 							}
 						}
-					} else if (t.type && !W.isCmd(t)) {
-						$.alert(Loc.ps(Loc.debug.error_template_type, x.template, this.type));
 					}
 				}
 			}
@@ -2532,8 +2533,12 @@ AbsSection = define.widget('AbsSection', {
 				e = function() {
 					if (!self._disposed && m && n) {self._loadEnd(n); fn && fn.call(self, n); n = N;}
 				};
-			if (t && typeof t === _STR)
+			if (t && typeof t === _STR) {
 				t = _getTemplateBody(t);
+				if(t && t.type && t.type !== this.type) {
+					$.alert(Loc.ps(Loc.debug.error_template_type, this.x.template, this.type));
+				}
+			}
 			d(), e();
 			var u = this.getSrc();
 			u && typeof u === _STR ? this.exec({type: 'Ajax', src: u, filter: this.x.filter || (t && t.filter), cache: cache, loading: F, sync: this.x.sync,
@@ -2543,7 +2548,7 @@ AbsSection = define.widget('AbsSection', {
 					}
 				}, error: function(a) {
 					if (_sectionAjaxCB.call(this, 'error', N, a)) {
-						n = new $.Error({text: Loc.ps(a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status, u)});
+						n = a.error;
 						d(), e();
 					}
 				}, complete: function(x, a) {

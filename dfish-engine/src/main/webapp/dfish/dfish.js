@@ -285,7 +285,7 @@ Require = function(uri, id) {
 		if (d.length) {
 			_loadJs(e, function(g) {
 				for (var i = 0; i < g.length; i ++) {
-					!_moduleCache[d[i]] && _onModuleLoad(d[i], e[i], g[i]);
+					_onModuleLoad(d[i], e[i], g[i]);
 				}
 				f && exe(b, f);
 			}, !s);
@@ -361,12 +361,12 @@ Define = function(uri, id) {
 },
 //@a -> id, b -> uri, c -> script text
 _onModuleLoad = function(a, b, c) {
+	if (_moduleCache[a] && !(_moduleCache[a] instanceof $.Error))
+		return;
+	if (c instanceof $.Error)
+		return _moduleCache[a] = c;
 	var m = new Module(b);
-	//try {
-		Function('define,require,module,exports', c + '\n//@ sourceURL=' + a).call(win, Define(b, a), Require(b, a), m, m.exports);
-	//} catch(e) {
-	//	throw new Error('"' + a + '": ' + e.message);
-	//}
+	Function('define,require,module,exports', c + '\n//@ sourceURL=' + a).call(win, Define(b, a), Require(b, a), m, m.exports);
 	if (!_moduleCache[a])
 		_moduleCache[a] = m.exports;
 },
@@ -377,13 +377,15 @@ _loadJs = function(a, b, c) {
 	var i = a.length, f = i,
 		g = function() {
 			if(-- f === 0) {
-				for (var j = 0, r = []; j < a.length; j ++)
-					r.push(_ajax_cache[_ajax_url(a[j], T)].response);
+				for (var j = 0, r = [], x; j < a.length; j ++) {
+					x = _ajax_cache[_ajax_url(a[j], T)];
+					r.push(x.response || x.error);
+				}
 				b && b(r);
 			}
 		};
 	while (i --)
-		$.ajax({src: a[i], sync: c, success: g, cache: T, cdn: T});
+		$.ajax({src: a[i], sync: c, success: g, error: g, cache: T, cdn: T});
 },
 _cssCache = {},
 // @a -> src, b -> fn?, c -> id?
@@ -1824,6 +1826,7 @@ Ajax = _createClass({
 					// 如果有context且context失效，则不执行error也不执行succcess，只执行complete
 					if (!c || !c._disposed) {
 				        if (r) {
+				        	self.error = new $.Error({text: $.loc.ps(l.status > 600 ? Loc.internet_error : $.loc.server_error, l.status, x.src)});
 							if (f !== F && (_ajax_httpmode(location.protocol) || l.status)) {
 								f && _fnapply(f, c, '$ajax', [self]);
 								if (!f && r !== 'filter') {
@@ -1832,7 +1835,6 @@ Ajax = _createClass({
 										$.loc ? $.loc.ps(l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape(s) + '" onmouseover=dfish.tip(this)') : s);
 									win.console && console.error(s + ((r = l.responseText) ? '\n' + r : ''));
 								}
-								delete _ajax_cache[a];
 							}
 					  	} else {
 							b && b.call(c, self.response, self);
