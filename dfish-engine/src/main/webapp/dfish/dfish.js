@@ -1760,8 +1760,6 @@ Ajax = _createClass({
 			if (c) {
 				if (c.response != N) {
 					x.success && x.success.call(x.context, c.response);
-				} else if (c.errorCode) {
-					x.error && _fnapply(x.error, x.context, '$ajax', [self]);
 				} else {
 					c.addEvent('cache', this.sendCache, this);
 				}
@@ -1826,7 +1824,6 @@ Ajax = _createClass({
 					// 如果有context且context失效，则不执行error也不执行succcess，只执行complete
 					if (!c || !c._disposed) {
 				        if (r) {
-				        	self.errorCode = l.status;
 							if (f !== F && (_ajax_httpmode(location.protocol) || l.status)) {
 								f && _fnapply(f, c, '$ajax', [self]);
 								if (!f && r !== 'filter') {
@@ -1835,14 +1832,14 @@ Ajax = _createClass({
 										$.loc ? $.loc.ps(l.status > 600 ? $.loc.internet_error : $.loc.server_error, l.status, ' data-title="' + _strEscape(s) + '" onmouseover=dfish.tip(this)') : s);
 									win.console && console.error(s + ((r = l.responseText) ? '\n' + r : ''));
 								}
+								delete _ajax_cache[a];
 							}
 					  	} else {
 							b && b.call(c, self.response, self);
-							_ajax_cache[u] === self && self.fireEvent('cache');
+							_ajax_cache[a] === self && self.fireEvent('cache');
 						}
 					}
 					x.complete && x.complete.call(c, self.response, self);
-					//self.next();
 				}
 			}
 			l.onreadystatechange = _onchange;
@@ -2817,7 +2814,10 @@ _merge($, {
 			w.print(), w.close();
 		}
 		return d;
-	}
+	},
+	Error: $.createClass({
+		Const: function(x) {this.x = x}
+	}),
 });
 
 if (!noGlobal) {

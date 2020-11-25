@@ -422,9 +422,6 @@ Node = $.createClass({
 		}
 	}
 }),
-Error = $.createClass({
-	Const: function(x) {this.x = x}
-}),
 // 获取模板  /@a -> template id
 _getTemplate = function(a) {
 	var t = typeof a === _OBJ ? {body: a} : $.require((cfg.templateDir || '') + a);
@@ -441,8 +438,11 @@ _getPreload = function(a, b) {
 	return b && t ? $.jsonClone(t) : t;
 },
 _compileTemplate = function(g, d, s) {
-	var t = new Template(s || g.x.template, d, g), r = t.compile(t.templateBody);
-	!r.type && (r.type = g.type);
+	var t = new Template(s || g.x.template, d, g), r;
+	if(t.templateBody) {
+		r = t.compile(t.templateBody);
+		!r.type && (r.type = g.type);
+	}
 	return r;
 },
 TemplateWidget = $.createClass({
@@ -498,6 +498,7 @@ Template = $.createClass({
 		var t = _getTemplate(t);
 		this.wg = g;
 		this.templateBody = t.body;
+		this.error = t.error;
 		if ($.isArray(d)) {
 			this.data = d;
 		} else {
@@ -836,7 +837,7 @@ W = define('Widget', function() {
 		init_template: function(d) {
 			if (!d) return;
 			var x;
-			if (d instanceof Error) {
+			if (d instanceof $.Error) {
 				x = this.init_x_error(d);
 			} else {
 				this._srcdata = d;
@@ -2504,7 +2505,7 @@ AbsSection = define.widget('AbsSection', {
 					if (this.layout) {
 						this.showLoading(F);
 						this.showLayout(tar);
-						fn && !(x instanceof Error) && fn.call(this, x);
+						fn && !(x instanceof $.Error) && fn.call(this, x);
 					} else if (this.getSrc() && s != this.getSrc()) {
 						this.reload(N, N, N, fn);
 					}
@@ -2542,7 +2543,7 @@ AbsSection = define.widget('AbsSection', {
 					}
 				}, error: function(a) {
 					if (_sectionAjaxCB.call(this, 'error', N, a)) {
-						n = new Error({text: Loc.ps(a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status, u)});
+						n = new $.Error({text: Loc.ps(a.request.status > 600 ? Loc.internet_error : Loc.server_error, a.request.status, u)});
 						d(), e();
 					}
 				}, complete: function(x, a) {
@@ -8040,7 +8041,7 @@ JigsawImg = define.widget('JigsawImg', {
 		load: function(fn) {
 			this.loadData(N, function(d) {
 				var p = this.parentNode, r = this.getResult();
-				if (!r || (d instanceof Error)) {
+				if (!r || (d instanceof $.Error)) {
 					r = {error: {text: Loc.form.jigsaw_errorimg}};
 				}
 				p.loaded = T;

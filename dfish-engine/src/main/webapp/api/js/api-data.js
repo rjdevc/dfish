@@ -2226,6 +2226,7 @@ define( {
           { name: 'field', type: 'String', remark: '提示字段名。' }
         ] },
         { name: 'vAlign', type: 'String', remark: '垂直对齐方式。可选值: <b>top</b>, <b>middle</b>, <b>bottom</b>' },
+        { name: 'visible', type: 'String', remark: '设为可见或隐藏状态。可选值: <b>show</b>, <b>hide</b>, <b>normal</b>。默认值为normal。' },
         { name: 'width', type: 'String | Percent | Number', remark: '列的宽度。可选值: *, 百分比, 整数。' }
     ],
 	Examples: [
