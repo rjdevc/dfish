@@ -148,7 +148,7 @@
 .w-thead{height:40px;background-color:#e5f3ff;}
 .w-thead,.w-tfoot{position:relative;line-height:1}
 .w-thead .w-table-tbl,.w-tfoot.w-table-tbl{height:100%}
-.w-thead:hover .w-th-rsz{border-right:1px solid #ddd}
+.w-thead:hover .w-th-rsz{border-right:1px solid #ccc}
 .w-thead:hover .w-th.z-face-cell .w-th-rsz{border-right:0}
 .w-fixedtable{position:absolute;top:0;background:#fff;z-index:1}
 .w-fixedtable .w-tbody{overflow:hidden}
@@ -180,11 +180,11 @@
 .w-th-sortwrap .f-i{position:relative;margin-left:-5px;top:-2px}
 .w-th-sortwrap .f-i-caret-down{top:-6px}
 .w-th-sort.z-desc .w-th-sortwrap,.w-th-sort.z-asc .w-th-sortwrap{visibility:visible}
-.w-th-hda{position:absolute;top:0;right:0;padding:0 2px;border-left:1px solid #ddd;border-right:1px solid #ddd;visibility:hidden;cursor:pointer}
-.w-th:hover .w-th-hda{visibility:visible}
-.w-th-hda.z-drop{visibility:visible;background:rgba(255,255,255,.7)}
-.w-th-hda-dialog.w-dialog{padding:5px 15px;border:1px solid #ddd}
-.w-th.z-hda .w-th-text{padding-right:24px}
+.w-th-vis{position:absolute;top:0;right:0;padding:0 2px;border-left:1px solid #ccc;border-right:1px solid #ccc;visibility:hidden;cursor:pointer}
+.w-thead:hover .w-th-vis{visibility:visible}
+.w-th-vis.z-drop{visibility:visible;background:rgba(255,255,255,.7)}
+.w-th-vis-dialog.w-dialog{padding:5px 15px;border:1px solid #ddd}
+.w-th.z-vis .w-th-text{padding-right:24px}
 .w-thead:hover .w-th-sortwrap{visibility:visible}
 .w-tfoot.z-cover{position:absolute;bottom:0;background:#fff;box-shadow1:0 -1px 1px 0 rgba(0, 0, 0, 0.09)}
 .w-tfoot .w-td.z-face-line,.w-tfoot .w-td.z-face-cell{border-bottom-width:1px;border-top-width:0}
@@ -276,7 +276,8 @@
 .w-dialog-rsz.z-se{width:7px;height:7px;right:0;bottom:0;cursor:se-resize}
 .w-dialog-rsz.z-sw{width:7px;height:7px;left:0;bottom:0;cursor:sw-resize}
 .w-dialog.z-max .w-dialog-rsz{display:none}
-.w-dialog.z-closing:after{content:"";position:absolute;top:0;bottom:0;left:0;right:0;z-index:11;background:#000;opacity:0;}
+.w-dialog.z-closing:after{content:"";position:absolute;top:0;bottom:0;left:0;right:0;z-index:11;background:#000;opacity:0}
+.w-dialog.z-frame-hide{visibility:hidden;z-index:-1!important}
 
 .w-alert{z-index:12}
 .w-alert-icon ._ico{font-size:32px}

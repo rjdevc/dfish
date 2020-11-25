@@ -2569,13 +2569,13 @@ AbsSection = define.widget('AbsSection', {
 			if (this.$()) {
 				var s = this.getSrc();
 				if (typeof s === _STR) {
-					if (!tar && this.x.preload) {
-						if (this.owner_x)
-							this.x = $.extend({}, y, this.owner_x);
+					/*if (!tar && this.x.preload) {
+						if (this.owner_x) this.x = $.extend({}, y, this.owner_x);
+						_proto._init_x.call(this, x);
 						this.init_preload();
 						this.init_nodes();
 						this.showLayout(F);
-					}
+					}*/
 					this.load(tar, fn, T);
 				} else {
 					this._loadEnd(s || {});
@@ -3253,7 +3253,12 @@ Frame = define.widget('Frame', {
 		relateDialog: function(a, b) {
 			for (var k in Dialog.all) {
 				var d = Dialog.all[k];
-				if (a.contains(d.parentNode)) d.addClass('f-hide', !b);
+				if (d._hideInFrame && d._hideInFrame !== this.id)
+					continue;
+				if (!d.x.independent && a.contains(d.parentNode)) {
+					d.addClass('z-frame-hide', !b);
+					d._hideInFrame = b ? N : this.id;
+				}
 			}
 		},
 		html_nodes: function() {
@@ -11094,9 +11099,9 @@ TableRow = define.widget('TableRow', {
 						g += ' class="' + y + '"';
 					g && (v = '<div' + g + '>' + v + '</div>');
 					b.push('<td class="w-td z-face-' + u._face + (k === 0 ? ' z-first' : '') + (i === L ? ' z-last' : '') +
-						(this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') + (f.visible && f.visible != 'normal' ? ' z-hda' : '') : '') +
+						(this.type_thr ? ' w-th' + (f.sort ? ' w-th-sort' + (c[i]._sort ? ' z-' + c[i]._sort : '') : '') + (f.visible && f.visible != 'normal' ? ' z-vis' : '') : '') +
 						(f.cls ? ' ' + f.cls : '') + '"' + s + (f.style ? ' style="' + f.style + '"' : '') + '>' + (v == N ? (ie7 ? '&nbsp;' : '') : v) +
-						(this.type_thr && f.visible && f.visible != 'normal' ? '<div class=w-th-hda><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
+						(this.type_thr && f.visible && f.visible != 'normal' ? '<div class=w-th-vis><i class=f-vi></i>' + $.caret('down') + '</div>' : '') + '</td>');
 				}
 			}
 			return b.join('');
@@ -11477,9 +11482,9 @@ ContentTHead = define.widget('ContentTHead', {
 						}, e);
 					});
 				}
-				var m = Q('.w-th-hda', this.$());
+				var m = Q('.w-th-vis', this.$());
 				m.height(this.$().offsetHeight).on('click', function() {
-					for (var i = 0, c = r.getColGroup(), d = [], e = Column.index(this.parentNode), n = Q('.w-th-hda', r.contentTHead().$()); i < n.length; i ++) {
+					for (var i = 0, c = r.getColGroup(), d = [], e = Column.index(this.parentNode), n = Q('.w-th-vis', r.contentTHead().$()); i < n.length; i ++) {
 						var f = n.eq(i).parent(), h = f.prop('cellIndex');
 						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
 							change: function() {
@@ -11490,7 +11495,7 @@ ContentTHead = define.widget('ContentTHead', {
 							}
 						}});
 					}
-					g.cmd({type: 'Dialog', id: '#w-th-hda-dialog', ownproperty: T, cls: 'w-th-hda-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+					g.cmd({type: 'Dialog', id: '#w-th-vis-dialog', ownproperty: T, cls: 'w-th-vis-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
 						ready: 'this.trigger("usable")',
 						usable: function() {
 							var a = this.elements(T).length == 1;
@@ -11644,7 +11649,9 @@ ContentTable = define.widget('ContentTable', {
 			ready: function() {
 				this.rootNode != this.table && this.fixWidth();
 			},
-			resize: function() { this.rootNode != this.table && this.fixWidth(); }
+			resize: function() {
+				this.rootNode != this.table && this.fixWidth();
+			}
 		}
 	},
 	Prototype: {
@@ -11658,7 +11665,8 @@ ContentTable = define.widget('ContentTable', {
 				c[i].$().runtimeStyle.width = c[i]._hide ? '0px' : '';
 			}
 			Q('tbody[w-type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('z-hide', !b);
-			this.css('width', w);
+			//this.css('width', w);
+			this.$().runtimeStyle.width = w + 'px';
 		},
 		view_col: function(a, b) {
 			Q('tbody[w-type] > tr', this.$()).find('> td:eq(' + a + ')').toggleClass('f-form-hide', !b);
@@ -12025,6 +12033,7 @@ AbsTable = define.widget('AbsTable', {
 			this.head && this.head.contentTable.show_col(a, b);
 			this.body && this.body.contentTable.show_col(a, b);
 			this.foot && this.foot.contentTable.show_col(a, b);
+			if (!b) this._columnSizeLocked = T;
 		},
 		// 获取焦点行 / @a -> visible(是否可见)?
 		getFocus: function(a) {
