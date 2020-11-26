@@ -44,8 +44,11 @@ public class JigsawController extends FrameworkController {
     @RequestMapping("/img")
     @ResponseBody
     public Object img(HttpServletRequest request) throws Exception {
-        JigsawImg response = getJigsawGenerator().generatorJigsaw(request);
-        return new JsonResponse<>(response);
+        JigsawImg jigsawImg = getJigsawGenerator().generatorJigsaw(request);
+        if (jigsawImg.getError() != null) {
+            return  JsonResponse.of(null).setError(jigsawImg.getError());
+        }
+        return new JsonResponse<>(jigsawImg);
     }
 
     /**

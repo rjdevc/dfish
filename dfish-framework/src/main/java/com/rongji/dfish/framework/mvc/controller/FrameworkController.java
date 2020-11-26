@@ -512,8 +512,18 @@ public class FrameworkController {
      * @return 转Json格式字符
      */
     protected String convert2JSON(HttpServletRequest request) {
+        return JsonUtil.toJson(convert2Map(request));
+    }
+
+    /**
+     * 将获取的信息转化为json格式
+     *
+     * @param request 请求
+     * @return 转Json格式字符
+     */
+    protected Map<String, Object> convert2Map(HttpServletRequest request) {
         if (request == null) {
-            return "";
+            return new LinkedHashMap<>(0);
         }
         Map<String, Object> json = new LinkedHashMap<>();
         Map<String, Object> headMap = new LinkedHashMap<>();
@@ -540,7 +550,7 @@ public class FrameworkController {
             }
         }
 
-        return JsonUtil.toJson(json);
+        return json;
     }
 
 }

@@ -17,6 +17,7 @@ import java.util.*;
 
 /**
  * 查询参数类,用于数据传输过程中查询参数封装对象
+ *
  * @author lamontYu
  * @since DFish5.0
  */
@@ -34,6 +35,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 查询开始时间
+     *
      * @return Date 查询开始时间
      */
     public Date getBeginTime() {
@@ -42,6 +44,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 查询开始时间
+     *
      * @param beginTime Date 查询开始时间
      * @return 本身，这样可以继续设置其他属性
      */
@@ -52,6 +55,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 查询结束时间
+     *
      * @return 查询结束时间
      */
     public Date getEndTime() {
@@ -60,6 +64,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 查询结束时间
+     *
      * @param endTime 查询结束时间
      * @return 本身，这样可以继续设置其他属性
      */
@@ -70,18 +75,30 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 修正endTime的时间,主要用于日期查询,结束时间天数要加1
-     * @param field
-     * @param amount
-     * @return
+     *
+     * @param field 单位
+     * @param amount 数量
+     * @return 本身，这样可以继续设置其他属性
      */
     public T addEndTime(int field, int amount) {
-        if (this.endTime != null) {
-            Calendar cal = Calendar.getInstance();
-            cal.setTime(endTime);
-            cal.add(field, amount);
-            this.endTime = cal.getTime();
+        return setEndTime(addTime(this.endTime, field, amount));
+    }
+
+    /**
+     * 修正时间,主要用于日期查询,结束时间天数要加1
+     * @param date 时间
+     * @param field 单位
+     * @param amount 数量
+     * @return Date 修正的时间
+     */
+    public Date addTime(Date date, int field, int amount) {
+        if (date == null) {
+            return null;
         }
-        return (T) this;
+        Calendar cal = Calendar.getInstance();
+        cal.setTime(date);
+        cal.add(field, amount);
+        return cal.getTime();
     }
 
     protected static Map<Class, Map<String, FieldMethods>> paramMethods = new HashMap<>();
@@ -152,6 +169,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 转换为参数请求对象
+     *
      * @return RequestParam
      */
     public RequestParam toRequestParam() {
@@ -269,6 +287,7 @@ public class QueryParam<T extends QueryParam<T>> implements Serializable {
 
     /**
      * 绑定数据
+     *
      * @param request 请求
      * @return 本身，这样可以继续设置其他属性
      */
