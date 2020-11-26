@@ -1459,13 +1459,11 @@ define( {
           }
       ] },
       { name: 'closest(type)', remark: '获取符合条件的祖先节点。从当前节点开始，逐级向上级匹配，并返回最先匹配的节点。', common: true, param: [
-        { name: 'type', type: 'String | Object | Function', remark: '如果是字符串，则按照 widget type 查找。如果是 Object, 返回满足所有条件的节点。' }
+        { name: 'type', type: 'String | Function', remark: '如果是字符串，则按照 widget type 查找。如果是 function, 函数返回true则返回该节点。' }
       ], example: [
           function() {
-          	// 以下三条语句等效
             var p1 = wg.closest('Vertical');
-            var p2 = wg.closest({type: 'Vertical'});
-            var p3 = wg.closest(function(node){return node.type == 'Vertical'});
+            var p2 = wg.closest(function(node){return node.type == 'Vertical'});
           }
       ] },
       { name: 'cmd(cmdID, [arg1, arg2...argN])', remark: '执行命令。', common: true, param: [
@@ -1520,9 +1518,29 @@ define( {
             wg.fireEvent( 'click' );
           }
       ] },
-      { name: 'descendants()', remark: '获取所有子孙节点，返回一个数组。', common: true },
-      { name: 'descendant(type)', remark: '获取某个子孙节点。', common: true, param: [
-        { name: 'type', type: 'String', remark: 'widget type。' }
+      { name: 'descendants([type])', remark: '获取符合条件的所有子孙节点，返回一个数组。', common: true, param: [
+        { name: 'type', type: 'String | Function', remark: '如果是字符串，则按照 widget type 查找。如果是 function, 函数返回true则返回该节点。' }
+      ], example: [
+          function() {
+          	//获取所有Vertical类型的子孙节点
+            var r = wg.descendants('Vertical');
+          },
+          function() {
+            //获取所有Vertical或Horizontal类型的子孙节点
+            var r = wg.descendants(function(node){return node.type == 'Vertical' || node.type == 'Horizontal'});
+          },
+      ] },
+      { name: 'descendant([type])', remark: '获取符合条件的第一个子孙节点。', common: true, param: [
+        { name: 'type', type: 'String | Function', remark: '如果是字符串，则按照 widget type 查找。如果是 function, 函数返回true则返回该节点。' }
+      ], example: [
+          function() {
+          	//获取Vertical类型的子孙节点
+            var r = wg.descendant('Vertical');
+          },
+          function() {
+            //获取Vertical或Horizontal类型的子孙节点
+            var r = wg.descendant(function(node){return node.type == 'Vertical' || node.type == 'Horizontal'});
+          }
       ] },
       { name: 'hasClass(cls)', remark: '是否包含某些样式。', common: true, param: [
         { name: 'cls', type: 'String', remark: '样式名。多个样式用空格隔开。' }

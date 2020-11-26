@@ -1030,24 +1030,40 @@ W = define('Widget', function() {
 			return this[this.length - 1];
 		},
 		// 获取所有子孙节点
-		descendants: function() {
-			for (var i = 0, r = [], l = this.length; i < l; i ++) {
-				r.push(this[i]);
-				this[i].length && r.push.apply(r, this[i].descendants());
+		descendants: function(a) {
+			for (var i = 0, l = this.length, c, f = typeof a === _FUN, r = []; i < l; i ++) {
+				if(f ? a(this[i]) : a ? this[i].type === a : T)
+					r.push(this[i]);
+				if (!this[i].type_view)
+					r.push.apply(r, this[i].descendants(a));
+			}
+			for (var i in this.discNodes) {
+				c = this.discNodes[i];
+				if (!c.isDialogWidget) {
+					if(f ? a(c) : a ? c.type === a : T)
+						r.push(c);
+					if (!c.type_view)
+						r.push.apply(r, c.descendants(a));
+				}
 			}
 			return r;
 		},
-		// 获取某个子孙节点 /@ a -> type
+		// 获取某个子孙节点 /@ a -> type, fn
 		descendant: function(a) {
-			if ($.idsAny(a, this.type))
-				return this;
-			for (var i = 0, l = this.length, r; i < l; i ++) {
-				if (!(this[i].type_view || this[i].isDialogWidget) && (r = this[i].descendant(a)))
-					return r;
+			for (var i = 0, l = this.length, c, d, f = typeof a === _FUN; i < l; i ++) {
+				if(f ? a(this[i]) : a ? this[i].type === a : T)
+					return this[i];
+				if(!this[i].type_view && (d = this[i].descendant(a)))
+					return d;
 			}
 			for (var i in this.discNodes) {
-				if (!(this.discNodes[i].type_view || this.discNodes[i].isDialogWidget) && (r = this.discNodes[i].descendant(a)))
-					return r;
+				c = this.discNodes[i];
+				if (!c.isDialogWidget) {
+					if (f ? a(c) : a ? c.type === a : T)
+						return c;
+					if(!c.type_view && (d = c.descendant(a)))
+						return d;
+				}
 			}
 		},
 		// 查找符合条件的祖先元素
