@@ -618,6 +618,9 @@ public class DateUtil {
      * @throws ParseException
      */
     public static Date parse(String str, String pattern) throws ParseException {
+        if (str == null || "".equals(str)) {
+            return null;
+        }
         DateFormat format = new SimpleDateFormat(pattern);
         return format.parse(str);
     }
