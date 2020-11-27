@@ -4562,7 +4562,7 @@ Img = define.widget('Img', {
 			var x = this.x, b = this.parentNode.type === 'Album', mw = this.innerWidth(), mh = this.innerHeight(), u = _url_format.call(this, this.x.src),
 				iw = $.scale(mw, [this.x.imgWidth])[0], ih = $.scale(mh, [this.x.imgHeight])[0], w = iw || (this.x.dir === 'h' ? N : mw), h = ih || mh,
 				g = $.image(u, {width: iw, height: ih, maxWidth: mw, maxHeight: mh, error: evw + '.error()', load: evw + '.imgLoad()'});
-			return '<div id=' + this.id + 'i class="w-img-i" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
+			return '<div id=' + this.id + 'i class="w-img-i' + (this.x.dir === 'h' ? ' f-inbl' : '') + '" style="' + (w ? 'width:' + w + 'px;' : '') + (h ? 'height:' + (h - (t && !ih ? 30 : 0) - (this.x.description && !ih ? 30 : 0)) + 'px;' : '') + '">' + g + this.html_badge() + this.html_desc() + '</div>';
 		},
 		html_text: function() {
 			var t = this.html_format(), w = this.x.textWidth;
@@ -11508,24 +11508,28 @@ ContentTHead = define.widget('ContentTHead', {
 				m.height(this.$().offsetHeight).on('click', function() {
 					for (var i = 0, c = r.getColGroup(), d = [], e = Column.index(this.parentNode), n = Q('.w-th-vis', r.contentTHead().$()); i < n.length; i ++) {
 						var f = n.eq(i).parent(), h = f.prop('cellIndex');
-						d.push({text: f.text(), data: {colIndex: h}, checked: !c[h]._hide, on: {
-							change: function() {
-								g.showColumn(this.x.data.colIndex, this.isChecked());
+						d.push({text: f.text(), icon: '.f-i-check', data: {colIndex: h, checked: !c[h]._hide}, cls: 'w-th-vis-btn' + (c[h]._hide ? '' : ' z-checked'), on: {
+							click: function() {
+								var ch = !this.x.data.checked;
+								this.addClass('z-checked', ch);
+								this.x.data.checked = ch;
+								g.showColumn(this.x.data.colIndex, ch);
 								g.fixScroll();
 								g.trigger('resize');
 								this.parentNode.trigger('usable');
+								return F;
 							}
 						}});
 					}
-					g.cmd({type: 'Dialog', id: '#w-th-vis-dialog', ownproperty: T, cls: 'w-th-vis-dialog', snap:{target: this}, autoHide: T, node: {type: 'CheckBoxGroup', dir: 'v', nodes: d, on: {
+					g.cmd({type: 'Menu', ownproperty: T, snap: {target: this}, nodes: d, on: {
 						ready: 'this.trigger("usable")',
 						usable: function() {
-							var a = this.elements(T).length == 1;
+							var a = Q.grep(this, function(n){return n.x.data.checked}).length == 1;
 							for (var i = 0; i < this.length; i ++) {
-								if (this[i].isChecked()) this[i].disable(a);
+								if (this[i].x.data.checked) this[i].disable(a);
 							}
 						}
-					}}, on: {mouseLeave: 'this.close()'}});
+					}});
 				});
 				// 排序
 				for (var i = 0; i < c.length; i ++) {

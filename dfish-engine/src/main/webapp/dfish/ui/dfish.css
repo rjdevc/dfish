@@ -181,14 +181,17 @@
 .w-th-sortwrap .f-i-caret-down{top:-6px}
 .w-th-sort.z-desc .w-th-sortwrap,.w-th-sort.z-asc .w-th-sortwrap{visibility:visible}
 .w-th-vis{position:absolute;top:0;right:0;padding:0 2px;border-left:1px solid #ccc;border-right:1px solid #ccc;visibility:hidden;cursor:pointer}
-.w-thead:hover .w-th-vis{visibility:visible}
+.w-th:hover .w-th-vis{visibility:visible}
 .w-th-vis.z-drop{visibility:visible;background:rgba(255,255,255,.7)}
-.w-th-vis-dialog.w-dialog{padding:5px 15px;border:1px solid #ddd}
 .w-th.z-vis .w-th-text{padding-right:24px}
 .w-thead:hover .w-th-sortwrap{visibility:visible}
 .w-tfoot.z-cover{position:absolute;bottom:0;background:#fff;box-shadow1:0 -1px 1px 0 rgba(0, 0, 0, 0.09)}
 .w-tfoot .w-td.z-face-line,.w-tfoot .w-td.z-face-cell{border-bottom-width:1px;border-top-width:0}
 .w-tfoot.z-cover .w-td.z-face-line,.w-tfoot.z-cover .w-td.z-face-cell{border-top-width:1px}
+
+.w-th-vis-btn ._ico{border:1px solid #ccc;padding:1px;background:#fff;color:#fff;line-height:1;font-size:15px;}
+.w-th-vis-btn.z-checked ._ico{color:#2498ff}
+.w-th-vis-btn.z-ds ._ico{color:#2498ff;background:#f2f2f2;}
 
 .w-table .w-label,.w-form .w-label{position:static;*position:relative}
 .w-table .w-label ._lb,.w-form .w-label ._lb{position:relative;z-index:1}
@@ -1136,7 +1139,7 @@ d\:wg{display:none}
 .f-i-angle-double-right:before{content:'\e694'}
 .f-i-angle-double-down:before{content:'\e695'}
 .f-i-angle-double-up:before{content:'\e696'}
-.f-i-check:before{content:'\e656'}
+.f-i-check:before{content:'\e647'}
 .f-i-caret-down:before{content:'\e654'}
 .f-i-caret-left:before{content:'\e655'}
 .f-i-caret-right:before{content:'\e657'}
