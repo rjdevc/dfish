@@ -367,12 +367,21 @@ public class CaptchaGenerator {
 
     /**
      * 生成length长度的校验码，去除一些容易混淆的字符，如I(1混淆) O(0混淆)
-     *
+     * 验证码长度以设置的属性为准
      * @return
      */
     public String getRandomCode() {
+        return getRandomCode(this.codeLength);
+    }
+
+    /**
+     * 生成length长度的校验码，去除一些容易混淆的字符，如I(1混淆) O(0混淆)
+     * @param length 验证码长度
+     * @return
+     */
+    public String getRandomCode(int length) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < this.codeLength; i++) {
+        for (int i = 0; i < length; i++) {
             sb.append(chars[RANDOM.nextInt(chars.length)]);
         }
         return sb.toString();

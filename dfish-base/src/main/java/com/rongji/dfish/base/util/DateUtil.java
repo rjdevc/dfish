@@ -3,12 +3,7 @@ package com.rongji.dfish.base.util;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 /**
  * DateUtil 为日期工具类,日期格式转换
@@ -119,9 +114,9 @@ public class DateUtil {
     private static final DateFormat SDF_YEAR = new SimpleDateFormat(
             PATTERN_YEAR);
 
-    private static Map<String, DateFormat> dfMap = Collections.synchronizedMap(new HashMap<>());
+    private static Map<String, DateFormat> FORMAT_MAP = Collections.synchronizedMap(new HashMap<>());
 
-    private static final int MAP_SIZE = 512;
+    private static final int MAP_SIZE = 32;
 
 
     /**
@@ -503,19 +498,19 @@ public class DateUtil {
         }
         String str = "";
         try {
-            DateFormat format = dfMap.get(pattern);
+            DateFormat format = FORMAT_MAP.get(pattern);
             if (format == null) {
-                if (dfMap.size() > MAP_SIZE) {
-                    dfMap.clear();
+                if (FORMAT_MAP.size() > MAP_SIZE) {
+                    FORMAT_MAP.clear();
                 }
                 format = new SimpleDateFormat(pattern);
-                dfMap.put(pattern, format);
+                FORMAT_MAP.put(pattern, format);
             }
             synchronized (format) {
                 str = format.format(date);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            LogUtil.error("", e);
         }
         return str;
     }
@@ -621,8 +616,23 @@ public class DateUtil {
         if (str == null || "".equals(str)) {
             return null;
         }
-        DateFormat format = new SimpleDateFormat(pattern);
-        return format.parse(str);
+
+        try {
+            DateFormat format = FORMAT_MAP.get(pattern);
+            if (format == null) {
+                if (FORMAT_MAP.size() > MAP_SIZE) {
+                    FORMAT_MAP.clear();
+                }
+                format = new SimpleDateFormat(pattern);
+                FORMAT_MAP.put(pattern, format);
+            }
+            synchronized (format) {
+                return format.parse(str);
+            }
+        } catch (Exception e) {
+            LogUtil.error("", e);
+        }
+        return null;
     }
 
     /**
